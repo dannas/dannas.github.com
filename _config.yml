@@ -1,0 +1,2 @@
+paginate: 10
+exclude: ['code']

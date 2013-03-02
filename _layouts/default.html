@@ -1,0 +1,45 @@
+---
+layout: nil
+---
+
+<!DOCTYPE html>
+<head> 
+<meta charset="utf-8">
+<title>dannas.name</title> 
+<link rel="stylesheet" href="/stylesheets/site.css" type="text/css" /> 
+<link rel="alternate" type="application/rss+xml" title="RSS" href="/feed/index.html" /> 
+<link rel="shortcut icon" href="/favicon.ico" />
+</head> 
+
+<div id="header"> 
+<div style="float:left; margin-top:10px;"> 
+<a href="/"><img alt="dannas.name" src="/images/dannas_name.png" height="25" width="275"></a><br/> 
+<span class="description">by Daniel Näslund</span> 
+</div> 
+
+</div> <!-- header --> 
+
+<div id="container"> 
+<div class="blog"> 
+{{ content }}
+</div> <!-- blog -->
+</div> <!-- container -->
+ 
+<div id="links"> 
+<div class="sidetitle">Recently</div> 
+<div class="side"> 
+{% for post in site.posts limit:10 %}
+  <a href="{{ post.url }}">{{ post.title }}</a><br />
+{% endfor %}
+
+</div>
+
+<div class="side"> 
+
+<div class="syndicate">
+<a href="/feed/index.html" rel="alternate" type="application/rss+xml">
+<img src="/images/feed-icon16x16.png" width=16 height=16 alt="" style="vertical-align:middle;border:0"/>
+&nbsp;Subscribe in a reader </a> </div> <br/>
+</div> 
+
+</div> <!-- links -->

@@ -1,0 +1,9 @@
+---
+layout: default
+---
+
+<div class="blogbody"> 
+	<h2 class="title"><a href="{{ page.url }}" class="title-link">{{ page.title }}</a></h2> 
+	<h3 class="date">{{ page.date | date_to_string }}</h3> 
+{{ content }}
+</div>
