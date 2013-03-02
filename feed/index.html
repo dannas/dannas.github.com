@@ -13,7 +13,7 @@
     <rights>Copyright (c) 2012-2013 Daniel Näslund</rights>
     {% for post in site.posts limit:20 %}
     <entry>
-        <title></title>
+        <title>{{ post.title }}</title>
         <link href="http://dannas.name{{ post.url }}/"/>
         <updated>{{ post.date | date_to_xmlschema }}</updated>
         <id>http://dannas.name{{ post.url }}/</id>
