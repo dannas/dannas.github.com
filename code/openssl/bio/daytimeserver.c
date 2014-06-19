@@ -21,12 +21,17 @@ int main(int argc, char *argv[])
     if ((sock = BIO_new_accept("13")) == NULL)
         die();
 
+    // Listen.
+    if (BIO_do_accept(sock) <= 0)
+        die();
+
+    // Accept
     while (BIO_do_accept(sock)) {
         ticks = time(NULL);
         snprintf(buf, sizeof(buf), "%.24s\r\n", ctime(&ticks));
 
         conn = BIO_pop(sock);
-        if (BIO_puts(sock, buf) <= 0)
+        if (BIO_puts(conn, buf) <= 0)
             die();
         BIO_free(conn);
     }
