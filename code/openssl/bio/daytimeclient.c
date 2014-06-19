@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 
 	ERR_load_crypto_strings();
 
-    if ((sock = BIO_new_connect(argv[1])) == NULL)
+    if ((sock = BIO_new_connect("localhost:13")) == NULL)
         die();
 
     if ((out = BIO_new_fp(stdout, BIO_NOCLOSE)) == NULL)
