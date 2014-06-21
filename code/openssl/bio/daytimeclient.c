@@ -23,12 +23,12 @@ int main(int argc, char *argv[])
     if ((out = BIO_new_fp(stdout, BIO_NOCLOSE)) == NULL)
         die();
 
-    if ((n = BIO_read(sock, buf, sizeof(buf))) <= 0)
+    if ((n = BIO_read(sock, buf, sizeof(buf))) < 0)
         die();
 
     buf[n] = '\0';
 
-    if (BIO_puts(out, buf) <= 0)
+    if (BIO_puts(out, buf) < 0)
         die();
 
     return 0;
