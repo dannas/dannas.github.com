@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 
     // TODO(dannas): What is the purpose of BIO_should_io_special()? Why not
     // just use BIO_should_retry()?
-    if  ((ret = BIO_do_connect(sock)) != 1) {
+    if  ((ret = BIO_do_connect(sock)) < 1) {
         if (BIO_should_io_special(sock))
             ;
         else
@@ -53,14 +53,13 @@ int main(int argc, char *argv[])
     FD_SET(fd, &rset);
     wset = rset;
 
-    // TODO(dannas): Why check rset?
     if ((n = select(fd+1, &rset, &wset, NULL, NULL)) == -1) {
         die("select, %s", strerror(errno)); // TODO(dannas): check errno
     }
 
     if (FD_ISSET(fd, &rset) || FD_ISSET(fd, &wset)) {
         ret = BIO_do_connect(sock);
-        if (ret < 0)
+        if (ret <= 0)
             die("BIO_do_connect");
     } else {
         die("select returned, but no fd readable/writable");
