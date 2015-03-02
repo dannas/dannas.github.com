@@ -4,25 +4,21 @@ title: dannas
 ---
 
 {% for post in paginator.posts %}
-<div class="blogbody">
 	<h2 class="title"><a href="{{ post.url }}" class="title-link">{{ post.title }}</a></h2>
 	<h3 class="date">{{ post.date | date_to_string }}</h3>
 
     {{ post.content }}
 
-</div> <!-- blogbody -->
 {% endfor %}
 	
-<div class="footernav" style="font-size:120%; font-weight:bold;">
 {% if paginator.previous_page %}
     {% if paginator.previous_page == 1 %}
-        <div style="float:left;"><a href="/">&laquo; Read newer entries</a></div>
+        <a href="/">&laquo; Read newer entries</a>
     {% else %}
-        <div style="float:left;"><a href="/page{{ paginator.previous_page }}">&laquo; Read newer entries</a></div>
+        <a href="/page{{ paginator.previous_page }}">&laquo; Read newer entries</a>
     {% endif %}
 {% endif %}
 {% if paginator.next_page %}
-    <div style="float:right;"><a href="/page{{ paginator.next_page }}">Read older entries &raquo;</a></div>
+    <a href="/page{{ paginator.next_page }}">Read older entries &raquo;</a>
 {% endif %}
-</div>
 
