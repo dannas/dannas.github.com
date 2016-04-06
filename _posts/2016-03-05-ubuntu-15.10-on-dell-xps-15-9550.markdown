@@ -3,8 +3,6 @@ layout: post
 title: Ubuntu 15.10 on Dell XPS 15
 ---
 
-[ This post is WIP ]
-
 Buying a computer with the latest hardware can be a bit risky for a Linux user.
 The Dell XPS 15 9550 model is equipped with the latest Intel generation,
 Skylake; has a SSD that communicates over the new NVME, PCIe interface and on
@@ -29,7 +27,7 @@ battery time when used with the Intel graphics activated (more than five hours)
 and can be used with external monitors and can restart after being suspended.
 So far I've only connected one external monitor and I've only sparingly been
 running with the Nvida card activated since it consumes more power; roughly a
-battery time around five hours instead of five with the Intel graphics. 
+battery time around three hours.
 
 Below follows some notes about tweaks I've made to the Ubuntu desktop
 environment. In the past I've used the tiling window manager XMonad, but I
@@ -47,8 +45,8 @@ opening System Settings => Appearence => Behaviour and ticking in the Enable
 Virtual Desktops checkbox. It only has four desktops out of the box, but I've
 increased that to the maximum six by running these commands.
 
-    gsettings set org.compiz.core:/org/compiz/profiles/unity/plugins/core/ vsize 2
-    gsettings set org.compiz.core:/org/compiz/profiles/unity/plugins/core/ hsize 3
+    gsettings set org.compiz.core:/org/compiz/profiles/unity/plugins/core/ vsize 1
+    gsettings set org.compiz.core:/org/compiz/profiles/unity/plugins/core/ hsize 6
 
 The Dell XPS 15 9550 has a 4K monitor - the fonts and menus looks tiny, very
 tiny. To fix that I opened Settings Manager => Displays and adjusted the Scale
@@ -68,11 +66,18 @@ menu-button to ctrl. In earlier versions of Ubuntu, I've done that using the
 .Xmodmap file, but that one wasn' read by the X server in Ubuntu 15.10. Looks
 like Xmodmap has been superceeded by the XKB system. Searched around but didn't
 immediately figure out where to place the configuration directives, so I put
-them in `.xprofile`:
+them in `.profile`:
 
-    setxkbmap -option ctrl:meny_rctrl
-    setkxbmap -option caps:swapescape
+    setxkbmap -option altwin:ctrl_win
+    setxkbmap -option caps:swapescape
     setxkbmap -option terminate:ctrl_alt_bksp
+
+Gnome resets upon changes. Will this work?
+http://askubuntu.com/questions/363346/how-to-permanently-switch-caps-lock-and-esc
 
 I use gnome-terminal as my terminal emulator. It has builtin support for the
 Solarized colorscheme. I'm using the light theme as my default.
+
+Add myself to dialout group, in order to access the serialport
+
+    sudo usermod -a -G dialout $USER
