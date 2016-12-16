@@ -2,7 +2,7 @@
 
 ## 15 dec 2016
 Found Thomas Ptaceks [Application Security Reading
-List]:(https://www.amazon.com/gp/richpub/listmania/fullview/R2EN4JTQOCHNBA). A
+List](https://www.amazon.com/gp/richpub/listmania/fullview/R2EN4JTQOCHNBA). A
 few books that I have high thoughts of like C Programming interfaces, The
 Practice of Programming and Javascript - the Good Parts; and then a dozen books
 that were unknown to me. I've added TOASSA to my TODO-reading list. Reversing:
