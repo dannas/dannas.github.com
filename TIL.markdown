@@ -1,5 +1,23 @@
 # Today I've learned
 
+## 16 dec 2016
+I've had problems when simultaneously installing multilib and cross compilers;
+gcc-multilib installs a /usr/include/asm symlink that messes up the include
+path for cross compilers. Hence, the deb packages for the cross compilers
+conflicts with gcc-multilib. These things make me so tired. I just don't want
+to understand. I want it to work. Luckily enough, it turns out that x86 gcc has
+/usr/local/include as search path while the cross-compilers don't. So I
+installed a symlink from /usr/local/include/asm to
+/usr/include/x86_64-linux-gnu/asm.
+
+Managed to build the spidermonkey shell for x86, arm, x63 and arm64. Here are
+the configure commandlines:
+
+    PKG_CONFIG_LIBDIR=/usr/lib/pkgconfig CC="gcc -m32" CXX="g++ -m32" AR=ar ../configure --target=i686-pc-linux --enable-debug --disable-optimize --without-intl-api
+    AR=ar CC="gcc -m32" CXX="g++ -m32" ../configure --target=i686-pc-linux --enable-debug --disable-optimize --enable-simulator=arm --without-intl-api
+    ../configure --enable-debug --disable-optimize --without-intl-api
+    ../configure --enable-debug --disable-optimize --enable-simulator=arm64 --without-intl-api
+
 ## 15 dec 2016
 Found Thomas Ptaceks [Application Security Reading
 List](https://www.amazon.com/gp/richpub/listmania/fullview/R2EN4JTQOCHNBA). A
