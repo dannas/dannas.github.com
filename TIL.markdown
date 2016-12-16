@@ -11,7 +11,7 @@ I try to decipher Spidermonkey JIT code.
 
 ## 14 dec 2016
 You can build a [40-hw thread xeon machine](http://www.techspot.com/review/1218-affordable-40-thread-xeon-monster-pc/)
-for about $100. I have a 8-hw thread i7 Dell XPS 15 laptop. State of the art of
+for about $1000. I have a 8-hw thread i7 Dell XPS 15 laptop. State of the art of
 2016, but it still takes *a lot of time* to build the firefox source tree.
 Sooner or later, I will buy a PC with enough cores (though I've been saying
 that for at least five years without much happening).
