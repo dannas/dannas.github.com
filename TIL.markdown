@@ -1,5 +1,13 @@
 # Today I've learned
 
+## 17 dec 2016
+Spidermonkey uses the terms nunboxing and punboxing for referring to the
+javascript value representation. Rob Sayre has written a good
+[overview](https://evilpie.github.io/sayrer-fatval-backup/cache.aspx.htm) and
+Andy Wingo has written an article, [value representation in javascript
+implementations](https://wingolog.org/archives/2011/05/18/value-representation-in-javascript-implementations)
+that contrast the Spidermonkey implementation with other js engines.
+
 ## 16 dec 2016
 I've had problems when simultaneously installing multilib and cross compilers;
 gcc-multilib installs a /usr/include/asm symlink that messes up the include
