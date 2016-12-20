@@ -1,5 +1,11 @@
 # Today I've learned
 
+## 20 dec 2016
+Benchmarking problems. The cpu frequency varies wildly and I can't change
+governor or set a fixed frequency. This is because Linux uses the [pstate](https://wiki.archlinux.org/index.php/CPU_frequency_scaling#CPU_frequency_driver)
+driver on Intel Skylake and newer chips. Found a [redhat bug report](https://bugzilla.redhat.com/show_bug.cgi?id=1378529) that referenced a
+blog series, [Haypos notes on microbenchmarking](http://haypo-notes.readthedocs.io/microbenchmark.html)
+
 ## 17 dec 2016
 Spidermonkey uses the terms nunboxing and punboxing for referring to the
 javascript value representation. Rob Sayre has written a good
