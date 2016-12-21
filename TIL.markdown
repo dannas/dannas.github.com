@@ -1,5 +1,28 @@
 # Today I've learned
 
+## 21 dec
+Since Intel Sandy Bridge, there's a new cpu kernel driver, intel_pstate. The
+cpupower userspace tools do not work with that driver; you'll have to read and
+write to sysfs directly. You can't set a fixed frequency; for that you'd have
+to disable the intel_pstate driver from the kernel commandline.
+
+There's a [long Google+ thread](https://plus.google.com/+TheodoreTso/posts/2vEekAsG2QT)
+where Theodore Tso and Arjan van den Veen discuss how Intels p-state management works.
+
+I saw large variations when benchmarking cpu-bound wasm code with 1-10 seconds
+of runtime. Those went mostly away - range of measurements decreased by a 10x
+factor - when I disabled the turbo boost feature:
+
+    echo "1" | sudo tee /sys/devices/system/cpu/intel_pstate/no_turbo
+
+To inspect the current cpu frequency, this command can be used:
+
+    watch -d grep \"cpu MHz\" /proc/cpuinfo 
+
+The powersave governor (the default) can be set with this command
+
+    echo "powersave" | sudo tee /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor 
+
 ## 20 dec 2016
 Benchmarking problems. The cpu frequency varies wildly and I can't change
 governor or set a fixed frequency. This is because Linux uses the [pstate](https://wiki.archlinux.org/index.php/CPU_frequency_scaling#CPU_frequency_driver)
