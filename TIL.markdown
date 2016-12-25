@@ -1,6 +1,20 @@
 # Today I've learned
 
-## 21 dec
+## 23 dec 2016
+Finding a resource that lists most of the linux-related settings that I need to
+control before a benchmark hasn't been easy. But the CI tools for the Julia
+language has an wiki page
+[linuxtips.md](https://github.com/JuliaCI/BenchmarkTools.jl/blob/master/doc/linuxtips.md)
+that is very useful. Found two useful articles, [Robust benchmarking in noisy enviroments](https://arxiv.org/abs/1608.04295) and 
+[Rigorous benchmarking in reasonable time](https://kar.kent.ac.uk/33611/7/paper.pdf). 
+
+I did some experiments with the [box2d benchmark](https://github.com/joelgwebber/bench2d/) 
+compiled for WebAssembly in the [embenchen](https://github.com/kripken/embenchen) benchmark suite. It's
+supposed to stress floating point operations and is compute intensitive.
+Noticed that there are large variantions when running turbo boost was not
+disabled. But high loads was an even larger factor for large variance.
+
+## 21 dec 2016
 Since Intel Sandy Bridge, there's a new cpu kernel driver, intel_pstate. The
 cpupower userspace tools do not work with that driver; you'll have to read and
 write to sysfs directly. You can't set a fixed frequency; for that you'd have
