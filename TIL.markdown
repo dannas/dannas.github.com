@@ -1,5 +1,18 @@
 # Today I've learned
 
+## 25 dec 2016
+The AMD64 ABI uses rdi, rsi, rdx, rcx, r8, r9, xmm0-7 for passing function
+parameters. The Linux kernel uses the identical registers, but rcx is replaced
+by r10. Why? It's because [rcx is clobbered by the syscall 
+instruction](http://stackoverflow.com/questions/38577609/difference-in-abi-between-x86-64-linux-functions-and-syscalls)
+
+In the ARM instruction set, every instruction can be conditionally executed.
+That has been [removed in ARMv8](http://stackoverflow.com/questions/22168992/why-are-conditionally-executed-instructions-not-present-in-later-arm-instruction), 
+due to excessive code space usage. I'm looking at 
+[bug 1316822](https://bugzilla.mozilla.org/show_bug.cgi?id=1316822). Looks like
+there should be something equivalent to setcc. ARMv8 has cset. I wonder what
+ARMv7 uses?
+
 ## 23 dec 2016
 Finding a resource that lists most of the linux-related settings that I need to
 control before a benchmark hasn't been easy. But the CI tools for the Julia
