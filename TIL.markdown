@@ -1,5 +1,37 @@
 # Today I've learned
 
+## 27 dec 2016
+Counting leading and trailing zeroes can be done by specialised x86
+instructions. Bit-scan-reverse (bsr) counts leading zeroes.
+I extracted mozilla::Floorlog2 into a [standalone
+file](https://godbolt.org/g/5zR0Fr) and was surprised to find out to see that
+all the templates was compiled down into a bsr and a neg. Though I don't know
+what clang does; how come there's no subtract of 63 or 31?
+
+## 26 dec 2016
+Here's an example of conditional execution of instructions on ARM
+
+    int condSet(int cond, int a, int b) {
+        return cond ? a : b;
+    }
+
+Generates this code:
+
+            cmp     r0, #0
+            ite     ne          ; IfThenElse
+            movne   r0, r1
+            moveq   r0, r2
+            bx      lr          ; lr contains return address
+
+icc on x86-64 generates:
+
+        test      edi, edi
+        cmovne    edx, esi
+        mov       eax, edx
+        ret       
+
+ARM has published an [article series on conditional execution](https://www.community.arm.com/processors/b/blog/posts/condition-codes-3-conditional-execution-in-thumb-2)
+
 ## 25 dec 2016
 The AMD64 ABI uses rdi, rsi, rdx, rcx, r8, r9, xmm0-7 for passing function
 parameters. The Linux kernel uses the identical registers, but rcx is replaced
