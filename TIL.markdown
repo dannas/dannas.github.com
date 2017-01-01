@@ -1,5 +1,8 @@
 # Today I've learned
 
+## 30 dec 2016
+Division expressions with 1 as divisor [may be emitted by simple compilers](http://logs.glob.uno/?c=mozilla%23ionmonkey&s=30+Dec+2016&e=30+Dec+2016#c127480)
+
 ## 27 dec 2016
 Counting leading and trailing zeroes can be done by specialised x86
 instructions. Bit-scan-reverse (bsr) counts leading zeroes.
