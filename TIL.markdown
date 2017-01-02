@@ -1,5 +1,11 @@
 # Today I've learned
 
+## 1 jan 2017
+Made an experiment for determine how the  three compilers - icc, gcc and clang - (optimize multiplication by rhs constant](https://godbolt.org/g/LZpca2)
+They always convert multiplication by 2 to shifts as expected. For rhs < 10, they all generated add+shift. For rhs < 19, icc generates only add+shift 
+but gcc and clang makes exceptions for cases where there are >2 bit set in rhs. They all treat 7, 15, and 31 as shift+sub. For rhs > 33, they all generate 
+imul (except for the previously mentioned case, rhs is a multiple of 2)
+
 ## 30 dec 2016
 Division expressions with 1 as divisor [may be emitted by simple compilers](http://logs.glob.uno/?c=mozilla%23ionmonkey&s=30+Dec+2016&e=30+Dec+2016#c127480)
 
