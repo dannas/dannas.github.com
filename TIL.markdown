@@ -1,5 +1,13 @@
 # Today I've learned
 
+## 10 jan 2017
+The WasmExplorer has a query page. You can use this query for printing a
+histogram of constant args for i32.mul operations:
+
+    ;; The $ sigil refers to the current expression. You can access the |value| property to
+    ;; refer to its text value.
+    (i32.mul * (i32.const {histogram("A", parseInt($.value)) }))
+
 ## 1 jan 2017
 Made an experiment for determine how the  three compilers - icc, gcc and clang - [optimize multiplication by rhs constant](https://godbolt.org/g/LZpca2)
 They always convert multiplication by 2 to shifts as expected. For rhs < 10, they all generated add+shift. For rhs < 19, icc generates only add+shift 
