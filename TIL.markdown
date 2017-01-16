@@ -1,5 +1,20 @@
 # Today I've learned
 
+## 16 jan 2017
+[Almost all](https://en.wikipedia.org/wiki/Comparison_of_smartphones) high-end
+phones uses QualComm SoC's. To match the specfications of a modern smartphone,
+I need to have ~2GHz clock frequency and atleast 2GB DDR3 memory. The 2016
+phones uses ARMv8 cores, but the older are on ARMv7. I want to buy a dev board
+for running the spidermonkey test suite. Looks like Odroid-C2 gives the best
+performance/price ratio.
+
+## 12 jan 2017
+Watched first half of Cliff Clicks presentation about modern hardware. 
+
+## 11 jan 2017
+Gdb can call functions but it can't deal with [converting const char* to const string&](http://stackoverflow.com/questions/16734783/in-gdb-i-can-call-some-class-functions-but-others-cannot-be-resolved-why),
+it needs the arguments to be of the exact right type. Gdb doesn't understand default arguments either.
+
 ## 10 jan 2017
 The WasmExplorer has a query page. You can use this query for printing a
 histogram of constant args for i32.mul operations:
