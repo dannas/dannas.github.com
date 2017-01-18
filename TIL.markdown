@@ -1,5 +1,11 @@
 # Today I've learned
 
+## 18 jan 2017
+Wrestling with the syntax of wast; the S-expression textual format for wasm
+programs. I'm trying to simplify the generation of wasm jump tables through the
+br_table opcode. Was a little heureka moment when I finally figured out that
+labels for the block statement refers to the end of the block, not the beginning.
+
 ## 16 jan 2017
 [Almost all](https://en.wikipedia.org/wiki/Comparison_of_smartphones) high-end
 phones uses QualComm SoC's. To match the specfications of a modern smartphone,
