@@ -1,5 +1,11 @@
 # Today I've learned
 
+## 19 jan 2017
+Made some [experiments](https://godbolt.org/g/sQETrj) with how C++ compilers
+optimize switch statements. I'm starting to get the hang of how br_table is
+generated. But I still don't understand what bug1316804 is about. What is the
+"cleanup" that we should avoid?
+
 ## 18 jan 2017
 Wrestling with the syntax of wast; the S-expression textual format for wasm
 programs. I'm trying to simplify the generation of wasm jump tables through the
