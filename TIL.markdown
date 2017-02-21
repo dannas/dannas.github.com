@@ -1,5 +1,24 @@
 # Today I've learned
 
+## 21 feb 2017
+Troubleshooted a wifi performance bug and learnt a few things about the
+structure of wifi drivers. They can either have a software MAC layer or let the
+firmware in the device handle the MAC layer. For the former, there's a mac80211
+framework in the kernel. Access to the driver by userspace can either be
+through the data path (regular sockets) or control path (netlink sockets). For
+the later there's a cfg80211 framework in the kernel and on top of that sits
+yet another framework for dealing with netlink communication, nl80211.
+
+
+## 31 jan 2017
+For a long time, I've struggled with NetworkManager on my Ubuntu laptops. I
+want to use two ethernet-interfaces where one should be sharing the internet
+access and must use a specified ip address range. Today I found that there is a
+ip4.addresses configuration directive; if I specify an ip address (not a range,
+just an address) then I can have a shared connection that uses my preferred
+address range. For more information see this 
+[askubuntu post](http://askubuntu.com/questions/844913/how-to-control-ip-ranges-of-network-managers-hotspots)
+
 ## 19 jan 2017
 Made some [experiments](https://godbolt.org/g/sQETrj) with how C++ compilers
 optimize switch statements. I'm starting to get the hang of how br_table is
