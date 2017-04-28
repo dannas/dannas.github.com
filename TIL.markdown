@@ -1,5 +1,59 @@
 # Today I've learned
 
+## 28 apr 2017
+An empty std::unordered_map takes up 128 bytes. An empty std::map takes 16.
+Bret Wilson [wrote](https://groups.google.com/a/chromium.org/forum/#!topic/chromium-dev/rdxOHKzQmRY):
+
+    A lot of code uses std::unordered_map because "hash tables are
+    faster." But it has high memory overhead for small sizes which most maps
+    are. It's also slightly slower than std::map to insert into, has poor cache
+    coherency (every insert is a malloc), and isn't as much faster at querying over
+    the alternatives than you might expect (it can even be slower!).
+
+Chromium has a document that discusses what map container to use. It can be
+found [here](https://chromium.googlesource.com/chromium/src/+/master/base/containers/README.md).
+
+## 20 mar 2017
+The Linux kernel splits ethernet drivers into MAC drivers and PHY drivers.
+There is a fixed-PHY driver that can be used when communicating with network
+equipment that don't support MDIO, the management interface inside MII.
+
+## 6 mar 2017
+You can trigger the 'pure virtual method called' error even if you're not
+calling virtual method from the base class constructor or destructor. Here's a
+proof of concept.
+
+    #include <pthread.h>
+    #include <unistd.h>
+    struct base {
+        virtual ~base() { sleep(1); }
+        virtual void func() = 0;
+    };
+
+    struct derived : public base {
+        virtual ~derived()  {}
+        virtual void func() {}
+    };
+
+    static void *thread_func(void* v) {
+        base *b = reinterpret_cast<base*>(v);
+        while (true) b->func();
+    }
+    int main() {
+        pthread_t t;
+        base *b = new derived();
+        pthread_create(&t, 0, thread_func, b);
+        delete b;
+    }
+
+It introduces a race between the updating of the vtable funtion pointers during
+destruction and the calling of those methods.
+
+I listened to some more lectures from Barbara Oakleys MOOC "Learning how to
+learn". She talks about how interleaving different course sections produces
+better results than just reading them block by block - and she has published
+results to back up her claims.
+
 ## 21 feb 2017
 Troubleshooted a wifi performance bug and learnt a few things about the
 structure of wifi drivers. They can either have a software MAC layer or let the
