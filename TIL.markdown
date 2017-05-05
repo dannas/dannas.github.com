@@ -1,5 +1,12 @@
 # Today I've learned
 
+## 5 may 2017
+Switch debouncing times can vary widely. Jack Ganssle has written [a guide to
+debouncing](http://www.ganssle.com/debouncing.htm) where he measured the
+bouncing times for 18 different switches. He made 300 presses on each! The
+median value was 1.5ms, but I should consult the datasheet for my switch to
+be sure. There were outliers that took tenths of ms!
+
 ## 28 apr 2017
 An empty std::unordered_map takes up 128 bytes. An empty std::map takes 16.
 Bret Wilson [wrote](https://groups.google.com/a/chromium.org/forum/#!topic/chromium-dev/rdxOHKzQmRY):
