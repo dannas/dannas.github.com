@@ -1,5 +1,13 @@
 # Today I've learned
 
+## 9 may 2017
+
+Peripheral registers for acknowledging, say, interrupts can come in three
+forms: As one single register that can be modified and read; as a pair of
+write+read registers or as a register where the read has side effects. I wonder
+how the later is done on the flip-flop level? How can reading from a register
+cause side effects?
+
 ## 5 may 2017
 Switch debouncing times can vary widely. Jack Ganssle has written [a guide to
 debouncing](http://www.ganssle.com/debouncing.htm) where he measured the
