@@ -1,5 +1,21 @@
 # Today I've learned
 
+## 11 may 2017
+I learned a hack for determining endianess from the musl libc:
+
+    bool isLittleEndian() {
+        union {int i; char c; } u = { 1 };
+        return u.c == 1;
+    }
+
+I made good use of [RFC 826](https://tools.ietf.org/html/rfc826) for arp,
+[RFC 791](https://tools.ietf.org/html/rfc791) for ip and
+[RFC 792](https://tools.ietf.org/html/rfc792) for icmp. I wish I had those
+protocol headers memorized.
+
+I also stumbled upon a TCP/IP tutorial published as [RFC 1180](https://tools.ietf.org/html/rfc1180).
+I wish I had that document when I started learning networking.
+
 ## 10 may 2017
 Found Sami Niranens excellent blog serie [Let's code a TCP/IP stack](http://www.saminiir.com/lets-code-tcp-ip-stack-1-ethernet-arp/)
 It succinctly describes the main parts needed to implement the lower parts:
