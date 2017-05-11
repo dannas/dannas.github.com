@@ -1,7 +1,41 @@
 # Today I've learned
 
-## 9 may 2017
+## 10 may 2017
+Found Sami Niranens excellent blog serie [Let's code a TCP/IP stack](http://www.saminiir.com/lets-code-tcp-ip-stack-1-ethernet-arp/)
+It succinctly describes the main parts needed to implement the lower parts:
+ethernet, arp, icmp, ip. I managed to write a working ArpSend method. One
+hurdle for me is deciding how to write the buffer API for the stack. Linux and
+the BSD Unix derivates all have a skbuff structure that holds a buffer that is
+passed between the layers. But how do I choose which buffer to write to and how
+do I pass those buffers to the DMA engine?
 
+I read Jason Robert Carrey Patterssons article [Modern microprocessors - a 90
+minute guide](http://www.lighterra.com/papers/modernmicroprocessors/). It
+describes superscalar and pipelined architectures but goes into a lot more
+detail than the resources I've read before. Some takeaways: Each pipeline step
+in a processor consists of combinatorical logic and a latch. The clock drives
+the signals through the grid to the next latch. There are also some bypass paths
+that provides the results from the execution units before they've been written
+back to memory. The pipeline depth can vary a lot. 
+
+As for issue width, it's not the same as the number of functional units. That
+was a surprise to me! Issue width describes the typical number of instructions
+scheduled per clock. It can't always be one ALU, one FPU and one branch for
+instance. With more functional units it gets easier to saturate the scheduler.
+
+I've been confused about what instruction latencies refers to in the cpu
+reference manuals. It's the number of cycles needed before the result is
+available for use. So for instance in a simple 5 stage pipeline. It might take
+five clocks to get an add instruction from fetched to retired, but due to the bypass
+stage, it's immediately available to the execution units after the execution step.
+
+The article describes three walls that limits the performance a cpu can
+achieve: the power wall, the memory wall and the ILP wall. I hadn't thought
+about the latter before. Due to load latencies, branch misprediction and
+dependencies between instructions there are limits to how much instruction
+level parallelism  that can be squeezed out of a cpu.
+
+## 9 may 2017
 Peripheral registers for acknowledging, say, interrupts can come in three
 forms: As one single register that can be modified and read; as a pair of
 write+read registers or as a register where the read has side effects. I wonder
