@@ -1,5 +1,24 @@
 # Today I've learned
 
+## 12 may 2017
+David P. Reed wrote in an [email to the end2end-interrest mailing list](http://www.postel.org/pipermail/end2end-interest/2005-February/004616.html)
+that the pseudo header used for calculating the TCP and UDP checksums exists
+for historical reasons. In the beginning, TCP and IP was one  monolithic
+protocol. The source and destination address are part of the meaning of the
+UDP/TCP frame. To avoid duplication, the psuedo header was invented. 
+
+There was also an idea that TCP could add end-to-end encryption:
+
+> The plan was to leave the SA and DA in the clear, but 
+> encrypt the rest of the TCP payload, including the checksum.  This would 
+> protect against a man-n-the-middle attack that delivered valid packets 
+> with an incorrect source address, etc. (yes, to be truly reliable, we 
+> would have had to use a DSA instead of the current checksum).
+
+> This was a careful design decision, wrecked irrevocably by the 
+> terrorists who invented NAT (which doesn't allow end--to-end encryption, 
+> because NAT is inherently a "man-in-the-middle" attack!).
+
 ## 11 may 2017
 I learned a hack for determining endianess from the musl libc:
 
