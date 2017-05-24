@@ -1,5 +1,26 @@
 # Today I've learned
 
+## 24 may 2017
+I got curious about how the IP blocks in a SoC communicates. Here's what I
+found:
+
+System on a chips (SoC) contains microcontrollers, timing sources, memory,
+external interfaces, peripherals, voltage regulators and analog interfaces.
+These blocks are connected through a bus. Arteris has published the article
+[the SoC Interconnect Fabric](http://www.arteris.com/blog/bid/99797/The-SoC-Interconnect-Fabric-A-Brief-History)
+that describes how that bus operates. In the beginning was the AMBA bus where
+one bus master at a time could communicate. An arbiter gives exclusive access
+to one master at a time. But the arbiters became a bottleneck. Then crossbar
+switches was invented. Multiple master can access the bus at the same time, but
+it requires wide datapaths. When the number of masters grew, bridges were added
+to the cross bar switches. Eventually that didn't scale enough. Then packet-based
+Network On Chip (NoC) started to be used. Transactions are sent as serialized
+data on one wire.
+
+As for the AMBA bus, it typically consists of an AHB bus for high speed
+communications and and APB bus for peripherals. The specifications can be
+downloaded from the ARM website and is no longer than 20 pages or so.
+
 ## 12 may 2017
 David P. Reed wrote in an [email to the end2end-interrest mailing list](http://www.postel.org/pipermail/end2end-interest/2005-February/004616.html)
 that the pseudo header used for calculating the TCP and UDP checksums exists
