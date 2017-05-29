@@ -1,5 +1,22 @@
 # Today I've learned
 
+## 29 may 2017
+Started reading up on how do use UDP as transport layer for a protocol.
+[RFC 5404](https://tools.ietf.org/html/rfc5405) provides guidelines for
+application protocol designers. That's a start. Glenn Fiedler, author of Gaffer
+On Games, has an article series titled [Game Networking](http://gafferongames.com/networking-for-game-programmers/)
+and another called [Building a Game Network Protocol](http://gafferongames.com/building-a-game-network-protocol/).
+Plan 9 has a protocol called RUDP whose implementation can be found in
+[sys/src/9/ip/rudp.c](http://plan9.bell-labs.com/sources/plan9/sys/src/9/ip/rudp.c). Wikipedia has 
+a [comparison of Transport Layer Protocols](https://en.wikipedia.org/wiki/Transport_layer#Comparison_of_transport_layer_protocols)
+that gives a good "map of the land". Google has the experimental protocol [QUIC](https://en.wikipedia.org/wiki/QUIC) that uses
+UDP but provide most of the functionality of TCP but with reduced latency.
+
+Finally, Ilya Grigorik's book High Performance Browser Networking contains a
+chapter [Building Blocks of UDP](https://hpbn.co/building-blocks-of-udp/) that
+gives a good overview of what services UDP lacks and how to deal with NAT
+traversal.
+
 ## 24 may 2017
 I got curious about how the IP blocks in a SoC communicates. Here's what I
 found:
