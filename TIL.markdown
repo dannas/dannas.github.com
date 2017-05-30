@@ -1,5 +1,19 @@
 # Today I've learned
 
+## 30 may 2017
+Large packets needs to be fragmented on the IP level to not exceed the Maximal
+Transfer Unit (MTU). The Internet Protocol header has fields to mark a packet
+as fragmented and the algorithm for reassembly is outlined in [RFC 815](https://tools.ietf.org/html/rfc815).
+But fragmented packets are non-desirable for higher protocols such as TCP,
+since one lost packet leads to lots of retransmissions. To remedy that, [RFC 1191](https://tools.ietf.org/html/rfc1191)
+describes an algorithm for doing Path MTU discovery when initializing a connection. The Internet Protocol
+sends a packet with the MTU of it's closest neighbour and then adjusts the MTU in response to ICMP packets
+triggered from hosts with smaller MTUs. Unfortunately, some IP hosts filters out ICMP traffic due to perceived
+security problems. That problem is referred to as Black Hole Detection. One way around it, is to rely on the MSS
+field of the TCP header, but that breaks the end-to-end principle of the TCP/IP design. See [RFC 2923](https://tools.ietf.org/html/rfc2923)
+for a discussion of TCP problems with the MTU Patch discovery algorithm.
+
+
 ## 29 may 2017
 Started reading up on how do use UDP as transport layer for a protocol.
 [RFC 5404](https://tools.ietf.org/html/rfc5405) provides guidelines for
