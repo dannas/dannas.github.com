@@ -2,14 +2,16 @@
 
 ## 31 may 2017
 I found a [HN conversations about DJB's optimizing compilers talk](https://news.ycombinator.com/item?id=9397169)
-where Mike Pall, Josh Haberman and DannyBee (Compiler Lead at Google). Danny argued that compilers do before
-optimizations that humans would miss and that with proper PGO-support it will always outperform a human. Mike and Josh
-raised concerns.
+where Mike Pall, Josh Haberman and DannyBee (Compiler Lead at Google) discusses the limits of what optimizing compilers
+can achieve. Danny argued that compilers do perform optimizations that humans
+would miss and that with proper PGO-support it will always outperform a human.
+Mike and Josh raised concerns.
 
-Over the last couple of days I've revisited what I learnt in my networking courses at the University. I've realized
+Over the last couple of days I've revisited what I learned in my networking courses at the University. I've realized
 that the RFC's are more readable than the textbooks I was forced to read back then. Today I discovered 
 [RFC 1122 - Requirements for Internet Hosts](https://tools.ietf.org/html/rfc1122) which defines how the different
-parts of the TCP/IP protocol suite fits together. I also found [RFC 793 - Transmission Control Protocol], that
+parts of the TCP/IP protocol suite fits together. I also found 
+[RFC 793 - Transmission Control Protocol](https://tools.ietf.org/html/rfc793), that
 specifies TCP as it is used today (though there are a couple of follow-ups that
 address optimizations and security hardening, TCP is still focus of much research).
 
