@@ -1,5 +1,37 @@
 # Today I've learned
 
+## 1 june 2017
+More networking hazzle. I've been troubleshooting long reconnect times for a
+service that lost internet access.  I was under the impression that TCP
+Keep-Alive messages were sprinkled throughout the conversation between two
+peers. That's not the case. They are only sent when the connection has been idle
+for some time. The default value is 2 hours! 
+
+Through /proc/sys/net/ipv4, you can control time before first keep-alive probe
+is sent (tcp_keepalive_time), number of probes (tcp_keepalive_probes) and
+interval between each probe (tcp_keepalive_intvl). Those can also be accessed
+programmatically as socket options.
+
+I thought that if I set those keepalive settings low enough, then I would
+detect connection drops timely. But what if we're constantly sending data?
+Then, the keepalive mechanism won't trigger. Instead it's up to the
+retransmission timer to detect when the connection is dropped. The number of
+retransmits are controlled by tcp_retries2, which defaults to 15. The exact
+interval between each retry depends on the RTT and the exponential backoff
+algorithm. Details for all Linux sysctl settings can be found in man tcp.
+
+TCP uses Automatic Repeat reQuests (ARQ) for transmission control. I stumbled upon
+[RFC 3366 - Advice to link designers on link Automatic Repeat reQuest](https://tools.ietf.org/html/rfc3366)
+that discusses the tradoffs when implementing some form of sliding window control for telling the transmitter
+which (if any) packets needs to be retransmitted.
+
+Netstat has an --timer option (-o) that displays a column on the form timername
+(a/b/c). I've never really understood what those fields meant. Albert Zhangs blog post 
+[Description of netstat timers](http://vzkernel.blogspot.se/2012/09/description-of-netstat-timers.html)
+dives into the kernel details. The types of timers are on, off, timewait and keepalive. The first field
+inside the parenthesis is the remaining time for the timer, the second is the number of times the timer
+has triggered and the last is the number of unanswered zero window probes (only for connected sockets).
+
 ## 31 may 2017
 I found a [HN conversations about DJB's optimizing compilers talk](https://news.ycombinator.com/item?id=9397169)
 where Mike Pall, Josh Haberman and DannyBee (Compiler Lead at Google) discusses the limits of what optimizing compilers
