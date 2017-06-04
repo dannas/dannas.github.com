@@ -1,5 +1,10 @@
 # Today I've learned
 
+## 2 june 2017
+Tcpdump and Wireshark displays relative sequence numbers after the SYN packet
+in a TCP connection. The acknowledgement number is always one past the last
+sequence number received.
+
 ## 1 june 2017
 More networking hazzle. I've been troubleshooting long reconnect times for a
 service that lost internet access.  I was under the impression that TCP
