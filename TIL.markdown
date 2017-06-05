@@ -1,5 +1,26 @@
 # Today I've learned
 
+## 5 june 2017
+Tcpdump doesn't understand ip fragmentation. If you want to filter on for example udp traffic to port 7,
+then...
+
+    udp and port 12345 
+
+..Won't show fragmented packets. Only the first fragment will have the udp
+header, and tcpdump operates below the IP layer that does the reassembly. But tcpdump allows us to match
+against different fields in the IP header, so we can do
+
+    (udp and port 12345) or (ip[6] & 0xe0 == 0x40) or (ip[6] & 0xe0 == 0x00 && ip[6:2] & 0x1f != 0)
+
+The ip[6] & 0xe0 == 0x40 expression matches the More Fragments flag that is
+sent when IP fragmentation occurs. But the last frame doesn't have that flag
+set. In order to match the last frame as well, we mask out the offset part and
+checks if it's non-zero, indicating a fragmented packet.
+
+I've always been intimitaded by complex pcap filters that relies on offsets in
+the headers and masking out flags. Now I can do it as well!  Wireshark has
+logic for reassembling IP fragments for us. Use that if possible.
+
 ## 2 june 2017
 Tcpdump and Wireshark displays relative sequence numbers after the SYN packet
 in a TCP connection. The acknowledgement number is always one past the last
