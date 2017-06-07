@@ -1,5 +1,13 @@
 # Today I've learned
 
+## 7 june 2017
+Wrote a string class and had several bugs related to off by ones when accessing
+the buf, cap and len member variables. The problem was that I needed the string
+to be nullterminated for data(), but didn't make it clear if that byte was
+included in the length or capacity. I should have created a 
+[checkRep helper method](http://pgbovine.net/programming-with-rep-invariants.htm)
+right from the start.
+
 ## 5 june 2017
 Tcpdump doesn't understand ip fragmentation. If you want to filter on for example udp traffic to port 7,
 then...
