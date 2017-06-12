@@ -1,5 +1,50 @@
 # Today I've learned
 
+## 12 june 2017
+A while back I watched 
+[Chandler Carruth's CppCon 2015 presentation Tuning C++: Benchmarks, and CPUs, and Compilers! Oh My!](https://www.youtube.com/watch?v=nXaxk27zwlk).
+He showed code similar to this:
+
+    static void BM_vector_push_back(benchmark::State& state) {
+      while (state.KeepRunning()) {
+        std::vector<int> v;
+        v.reserve(1);
+        benchmark::DoNotOptimize(v.data()); // Allow v.data() to be clobbered.
+        v.push_back(42);
+        benchmark::ClobberMemory(); // Force 42 to be written to memory.
+      }
+    }
+
+I didn't understand why the ClobberMemory() call would be neccessary after the
+DoNotOptimize. Today I found a 
+[stackoverflow question Preventing Compiler Optimization While Benchmarking](https://stackoverflow.com/questions/40122141/preventing-compiler-optimizations-while-benchmarking).
+I interpret the answer as that there are two different optimizationn strategies
+that come to play here, dead code elimination and dead store elimination. 
+
+The scalar replacement of aggregates (SRA) will turn the vector into a len and
+ptr field. Then each of those two are subject to Dead Code Elimination (DCE).
+The DoNotOptimize() call creates an artifical use of the ptr that is returned
+from data(). So the calls above can't be eliminated.
+
+The push_back call will store a value, but the compiler will eliminate that store
+if there is no path in the program that could lead to a load. That's why we need
+ClobberMemory at the end. It tells the compiler to treat all memory as aliased.
+Then the store in push_back must be emitted.
+
+Another perspective: A conceptual model for how the compiler treats memory is a
+connected graph of blocks that begins with a root pointer. DoNotOptimize
+registers the ptr with that graph. Newly allocated memory are not registered in
+that graph; that happens upon the first store. That's why we need the
+DoNotOptimize(v.data()) call after v.reserve().
+
+## 8 june 2017
+Started writing a small javascript pomodoro timer SPA. Had to read up on how to
+use timers, how to maintain state (classes and closures) and how to do integer
+arithmetic (numbers are floating point in Javascript). Noticed that there's no
+sprintf or String.format function. This line creates a "%02d" string.
+
+    var str = ('0' + num).slice(-2);
+
 ## 7 june 2017
 Wrote a string class and had several bugs related to off by ones when accessing
 the buf, cap and len member variables. The problem was that I needed the string
