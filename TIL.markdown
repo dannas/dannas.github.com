@@ -1,5 +1,54 @@
 # Today I've learned
 
+## 14 june 2017
+For micro benchmarks you sometimes want to run small parts of code in a timer
+loop. But if the result is unused, then the computation may be optimized out by
+DCE. One way around that is to put the computatation in a function in another
+translation unit, but then you record the overhead of the function call as well.
+
+Another solution is to tell the compiler that the value can't be optimized out.
+Declaring a variable volatile is one such solution, but it forces the variable to be
+allocated in memory. 
+
+A third solution is to use inline asm. The compiler can not optimize away a
+store inside inline asm. But then there's the question, whether the variable is
+allocated in memory or placed in a register. You can use the "r" constraint for
+storing the variable in a register. That leads to the least pertuberation of
+the generated code, but it may be so that it still allows the compiler to
+reorder statements. Using a memory clobber forces is an effective compiler fence.
+
+Here is an [example program](https://godbolt.org/g/iAEDdb) showing all three
+different ways to force the compiler to not optimize away  variable.
+
+    template <typename T>
+    void doNotOptimizeScalar(T val) {
+      asm volatile("" : : "r"(val));
+    }
+
+    template <typename T>
+    void doNotOptimize(T const &val) {
+      asm volatile("" : : "m"(val) : "memory");
+    }
+
+    int f(int x, int y) {
+      int sum = x  + y;
+      doNotOptimizeScalar(sum);
+    }
+
+    int g(int x, int y) {
+      volatile int sum = x + y;
+    }
+
+    int h(int x, int y) {
+      int sum = x + y;
+      doNotOptimize(&sum);
+    }
+
+Facebooks folly library uses template metaprogramming for overloading
+doNotOptimizeAway to either place a variable in a register or in memory
+depending on the size and type of the variable. I wrote [a program that uses
+doNotOptimizeAway template specialization](https://godbolt.org/g/C8OvGm).
+
 ## 12 june 2017
 A while back I watched 
 [Chandler Carruth's CppCon 2015 presentation Tuning C++: Benchmarks, and CPUs, and Compilers! Oh My!](https://www.youtube.com/watch?v=nXaxk27zwlk).
