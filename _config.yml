@@ -1,2 +1,5 @@
 paginate: 10
 exclude: ['code']
+
+gems: 
+    - jekyll-paginate
