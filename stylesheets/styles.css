@@ -1,20 +1,17 @@
 @import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
 
 * {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-  padding: 0;
+html {
   font:17px/25px Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight:400;
   color: black
 }
 
-div.wrapper {
+body {
   max-width:880px;
   margin: 48px auto; 
   padding: 0 40px;
@@ -32,7 +29,7 @@ section {
 }
 
 div.navigation {
-    float: right
+  float: right
 }
 
 footer {
@@ -40,6 +37,24 @@ footer {
 }
 
 header, div.navigation  { 
-    height: 25px; 
-    margin-bottom: 42px; 
+  height: 25px; 
+  margin-bottom: 42px; 
+}
+
+pre, code {
+  font-family: 'Inconsolata', monospace;
+}
+
+pre {
+  margin-bottom: 13px;
+  margin-left: 4em;
+  margin-right: 4em;
+  padding: 5px;
+}
+
+code {
+  padding-bottom: 1px;
+  padding-top: 1px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
