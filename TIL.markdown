@@ -1,5 +1,44 @@
 # Today I've learned
 
+## 13 july 2017
+I wrote a string class to learn the internals of std::string. I had to write
+many operator overloads. There are about 40 operators in C++! I learned that
+operator + is often implemented in terms of operator +=; <=, >, >= are
+implemented in terms of <; != calls ==; the postfix ++ operator calls the
+prefix ++ operator.
+
+This can get somewhat repeative. [Boosts operators library](http://www.boost.org/doc/libs/1_55_0/libs/utility/operators.htm)
+can help with filling in some of these boilerplate operator overloads. If you write a class like this:
+
+    class MyInt
+        : boost::operators<MyInt>
+    {
+        bool operator<(const MyInt& x) const;
+        bool operator==(const MyInt& x) const;
+        MyInt& operator+=(const MyInt& x);
+        MyInt& operator-=(const MyInt& x);
+        MyInt& operator*=(const MyInt& x);
+        MyInt& operator/=(const MyInt& x);
+        MyInt& operator%=(const MyInt& x);
+        MyInt& operator|=(const MyInt& x);
+        MyInt& operator&=(const MyInt& x);
+        MyInt& operator^=(const MyInt& x);
+        MyInt& operator++();
+        MyInt& operator--();
+    };
+
+then the operators<> template adds more than a dozen additional operators,
+such as operator>, <=, >=, and (binary) +. Two-argument forms of the templates
+are also provided to allow interaction with other types.
+
+## 15 june 2017
+A CPU processes data in word-sized chunks. "Wordsize" is the size of general
+registers. 
+
+https://www.kernel.org/doc/Documentation/unaligned-memory-access.txt
+http://lwip.wikia.com/wiki/Porting_for_an_OS
+https://blog.regehr.org/archives/1307
+
 ## 14 june 2017
 For micro benchmarks you sometimes want to run small parts of code in a timer
 loop. But if the result is unused, then the computation may be optimized out by
