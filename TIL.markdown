@@ -31,6 +31,11 @@ then the operators<> template adds more than a dozen additional operators,
 such as operator>, <=, >=, and (binary) +. Two-argument forms of the templates
 are also provided to allow interaction with other types.
 
+A string class provides random access iterators. There's about 20 operators
+that needs to be overloaded for such an iterator. [Boosts iterator
+library](http://www.boost.org/doc/libs/1_55_0/libs/iterator/doc/index.html)
+provides the iterator_facade which simplifies the task of creating iterators.
+
 ## 15 june 2017
 A CPU processes data in word-sized chunks. "Wordsize" is the size of general
 registers. 
