@@ -1,9 +1,22 @@
 @import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
 
-* {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
+/*
+ * TODO(dannas): Adjust font size and spacing with recommendations from http://typographyhandbook.com/ and
+ * http://practicaltypography.com/
+ * https://prowebtype.com/
+ * http://webtypography.net/toc/
+ */
+
+/* 
+ * Apply a natural box layout model to all elements, but allowing components to change. 
+ * https://www.paulirish.com/2012/box-sizing-border-box-ftw/
+ * */
+html {
   box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
 }
 
 html {
