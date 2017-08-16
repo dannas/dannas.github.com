@@ -1,5 +1,17 @@
 # Today I've learned
 
+## 16 august 2017
+I learned a few things about common typedefs for integer types in C/C++ today
+
+    * size_t is for sizes: strlen, malloc..
+    * ssize_t is for returning sizes and negative values to indicate errors.
+    * off_t is for offsets in files: lseek.
+    * ptrdiff_t is for distance between pointers.
+    * clock_t is for clock ticks.
+    * time_t is for time in seconds.
+
+Some more typedefs can be found in [systypes.h](http://pubs.opengroup.org/onlinepubs/007908775/xsh/systypes.h.html)
+
 ## 13 july 2017
 I wrote a string class to learn the internals of std::string. I had to write
 many operator overloads. There are about 40 operators in C++! I learned that
