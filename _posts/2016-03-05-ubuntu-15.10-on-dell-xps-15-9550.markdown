@@ -81,3 +81,10 @@ Solarized colorscheme. I'm using the light theme as my default.
 Add myself to dialout group, in order to access the serialport
 
     sudo usermod -a -G dialout $USER
+
+Installed sysstat and activated sar by editing /etc/default/sysstat
+    
+    ENABLED="true"
+
+Disable notify-od software updates available
+https://askubuntu.com/questions/773874/disable-gnome-softwares-notification-bubble-notify-osd-for-available-updates
