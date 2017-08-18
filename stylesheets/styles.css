@@ -54,6 +54,16 @@ header, div.navigation  {
   margin-bottom: 42px; 
 }
 
+div.navigation ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+div.navigation ul li {
+    margin: 0 2px;
+    display: inline;
+
 pre, code {
   font-family: 'Inconsolata', monospace;
 }
