@@ -1,5 +1,72 @@
 # Today I've learned
 
+## 23 august 2017
+The absolute value of a signed integer is not defined for the minimal value it
+can take. For uint8_t the range of possible values are [-128, 127]. Note the
+assymetry. Taking abs(-128) can not yield 128 since it's out of range.
+
+The compilers clang, icc and gcc compiles an abs call to [different
+assembly](https://godbolt.org/g/92SkLp):
+
+    icc_abs(int):
+        mov       eax, edi
+        cdq
+        xor       edi, edx
+        sub       edi, edx
+        mov       eax, edi
+        ret
+
+    gcc_abs(int):
+        mov edx, edi
+        mov eax, edi
+        sar edx, 31
+        xor eax, edx
+        sub eax, edx
+        ret
+
+    clang_abs(int):
+      mov eax, edi
+      neg eax
+      cmovl eax, edi
+      ret
+
+## 22 august 2017
+A gpio pin on most microprocessors is internally connected to two resistors and
+two transistors. The distinction betwen the different input and output types
+has always escaped me but thanks to Muhammed Saadis blogpost [How to use
+digital input/output](http://aimagin.com/blog/how-to-use-digital-input-output/)
+I finally understand the differences.
+
+* *pull-up input* A resistor is connected to Vdd.
+* *pull-down input* A resistor is connected to Gnd (Vss).
+* *floating input* Both internal resistors are disconnected. Useful for
+  circuits with external pull-up or pull-down resistors. Useful for reading
+  analogue values.
+
+* *push-pull output* A transistor is connected to Vdd and another is connected
+  to Gnd (Vss). When needing output status 0, the system will open the Vdd
+  transistor and close the Vss transistor. Visa-versa for output status 1. With
+  push-pull the load can either be connected to the external Vss in which case
+  the processor is sourcing current (active low). If the load is connected to
+  external Gnd (Vdd) then the system is driving the load.
+
+So for inputs there's a pin configuration distinction between active high and
+active low. For outputs the are pin configured in the same way but higher
+layers of the software stack needs to keep track of whether the signal is
+active high or active low.
+
+* *open-drain output* The Vdd transistor is disabled, only the Vss transistor
+  can be opened or closed. Here the processor can only drive the signal low.
+  Useful for or-logic where multiple chips are connected like on an i2c bus.
+
+## 21 august 2017
+The gnu linker generates secions called .glue7 and .glue7t. Those provides code
+for interworking between thumb format and regular ARM instructions [according
+to Ian Lance Taylor]( https://gcc.gnu.org/ml/gcc-help/2009-03/msg00306.html).
+
+The .vfp11_veneer are for the vector floating point coprocessor. The .v4_bx
+section is for a patch of the ARMv4 core to support the BX instruction.
+
 ## 16 august 2017
 I learned a few things about common typedefs for integer types in C/C++ today
 
