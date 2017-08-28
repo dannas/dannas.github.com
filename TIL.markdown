@@ -1,3 +1,7 @@
+---
+layout: default
+title: TIL - Today I've Learned
+---
 # Today I've learned
 
 ## 23 august 2017
