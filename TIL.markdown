@@ -4,6 +4,68 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 28 august 2017
+The Webassembly VM is a structured stack machine. It has control flow
+instructions that closely mimics the if/while/switch statements of high level
+languages. Using a structured stack machine makes it easier to verify the code
+in an interpreter or baseline compiler.
+
+A br, br_if or br_table is only allowed to jump to a containing block or loop.
+
+A continue statement is emitted with a br to a loop; a break statement is a br
+to the containing block.
+
+The stack height after a br, br_if and br_table is the height of the stack at
+the beginning of the surrounding block. In a loop, the stack is popped to the
+size upon entry on each iteration.
+
+Webassembly producers generate many locals. This effectively means that
+Webassembly has an infinite number of registers, and can choose to spill values
+as it sees fit. The interaction between the structured stack machine and the
+internal stack of the VM is something that has had me scratching my head for
+quite some time. The SM baseline compiler adjust the execution stack when
+branching according to what was written above, but it also syncs the compiler
+stack that keeps track of which values resides in registers and which are
+spilled.
+
+Here's an example of how a switch statement may be compiled into Wast:
+    
+    switch(x) {
+        case 0:
+            // do A
+            break;
+        case 1:
+            // do B
+            break;
+        default:
+            // do C
+            break;
+    }
+
+    block $exit $A block $B block $default
+        get_local $x
+        i32.const 2
+        i32.gt_u
+        br_if $default
+
+        get_local $x
+        br_table $A $B $default
+    end $default
+        ;; do C
+        br $exit
+    end $B
+        ;; do B
+        br $exit
+    end $A
+        ;; do A
+        br $exit
+    end $exit
+
+
+It provides
+instructions that closely map the if/while/switch statements in high-level
+languages.
+
 ## 23 august 2017
 The absolute value of a signed integer is not defined for the minimal value it
 can take. For uint8_t the range of possible values are [-128, 127]. Note the
