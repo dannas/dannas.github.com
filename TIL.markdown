@@ -4,6 +4,22 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 29 august 2017
+Awk has range patterns. If you try to use identical markers for the beginning
+and end of a text, then awk will only print the markers.
+
+    $ cat > foo.txt
+    <<<
+    a
+    <<<
+    ^D
+    $ awk '/<<</,/<<</' foo.txt
+    <<<
+    <<<
+
+You need to use different markers for begin and end of range or replace the use
+of range patterns with [one pattern and a state flag](https://www.gnu.org/software/gawk/manual/html_node/Ranges.html)
+
 ## 28 august 2017
 The Webassembly VM is a structured stack machine. It has control flow
 instructions that closely mimics the if/while/switch statements of high level
