@@ -4,6 +4,47 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 1 august 2017
+The System V AMD64 calling convention passes arguments to function in these registers:
+
+    rdi, rsi, rdx, rcx, r8, r9
+
+I've wondered why exactly those registers are choosen and why they're choosen
+in that particular order. Peter Cordes [dug deep in the AMD64 mailing list
+archive](https://stackoverflow.com/a/35619528/582010) and summarized the decision as:
+
+* the register usage should be optimized for code density. Registers that needs
+  REX prefix, takes more code space and should be avoided.
+* rdi and rsi was choosen since they are used often in string operations which
+  come up often in real life code.
+* registers with special purposes are not call preserved.
+* rcx is placed late in the sequence since it's used commonly for special
+  purposes and it can't be used for syscalls - they want the syscall paramters
+  to match the libc parameters.
+
+
+## 31 august 2017
+Yasm (which uses the NASM syntax as default) does not allow reserved words in labels.
+
+        global add
+    add:
+        add edi, esi
+        mov eax, edi
+        ret
+
+The error:
+
+    $ yasm -felf64 add.asm -Worphan-labels
+    add.asm:3: error: unexpected `:' after instruction
+
+Fix by prepending a '$' symbol before the label.
+
+        global add
+    $add:
+        add edi, esi
+        mov eax, edi
+        ret
+
 ## 29 august 2017
 Awk has range patterns. If you try to use identical markers for the beginning
 and end of a text, then awk will only print the markers.
