@@ -29,6 +29,14 @@ body {
   line-height: 1.4;
 }
 
+@media (max-width: 1024px) {
+  body {
+    padding-left: 0;
+    padding-right: 0;
+    max-width: none;
+  }
+}
+
 header {
   float:left;
 }
@@ -61,11 +69,15 @@ div.navigation ul li {
     margin-left: 1rem;
     margin-right: 1rem;
     display: inline;
+}
 
-pre, code {
-  font-family: monospace;
+pre {
   margin-bottom: 1.75rem;
   margin-left: 4rem;
   margin-right: 4rem;
+}
+
+code {
+  font-family: monospace;
 }
 
