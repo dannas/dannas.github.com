@@ -4,6 +4,40 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 16 october 2017
+A short summary of the  I2C protocol: I2c messages consists of address frames
+and data frames. A transaction is started by the master by pulling SDA low
+while keeping SCL high. After the address bits have been sent, the sender waits
+for the receiver to pull SDA low to indicate that the message was succesfully
+received. After the address frame has been transmitted, data can be sent. If
+it's the master or slave that sends, depends on the R/W bit inn the address
+frame. The end of the message is signalled with a "stop condition"; A zero to
+one transition takes place on SDA after the  zero to one transition on SCL,
+with SCL remaining high.
+
+## 11 august 2017
+With two screens attached to my Dell XPS 15 9550 laptop, the screens goes blank
+after less than one minute of inactivity. An Internet search suggested that
+[Display Power Management](https://wiki.archlinux.org/index.php/Display_Power_Management_Signaling)
+might be the cause. I inspected the current state with ```qset -q```. It said that DPMS was activated, but
+all timeouts were set to zero. Still, I disabled dpms with ```qset -dpms``` and
+got rid of the problems. This problem did not occur yesterday. Are software updates the cause? A timing issue? 
+I had the screen cables plugged in at boot today. Yesterday I inserted them after I had logged in.
+
+## 10 august 2017
+I've finally bought a USB3 adapter cable for Displayport. My Dell XPS 15 has
+only one display output (a HDMI) so for over a year, I've had a second monitor
+on my desk that hasn't been used.
+
+Tmux uses panes, sessions, windows. If you attach multiple tmux clients to the
+same session, then they will share window layout and current window. You might want
+to display different things... Can be donw with:
+
+    tmux new-session -t 'original session name or number'
+
+```setw -g aggressive-resize on````is useful for preventing two open sessions
+from syncing their sizes.
+
 ## 1 august 2017
 The System V AMD64 calling convention passes arguments to function in these registers:
 
