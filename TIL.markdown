@@ -4,6 +4,42 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 9 november 2017
+Remembering the calling convetion for SysV ABI can be difficult.
+Here's a useful mnemonic found on the [CS:App blog](http://csappbook.blogspot.se/2015/08/dianes-silk-dress-costs-89.html)
+
+    %rdi:   Diane's
+    %rsi:   Silk
+    %rdx:   dress
+    %rcx:   costs
+    %r8:    $8
+    %r9:    9
+
+## 30 november 2017
+Subfields can be extracted with split() in awk
+
+    echo "/path/to/foo 12K -rwx" | awk '{split($1, subfields, "/"); print(subfields[3], $2, $3); }'
+    foo 12K -rwx
+
+Printing the N last fields on a line can be done with
+    
+    echo "a b c d" | awk '{ print($(NF-2), $(NF-1), $(NF)); }'
+    b c d
+
+www.cs.princeton.edu/courses/archive/spring17/cos333/tutorials.html
+
+## 28 november 2017
+The joinreg in the Firefox wasm baseline compiler is used for transferring
+values out of blocks.
+
+## 27 november 2017
+I've never thought too much about the range different integer and float types.
+
+    int32_t can hold about 2 billion positive or negative values.
+    int64_t can hold about 2 billion billion positive or negative values
+    float can hold about 10^38 positive or negative values
+    double can hold about 10^308 positive or negative values.
+
 ## 16 october 2017
 A short summary of the  I2C protocol: I2c messages consists of address frames
 and data frames. A transaction is started by the master by pulling SDA low
@@ -15,7 +51,7 @@ frame. The end of the message is signalled with a "stop condition"; A zero to
 one transition takes place on SDA after the  zero to one transition on SCL,
 with SCL remaining high.
 
-## 11 august 2017
+## 11 october 2017
 With two screens attached to my Dell XPS 15 9550 laptop, the screens goes blank
 after less than one minute of inactivity. An Internet search suggested that
 [Display Power Management](https://wiki.archlinux.org/index.php/Display_Power_Management_Signaling)
@@ -24,7 +60,7 @@ all timeouts were set to zero. Still, I disabled dpms with ```qset -dpms``` and
 got rid of the problems. This problem did not occur yesterday. Are software updates the cause? A timing issue? 
 I had the screen cables plugged in at boot today. Yesterday I inserted them after I had logged in.
 
-## 10 august 2017
+## 10 october 2017
 I've finally bought a USB3 adapter cable for Displayport. My Dell XPS 15 has
 only one display output (a HDMI) so for over a year, I've had a second monitor
 on my desk that hasn't been used.
