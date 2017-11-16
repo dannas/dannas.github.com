@@ -4,6 +4,38 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 16 november 2017
+Watched Louis Brandys talk Curiously Recurring C++ Bugs at Facebook, from
+CppCon 2017. He says that std::map::operator[] is the number one newbies bug.
+The problem is that if you're reading from a map with operator[] and pass in a
+non-existing key, then that key will be created with a default value.
+
+Other languages has something similar to a get_or_default() method, but that
+would allow passing in a temporary for the default argument, you can't take a
+reference to a temp value, so we'd need to return by value, but that is more
+costly. So, looks like we're stuck were we are.
+
+Yesterday, I needed to dereference labels in a bytecode compiler I'm writing.
+There were OP_LABEL opcodes but their operands were positions in the bytecode,
+not the generated machine code. I solved that neatly by relying on
+std::map::operator[] to create missing values.
+
+    map<BytecodePos, Label> labels;
+    switch (opcode) {
+    ...
+    CASE OP_LABEL:
+        masm.bind(labels[pos]);
+    CASE OP_BR:
+        addr = code[pos++];
+        masm.jump(labels[addr]);
+    ...
+    }
+
+## 10 november 2017
+https://linux-audit.com/elf-binaries-on-linux-understanding-and-analysis/
+pax-utils
+    symtree
+    ldtree
 ## 9 november 2017
 Remembering the calling convetion for SysV ABI can be difficult.
 Here's a useful mnemonic found on the [CS:App blog](http://csappbook.blogspot.se/2015/08/dianes-silk-dress-costs-89.html)
