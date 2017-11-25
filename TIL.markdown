@@ -4,6 +4,46 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 25 november 2017
+I ran into trouble when I tried to modify the calling convention of my toy VM
+interpreter. Tried inspecting the stack in gdb, but that didn't give me any
+insights. Enabled debug logging of interpreted instructions and current value
+stack. Then I almost immediately found my problems. A debugger gives me state
+inspection, but debug logs give me state over time. Maybe I just need to practice
+my gdb skills?
+
+The problem was an off-by-one in the stack data structure for tracking args and
+locals relative to the frame pointer. Adding asserts helped me pinpoint the problem.
+Asserts and debug logs, is what I usually cling to when troubleshooting.
+
+## 24 november 2017
+When I added a compiler for my toy VM, in addition to my preexisting
+interpreter, I realized that I needed to modify the calling convention and how
+I store arguments and locals. Like a P-code VM, the machine uses a single stack
+for callstack and operand stack. When I interpret the code, I can more or less
+choose the calling convention to my own liking, but when I emit machine code,
+I'm restricted to a schema that uses the call instruction and places the return
+address after the arguments. I could have used hacks like exploiting
+RIP-relative addressing with lea rax, [rip], but all other JIT compilers I've seen
+uses the call instruction.
+
+## 23 november 2017
+For my p-code look-alike toy virtual machine I've started adding a JIT compiler
+in addition to the existing interpreter. While doing so I realized that for
+the compiler I'll have to maintain a list of locations to patch up forward
+calls and forward branches. The destination operand of the calls/jmp encodes
+the bytecode position, not the machine code position. To solve that I see three
+possibilities:
+
+1. Record jump/call targets on a first scan. Then scan again and patch the
+jump/call operands.
+2. Introduce bytecode function opcodes. Backpatch the jump/call
+operands once the function has been emitted.
+3. Annotate the bytecode with blocks to delimit functions and jumps. That's
+what's done for Webassembly. It limits the scope of where jump/call operands can point.
+
+I choose option 2 for my toy OS.
+
 ## 16 november 2017
 Watched Louis Brandys talk Curiously Recurring C++ Bugs at Facebook, from
 CppCon 2017. He says that std::map::operator[] is the number one newbies bug.
