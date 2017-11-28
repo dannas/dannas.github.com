@@ -4,6 +4,20 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 28 november 2017
+When I modified the calling convention for the p-code compiler, I once again
+ran into trouble. The idea was to pass all arguments on the stack and return
+them on the stack as well. But since I hadn't yet added support for generating
+movs with displacement, I couldn't place the return value below the return
+address, so instead I passed it in rax and pushed rax after the call
+instruction. Or, I thought I had the push(rax) after the call instruction. In
+reality it was before and it took me some time to figure out why the function
+did not return.
+
+I found the GEF project which provides a customized python file that uses the
+gdb python bindings. With that I could inspect the stack and quickly found my
+problem. I wonder how to do that in plain gdb?
+
 ## 25 november 2017
 I ran into trouble when I tried to modify the calling convention of my toy VM
 interpreter. Tried inspecting the stack in gdb, but that didn't give me any
