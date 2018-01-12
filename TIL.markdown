@@ -4,6 +4,63 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 12 january 2018
+Iterating over a binary search tree is easy, just use a recursive function for
+visiting each element.
+
+    void visit(node)
+        if (!node)
+            return
+        visit(node->left)
+        use(node)
+        visit(node->right)
+
+But what if you want to create an iterator for your tree? You have to know
+where you are when you're returning, so that the next invocation knows where to
+continue. Here's three different solutions
+
+* Traverse the tree and store the nodes in a queue that you then return one by one.
+* Use a stack for keeping track of which nodes you've visited
+* Store the latest visited node and do a search for the next node that is larger.
+* Store the latest visited node and walk the tree from there.
+* Mark each visited node and keep track of current position. TAOCP Volume 1,
+  2.3.1, exercise 21 has some tricks that I belive are in that direction. I'll
+  need to  investigate that further.
+
+## 11 january 2018
+On the stm32f1 microprocessor, and most other ones as well I assume, different
+IP-blocks have assigned default pins for interfacing with the outside world.
+There can be alternatives to the default pins and those can be specified using
+a register. In the case of stm32f1, that register is named AF Remap and Debug
+I/O Configuration Register (AFIO_MAPR).
+
+I wanted to generate a PWM signal on a specific pin, but that pin could not be
+connected to any of the timer blocks, so I had to resort to using a timer block
+and manually toggling the pin from there.
+
+## 1 december 2017
+I've started participating in the [Advent of Code](adventofcode.com) coding
+challenge. I've created a IPython notebook with the same layout as Peter Norvig
+used for his 2016 AoC solutions. Peter will be participating this year as well.
+My plan is to solve each days problems and then compare my solutions to his and
+record any insights I gain here.
+
+Today we were asked to find the sum of all digits that match the next one. I
+figured that it meant iterating using pairs, and came up with this function:
+
+    def pairs(seq):
+        return zip(seq[:-1], seq[1:])
+
+But Peter took advantage of Pythons ability to use negative indexes.
+
+    sum(a[i] for i in range(N) if a[i] ==  a[i-1])
+
+He used it for part two as well where we were asked to compare values at half
+the distance.
+
+    N = len(a)
+    sum(a[i] for i in range(N) if a[i] ==  a[i-N//2])
+
 ## 28 november 2017
 When I modified the calling convention for the p-code compiler, I once again
 ran into trouble. The idea was to pass all arguments on the stack and return
