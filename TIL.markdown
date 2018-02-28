@@ -4,6 +4,16 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 21 february 2018
+I've used substraction when comparing integers in the past. I learned it from
+Robert Sedgewicks Algorithms book (I belive, I might misremember). But [Ted
+Unangst points out that overflow will give incorrect
+results](https://www.tedunangst.com/flak/post/subtraction-is-not-comparison)
+
+## 13 january 2018
+C and C++ doesn't have negative integer literals. An expression like `-42` is
+treated as unary minus applied to the literal `42`.
+
 ## 12 january 2018
 Iterating over a binary search tree is easy, just use a recursive function for
 visiting each element.
