@@ -4,6 +4,11 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 28 february 2018
+[The grammar for Webassemblys text format](https://webassembly.github.io/spec/core/text/values.html#integers) 
+says that hexadecimal constants can have a '-' prefix and include '_' chars as
+separators. That doesn't work in Firefox.
+
 ## 21 february 2018
 I've used substraction when comparing integers in the past. I learned it from
 Robert Sedgewicks Algorithms book (I belive, I might misremember). But [Ted
