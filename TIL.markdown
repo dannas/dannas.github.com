@@ -4,6 +4,43 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 2 mars 2018
+C and C++ don't initialize local variables automatically. That can lead to hard
+to trace down bugs. Fortunately the compiler can assist in finding expressions
+that access uninitialized variables. I've noticed when building Firefox that an
+optimized build triggers lots of false positives. Why is that? Why can't the
+compiler distinguish between real uninitialized variable accesses and benign cases?
+
+Engineering a Compiler, section 8.6 says that the fundamental problem is that
+data-flow analysis of the Control Flow Graph (CFG) expects all paths through the
+graph to be reachable, which is not true in practice. So the compiler knows too
+little about the program to avoid false positives. Here is an example from that chapter:
+
+    int main() {
+        int i, n, s;
+        scanf("%d", &n);
+        i = 1;
+        while (i<=n) {
+            if (i==1)
+                s = 0;  
+            // Some compilers will flag this as an uninitialized read of |s|
+            s = s + i++;
+        }
+    }
+
+Another problem is when a value is available through another name and
+initialized through that name. For instance this code from the book, might
+trigger a false positive:
+
+    int x;
+    int* p = &x
+    *p = 42;
+    x = x +1
+
+I tried running both these examples in Compiler Explorer, but I didn't get any
+false positives.
+
+
 ## 28 february 2018
 [The grammar for Webassemblys text format](https://webassembly.github.io/spec/core/text/values.html#integers) 
 says that hexadecimal constants can have a '-' prefix and include '_' chars as
