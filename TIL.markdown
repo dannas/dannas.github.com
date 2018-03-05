@@ -4,6 +4,43 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 5 mars 2018
+I read a newly published article by Fabien Giesen called [A whirlwind
+introduction to dataflow
+graphs](https://fgiesen.wordpress.com/2018/03/05/a-whirlwind-introduction-to-dataflow-graphs/).
+It describes a conceptual model for how to reason about performance for inner
+loops, also called compute kernels. Fabien makes the simplifying assumption
+that all ALU operations takes 1 cycle and that loads and stores takes 4
+cycles. Here's a simple sum function for an array of integers:
+
+    loop:
+        rCurInt = load(rCurPtr)             // Load
+        rCurPtr = rCurPtr + 8               // Advance
+        rSum = rSum + rCurInt               // Sum
+        if rCurPtr != rEndPtr goto loop     // Done?
+
+A dataflow diagram is a graph of the dependencies between instructions. A
+diagram for the kernel above shows that the Advance step is the
+critical dependency chain. The Load has a latency of 4 cycles, but the compiler and
+CPU can schedule around that and fill the slots with other instructions. Each
+cycle, 4 instructions can execute. On a platform with enough execution units,
+the limitation will be the data dependency. On a platform with fewer units, we
+say that the kernel is throughput bound.
+
+Here's another kernel that computes the sum over a linked list. Note that it
+has two loads. Here the dependency chain will be four cycles long and that's
+worse. Fabien says that people often points out that linked lists has poor
+locality and causes lots of cache misses, but that's beside the main point, he
+says. Cache misses is not a problem if we can find meaningful work to do in
+the meantime. But since we're blocked on loading the next node, we can't
+really make progress.
+
+    loop:
+        rCurInt = load(rCurPtr)             // LoadInt
+        rSum = rSum + rCurInt               // Sum
+        rCurPtr = load(rCurPtr+8)           // LoadNext
+        if rCurPtr != rEndPtr goto loop     // Done?
+
 ## 2 mars 2018
 C and C++ don't initialize local variables automatically. That can lead to hard
 to trace down bugs. Fortunately the compiler can assist in finding expressions
