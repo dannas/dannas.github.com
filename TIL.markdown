@@ -4,6 +4,44 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 6 mars 2018
+Alexander Gromnitsky has written [Notes for new Make
+users](http://gromnitsky.users.sourceforge.net/articles/notes-for-new-make-users/).
+That article and Chris Wellons [A tutorial on Portable
+Makefiles](http://nullprogram.com/blog/2017/08/20/) gives good advice on
+writing a make based buildsystem. I mostly end up using CMake for its IDE
+integration and dependency detection, but I have an affection for make, kind of
+how I feel about awk: a small well designed tool that only does the absolute
+neccessary.
+
+Here's a Makefile skeleton that auto-detects dependencies and creates the build
+directory if it doesn't exist. I really wish that make could do something more
+clever about missing directories.
+
+And I just learned that the autovars are visual mnemonics: $@ looks like a
+target, a ring with a bullseye. $< is pointing left, so it is the first
+prerequisite. $^ is like a horizontal bracket that groups all prerequisites.
+
+    FLAGS += -MMD -MP
+    CFLAGS += $(FLAGS)
+    CXXFLAGS += $(FLAGS)
+
+    OBJECTS += $(patsubst %, build/%.o, $(SOURCES))
+    DEPS = $(patsubst %, build/%.d, $(SOURCES))
+
+    $(TARGET): $(OBJECTS)
+    	$(CXX) -o $@ $^ $(LDFLAGS)
+
+    -include $(DEPS)
+
+    build/%.c.o: %.c
+    	@mkdir -p $(@D)
+    	$(CC) $(CFLAGS) -c -o $@ $<
+
+    build/%.cpp.o: %.cpp
+    	@mkdir -p $(@D)
+    	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
 ## 5 mars 2018
 I read a newly published article by Fabien Giesen called [A whirlwind
 introduction to dataflow
