@@ -4,6 +4,37 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 7 mars 2018
+In the past I've used ~0 for getting the complement for an integer. An integer
+literal without suffix has type int so the size if guarenteed to be
+sizeof(int). But if the expression where we want to use the commplement has
+another type than int, then we may be in trouble. ~(0 & val) solves that, where
+val is a variable that has the same size as our expression.
+
+I implemented arithmetic shifts in terms of logical shifts and visa versa. I
+was glad to see that my sra function used the same formula as one of the
+formulas given in Hank Warrens book Hackers Delight.
+
+    int32_t sra(int32_t x, int n) {
+        // Logical shift.
+        int32_t srl = (u32)x >> n;
+
+        uint32_t msb = (u32)x >> 31;
+
+        // Set to all ones if msb=1.
+        int32_t leading = 0 - msb;
+
+        // Mask for upper k bits.
+        leading = leading << (31-k);
+
+        return leading | srl;
+    }
+
+This can be written succintly as below, which is formula 4 from chapter 2.7
+Shift right signed from unsigned.
+
+        return (u >> n) | (-(u >> 31) >> (31 - n))
+
 ## 6 mars 2018
 Alexander Gromnitsky has written [Notes for new Make
 users](http://gromnitsky.users.sourceforge.net/articles/notes-for-new-make-users/).
