@@ -4,6 +4,22 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 12 mars 2018
+This question got me stomped: Given an array of integer dubletts find the
+single integer that  is not a dublett. Do it in linear time and without extra
+storage. I had to look up the  solution: You keep a running xor result. Every
+dublett will cancel itself and in the end only the bits of the requested
+integer will remain set.
+
+    int findSingle(int* nums, int N) {
+        int x = 0;
+        for (int i = 0; i < N; ++i)
+            x ^= nums[i];
+        return x;
+    }
+
+It feels like magic to me. How can I prove to myself that this algorithm works?
+
 ## 7 mars 2018
 In the past I've used ~0 for getting the complement for an integer. An integer
 literal without suffix has type int so the size if guarenteed to be
