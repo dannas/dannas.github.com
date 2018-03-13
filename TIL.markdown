@@ -4,6 +4,20 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 13 mars 2018
+I watched Per Vognsens second postcast about his just started Bitewise project
+where he aims to create an early 90's computer from scratch and write all the
+software for it. He will start out by creating his own systems language, a
+spin-off from C with some nuiances removed. His pet peeves about C are
+the same as mine: the operator presedence for bitwise operations are wrong;
+there is too much undefined behaviour; the lack of a module system and
+reliance on the textual replacement by the preprocessor; the complicated
+declarator syntax; too much implicit conversions are allowed; the cast
+operators are too allowing. 
+
+I'd add the limited functionality of the typedef keyword to that list.
+
+
 ## 12 mars 2018
 This question got me stomped: Given an array of integer dubletts find the
 single integer that  is not a dublett. Do it in linear time and without extra
