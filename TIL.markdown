@@ -4,6 +4,26 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 23 mars 2018
+I tried to implement stretchy buffers from scratch. These are the problems I
+encountered:
+
+* I didn't parenthesize (b) = buf__grow((b), (n), sizeof(*b)) when it was used
+  as the second expression in a ternary expression. It triggered a compilation
+  error about non-existing lvalue for buf__push(): the b expression was parsed
+  as belonging to the ternary expression.
+* I returned new_hdr instead of new_hdr->buf from buf__grow().
+* I didn't initialize new_hdr->len and new_hdr->cap correctly.
+* You can't use macros like offsetof as QtCreator watch expressions
+* QtCreator choked on *(BufHdr)((uintptr_t)vals - 16). You can't dereference a
+  cast.
+* I initialized new_hdr->len to len instead of 0. The len should be
+  incremented in  buf_push.
+* I called realloc with buf as argument instead of buf__hdr(buf).
+
+That's for 30 lines of code, with a simplified capacity calculation compared
+to the original. It's humbling to see on display how many errors my code had.
+
 ## 21 mars 2018
 I watched Per Vognsens recorded stream for bitwise [Day 5: Ion Parser/AST Code
 Review (March 21,
