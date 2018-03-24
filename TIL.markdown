@@ -4,6 +4,30 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 21 mars 2018
+I watched Per Vognsens recorded stream for bitwise [Day 5: Ion Parser/AST Code
+Review (March 21,
+2018)](https://github.com/pervognsen/bitwise/blob/master/notes/streams.md#day-5-ion-parserast-code-review-march-21-2018).
+In there he shows how to split out a large C files into several included
+C-files. It makes for rapid grouping into physical C files but you have to
+mark those C-files as headers in the build system and you have to keep track
+of include dependencies in the main file.
+
+I found that reading Pers ast-code helped me internalizing some parts of the C
+syntax, that I've learned by osmosis but never thought more explicitely about.
+The C language syntax is composed of declaration, statements and expressions.
+The declaration includes type specifiers, optional type qualifiers and
+optional storage class specifiers. 
+
+Thankfully the ion language that Per is building doesn't use C's declarators
+syntax. But even so, it still feels like a little too many concepts if I want
+to shadow-implement parts of ion as I follow along. I think I'll start with an
+expression language, then build on it by introducing identifiers and assign
+statements, then I'll introduce selection statements and iteration statements.
+
+The code is pretty repetetive. It would be interresting to compare with the
+corresponding ML code (which supports tagged unions natively) would look like.
+
 ## 20 mars 2018
 F6 can be used for iterating over elements in one of QtCreators output panes
 (compile issues, search results,...). Ctrl-F10 is used for "Run to Line" in
