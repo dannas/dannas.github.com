@@ -4,6 +4,115 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 20 mars 2018
+F6 can be used for iterating over elements in one of QtCreators output panes
+(compile issues, search results,...). Ctrl-F10 is used for "Run to Line" in
+debugger mode. The debugger key bindings are the same as those found in Visual
+Studio. F9 is used for toggling breakpoints.
+
+I watched Per Vognsens recorded stream for bitwise [Day 4: Lexer, Parser, AST
+marathon](https://github.com/pervognsen/bitwise/blob/master/notes/streams.md#day-4-lexer-parser-ast-marathon-march-19-2018).
+I'm somewhat overwhelmed by that large set of AST data types that are
+neccessary. One neat thing though is how he handles the expression types: Per
+makes an Expr discriminated union that can handle int, unary, binary, ternary
+and sizeof expressions (and some more). Seems like a good factoring to me.
+
+Speaking of factoring. This was the first time that I realized that the word
+factor used in this context, resembles the meaning of the factor operation for
+simplifying expressions in math. All this years, I've been reading about
+'refactoring' and have never given a thought to what that word really
+represents.
+
+Per had a _NONE field for each kind enum that was placed first. So I zero
+initialized variable would have a sensible default value. I'll try to use that
+in the future.
+
+## 19 mars 2018
+The C99 standard introduces a new syntax for initializing and reassignig
+structs and unions that I've heard of but haven't ever used before now. Here's a
+definition of a struct Foo:
+
+    typedef struct Foo {
+        int val;
+        char c;
+    } Foo;
+
+You can initialize it with a brace enclosed comma separated list of
+initializers for each member:
+
+    Foo foo = {1, 'a'};
+
+But that gets tedious when you have many members, and for unions, you can
+only initialize the first member. With designated initializers you can
+initialize them in your own choosen order and the explicit designator makes
+the code more readable:
+
+    Foo foo = {.val = 1, .c = 'a'};
+
+For reassigning the value of foo to new values, in C89, you would have to do
+an explicit memset and assign each member separately which makes for very
+"flat" repetetive code.
+
+    memset(&foo, 0, sizeof(foo));
+    foo.val = 2;
+    foo.c = 'b';
+
+With C99 compound literals we can instead write the above as this one-liner:
+
+    foo = (Foo){.val = 2, .c = 'b'};
+
+The array initialization has been improved as well with expliciti designators.
+Here's a small example for mapping enum values to a string description.
+
+    enum { RED, GREEN, BLUE };
+    char *colors[] = {
+        [RED] = "red",
+        [GREEN] = "green",
+        [BLUE] = "blue"
+    }
+
+## 15 mars 2018
+I watched Per Vognsens recorded stream for bitwise [Day 3: More Programming &
+Parsing (March 15,
+2018)](https://github.com/pervognsen/bitwise/blob/master/notes/streams.md#day-3-more-programming--parsing-march-15-2018).
+He starts off by listing the only three data structures that you'll need when
+programming in C:
+
+* stretchy buffers
+* pointer/uintptr to hash tables (uintptr -> uintptr key-value mapping)
+* string intern table
+
+He does the string interning by keeping a list of Intern structs that each
+points to a canonical version of a string.
+
+    typedef struct Intern {
+        size_t len;
+        char *str;
+    } Intern;
+
+Per mentioned that you can't use a flexible array member for str: it would
+allow compact storage of the string in consecutive memory, but once the
+storage is full and we reallocate we loose the property that the pointers are
+stable.
+
+Per went through parsing expressions by creating separate production rules for
+each presedence level. The code is clean, but there will be lots of recursive
+calls to resolve each expression type. How can I avoid all those recursive
+calls?
+
+## 14 mars 2018
+The C standard, $6.7.2.1 p16 says that an empty array member placed last in a
+struct can be used is called a "flexible array member". The size of the struct
+is as if the array had not existed (except for maybe some additional padding).
+But the array can be accessed through the '.' or '->' operator and would then
+behave as if the array takes up remaining place of the storage allocated. Neat!
+
+QtCreator has the same keybinding, Ctrl+F10, as Visual Studio for "running
+until cursor". Very useful for inspecting loops. I experimented with adding a
+few watch variables to QtCreator. I hadn't done that before. I also noted that
+-Og does not preserve macros. I had a hard time trying to place a breakpoint
+inside a loop to a stretchy buffer buf_push() call.
+
 ## 13 mars 2018
 I watched Per Vognsens second postcast about his just started Bitewise project
 where he aims to create an early 90's computer from scratch and write all the
