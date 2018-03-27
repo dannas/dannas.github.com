@@ -4,6 +4,53 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 26 mars 2018
+I wrote a small string interning module. It consists of less than 30 lines of
+code. The idea is that we keep a global list of known strings. Once a string
+has been registered, it can be compared to other interned strings by a simple
+pointer comparison. Each interned string has a length and a pointer to the
+string.
+
+    typedef struct InternStr {
+        size_t len;
+        char *str;
+    } InternStr;
+
+They are stored in a global stretchy buffer.
+
+    static InternStr *interns;
+
+Upon calling str_intern(), we first compare the string to all existing
+strings, and return the the pointer of a match. If no match is found , then we
+allocate memory for the string and append a InternStr object to the list of
+interns.
+
+I have never used string interning in C before. I'm surprised how little code
+was required. But I wonder if it's feasible to use a global list of
+intern-strings or if they should  be partitioned into several areanas?
+
+## 25 mars 2018
+Fabien Giesen describes in [an aside for a gist note](
+https://gist.github.com/anonymous/2edc9e9d52a93c126ff486cfb4a2c65b) how he
+views error handling. He points out that it may be beneficial to only provide a
+small set of error codes and that the selection of those should be dictated by
+the question "what should I do next?". E.g. there are many ways a network
+connection can fail but providing a giant taxonomy of error codes won't help
+the calling code to decide what to do. Logging should be as specific as
+possible but the users of an API just needs to decide what to do next.
+
+Fabien wrote [in a blog comment](
+http://cbloomrants.blogspot.se/2010/06/06-07-10-exceptions.html?showComment=1275971007229#c4849051810850075252)
+that having stack undwinding do the cleanup on errors is a bad design that
+costs lots of resources and is hard to control.
+
+One problem I've had with error handling is that it introduces a lot of noise
+that hides the main computation in the source code. Fabien suggests in the
+article [Buffer Centric I/O](https://fgiesen.wordpress.com/2011/11/21/buffer-centric-io/) that you can
+use something similar to the null object pattern that just does nothing after
+the first error has been encountered. Rob Pike describes a similar approach in
+[Errors are Values](https://blog.golang.org/errors-are-values).
+
 ## 23 mars 2018
 I tried to implement stretchy buffers from scratch. These are the problems I
 encountered:
