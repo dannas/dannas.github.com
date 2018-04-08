@@ -4,6 +4,47 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 8 april 2018
+I've gone through chapter 2 of the book [Computer Systems - A Programmers
+Perspective](http://csapp.cs.cmu.edu/). Exercise 2.73 is about implementing a
+saturating add function that don't rely on conditionals (if or ?:), relative
+comparison operators, casting or division and multiplication. I came up with a
+somewhat long-winding solution, but then I found [this
+solution](http://zhangjunphy.github.io/csapp/chap2.html#org2fd5283)
+
+    int saturating_add(int x, int y) {
+        int sum = x + y;
+        int pos_over = !(x & INT_MIN) && !(y & INT_MIN) && (sum & INT_MIN);
+        int neg_over = (x & INT_MIN) && (y & INT_MIN) && !(sum & INT_MIN);
+
+        (pos_over && (sum = INT_MAX)) || (neg_over && (sum = INT_MIN));
+
+        return sum;
+    }
+
+Note the line before the return statement. It sort of cheats by using a
+logical expression for constructing a ternary conditional operator.
+
+I watched [Day 12: More Optimizations &
+Cleanup](https://bitwise.handmade.network/episode/bitwise/bitwise012/) from per
+Vognsens Bitwise project. He's replaced a few linear serches with hash table
+lookups and the way the hash tables were constructed was new to me: They use
+open-addressing and maps pointers to pointers instead of allowing arbitary
+objects as keys and values.
+
+One other thing was the hash function Per uses for 64 bit unsigned numbers. He
+says it's based on the [Fowler-Noll-VoFNV hash
+function](http://isthe.com/chongo/tech/comp/fnv/). I realized that I have no
+idea how to design a hash function. For future reading I found [Bob Jenkins Dr
+Dobbs article on designing a hash
+function](http://www.burtleburtle.net/bob/hash/doobs.html) and [Peter Kankowskis thorough benchmarks of various hash functions](http://www.strchr.com/hash_functions)
+
+    uint64_t uint64_hash(uint64_t x) {
+        x *= 0xff51afd7ed558ccdul;
+        x ^= x >> 32;
+        return x;
+    }
+
 ## 26 mars 2018
 I wrote a small string interning module. It consists of less than 30 lines of
 code. The idea is that we keep a global list of known strings. Once a string
