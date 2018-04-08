@@ -1,108 +1,19 @@
 
-/*
- * TODO(dannas): Adjust font size and spacing with recommendations from http://typographyhandbook.com/ and
- * http://practicaltypography.com/
- * https://prowebtype.com/
- * http://webtypography.net/toc/
- */
+/* Taken from c9x.me */
+pre, p, h2, h3		{ margin: 1.9rem 0px 1.9rem; }
+article, .container	{ width: 800px; margin: auto; }
+h1, h2, h3, h4		{ font-family: arial, sans; }
+h2                  { margin-top: 5rem; }
+pre, code		    { background-color: #eeeeff; line-height: normal; overflow: auto; }
+#logo			    { vertical-align: middle; margin-right: 16px; }
+body			    { font-size: 1.9rem; line-height: 135%; }
+p			        { text-align: justify; }
+html			    { font-size: 62.5%; }
+.bnf			    { background-color: white; padding-left: 2rem; }
 
-/* 
- * Apply a natural box layout model to all elements, but allowing components to change. 
- * https://www.paulirish.com/2012/box-sizing-border-box-ftw/
- * */
-html {
-  box-sizing: border-box;
-}
-
-*, *:before, *:after {
-  box-sizing: inherit;
-}
-
-html {
-  font-size: 100%;
-}
-
-p {
-    font-size: 1em;
-    margin-bottom: 1.4em;
-}
-
-h1 {
-    font-size: 2em;
-    margin-bottom: 2.4em;
-    padding: 0;
-}
-
-h2 {
-    font-size: 1.25em;
-    margin-bottom: 1.4em;
-    padding: 0;
-}
-
-h3 {
-    font-size: 1em;
-    margin-bottom: 1.4em;
-    padding: 0;
-}
-
-body {
-  max-width: 67em;
-  padding-top: 2.8em;
-  padding-bottom: 2.8em;
-  padding-left: 1.5em;
-  padding-right: 1.5em;
-  line-height: 1.4;
-}
-
-@media (max-width: 1024px) {
-  body {
-    padding-left: 0;
-    padding-right: 0;
-    max-width: none;
-  }
-}
-
-header {
-  float:left;
-}
-
-section {
-  clear: both;
-}
-
-div.navigation {
-  float: right
-}
-
-footer {
-  float:left;
-}
-
-header, div.navigation  { 
-  margin-bottom: 2.5em;
-}
-
-div.navigation ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-div.navigation ul li {
-    margin-top: 0em;
-    margin-bottom: 0em;
-    margin-left: 1em;
-    margin-right: 1em;
-    display: inline;
-}
-
-pre {
-  margin-bottom: 1em;
-  margin-left: 4em;
-  margin-right: 4em;
-}
-
-code {
-  font-family: monospace;
+@media only screen and (max-device-width: 480px) {
+html			    { font-size: 50%; }
+article, .container	{ width: 90%; }
+p			        { text-align: left; }
 }
 
