@@ -4,8 +4,41 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 17 april 2018
+
+Firefox Webassembly JIT-compiler, SpiderMonkey, consists of an interpreter, a baseline compiler and a fullblown compiler. The baseline compiler makes a  trade off between compilation speed and execution speed of the generated code. It generates decent code blazingly fast. It uses a "latent stack" for keeping track of register values. If we don't have any more registers, then they are "spilled" to memory. Today I read through the code and I believe that I finally understand it. It uses a discriminated union for keeping track of whether 
+
+```
+struct Stk {
+    enum Kind {
+        MEM,
+        REG,
+        CONST,
+        LOCAL
+    };
+    Kind kind;
+    union {
+        uint32_t offset;
+        Reg reg;
+        uint32_t val;
+		uint32_t slot;
+    };
+};
+```
+
+A set keeps track of how many registers are unused at the moment. When that count reaches zero, the compiler syncs all  Stk entries to memory. When a value is supposed to be popped from the stack it is loaded from memory if not available. I initially got confused by the many different stacks in the compiler: there is a stack of call frames, a stack of latent values and the targets runtime stack.
+
+## 16 april 2018
+
+I watched [Bitwise Day 15: More Compiler Hacking](https://bitwise.handmade.network/episode/bitwise/bitwise015/) where Per Vognesen describes arithmetic conversion rules in C, compund literals
+
+A function declaration on the form `void f()` means different things in C and C++. In C it means "could take any number of parameters of unknown type" and in C++ it means the same as `void f(void)`. Always use  `void` parameters when coding in C!
+
+Compound literals in C99 are lvalues. You can do `int *ip = (int){42}` and the value pointed to by `ip` is guaranteed to have the lifetime of the surrounding scope.
+
 ## 9 april 2018
-[Why are 5381 and 33 so important in djb2](https://stackoverflow.com/a/4825477/582010)
+
+[The stackoverflow post Why are 5381 and 33 so important in djb2](https://stackoverflow.com/a/4825477/582010) 
 
 ## 8 april 2018
 I've gone through chapter 2 of the book [Computer Systems - A Programmers Perspective](http://csapp.cs.cmu.edu/). Exercise 2.73 is about implementing a saturating add function that don't rely on conditionals (if or ?:), relative comparison operators, casting or division and multiplication. I came up with a somewhat long-winding solution, but then I found [this solution](http://zhangjunphy.github.io/csapp/chap2.html#org2fd5283)
@@ -14,9 +47,9 @@ I've gone through chapter 2 of the book [Computer Systems - A Programmers Perspe
         int sum = x + y;
         int pos_over = !(x & INT_MIN) && !(y & INT_MIN) && (sum & INT_MIN);
         int neg_over = (x & INT_MIN) && (y & INT_MIN) && !(sum & INT_MIN);
-
+    
         (pos_over && (sum = INT_MAX)) || (neg_over && (sum = INT_MIN));
-
+    
         return sum;
     }
 
@@ -178,15 +211,15 @@ I implemented arithmetic shifts in terms of logical shifts and visa versa. I was
     int32_t sra(int32_t x, int n) {
         // Logical shift.
         int32_t srl = (u32)x >> n;
-
+    
         uint32_t msb = (u32)x >> 31;
-
+    
         // Set to all ones if msb=1.
         int32_t leading = 0 - msb;
-
+    
         // Mask for upper k bits.
         leading = leading << (31-k);
-
+    
         return leading | srl;
     }
 
@@ -204,19 +237,19 @@ And I just learned that the autovars are visual mnemonics:  `$@` looks like a ta
     FLAGS += -MMD -MP
     CFLAGS += $(FLAGS)
     CXXFLAGS += $(FLAGS)
-
+    
     OBJECTS += $(patsubst %, build/%.o, $(SOURCES))
     DEPS = $(patsubst %, build/%.d, $(SOURCES))
-
+    
     $(TARGET): $(OBJECTS)
     	$(CXX) -o $@ $^ $(LDFLAGS)
-
+    
     -include $(DEPS)
-
+    
     build/%.c.o: %.c
     	@mkdir -p $(@D)
     	$(CC) $(CFLAGS) -c -o $@ $<
-
+    
     build/%.cpp.o: %.cpp
     	@mkdir -p $(@D)
     	$(CXX) $(CXXFLAGS) -c -o $@ $<
@@ -477,13 +510,13 @@ Here's an example of how a switch statement may be compiled into Wast:
             // do C
             break;
     }
-
+    
     block $exit $A block $B block $default
         get_local $x
         i32.const 2
         i32.gt_u
         br_if $default
-
+    
         get_local $x
         br_table $A $B $default
     end $default
@@ -512,7 +545,7 @@ The compilers clang, icc and gcc compiles an abs call to [different assembly](ht
         sub       edi, edx
         mov       eax, edi
         ret
-
+    
     gcc_abs(int):
         mov edx, edi
         mov eax, edi
@@ -520,7 +553,7 @@ The compilers clang, icc and gcc compiles an abs call to [different assembly](ht
         xor eax, edx
         sub eax, edx
         ret
-
+    
     clang_abs(int):
       mov eax, edi
       neg eax
@@ -603,21 +636,21 @@ Here is an [example program](https://godbolt.org/g/iAEDdb) showing all three dif
     void doNotOptimizeScalar(T val) {
       asm volatile("" : : "r"(val));
     }
-
+    
     template <typename T>
     void doNotOptimize(T const &val) {
       asm volatile("" : : "m"(val) : "memory");
     }
-
+    
     int f(int x, int y) {
       int sum = x  + y;
       doNotOptimizeScalar(sum);
     }
-
+    
     int g(int x, int y) {
       volatile int sum = x + y;
     }
-
+    
     int h(int x, int y) {
       int sum = x + y;
       doNotOptimize(&sum);
@@ -759,12 +792,12 @@ You can trigger the 'pure virtual method called' error even if you're not callin
         virtual ~base() { sleep(1); }
         virtual void func() = 0;
     };
-
+    
     struct derived : public base {
         virtual ~derived()  {}
         virtual void func() {}
     };
-
+    
     static void *thread_func(void* v) {
         base *b = reinterpret_cast<base*>(v);
         while (true) b->func();
