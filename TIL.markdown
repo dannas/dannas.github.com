@@ -6,6 +6,12 @@ title: TIL - Today I've Learned
 
 ## 24 april 2018
 
+I read Rico Martinis  article [How to make ANY code in ANY system unit-testfriendly](https://blogs.msdn.microsoft.com/ricom/2014/11/20/how-to-make-any-code-in-any-system-unit-test-friendly/ow) where he describes how to factor out code using what Michael Feathers refers to as seams. What I hadn't heard was the term [Ambient authority](https://en.wikipedia.org/wiki/Ambient_authority) which Rico uses when he refers to the seams. A program uses ambient authority if it only needs to specify the name of an object that it wants to perform an action on. The authority is "ambient" in the sens that it exists in a broadly visible environment where any subject can request it by name.
+
+In contrast to Ricos opinion on the the usefulness of unit-tests, there's [Write tests, not too many, mostly integration tests](https://blog.kentcdodds.com/write-tests-not-too-many-mostly-integration-5e8c7fff591c) by Kent C. Dodds that makes the case for concentrating on integration tests for the best "bang for the buck". In his view, there's a limiting return when you go above 70% test coverage and unit tests in particular takes a lot of time to write. Martin Sustrik makes similar claims in [Unit Test Fetish](http://250bpm.com/blog:40). 
+
+##  23 april 2018
+
 I was designing two moderately complex state machines consisting of  roughly ten states each and I started thinking about how to verify the correctness of them. I can verify the correctness of an algorithm consisting of sequential, iterative and conditional statements using preconditions, postconditions, invariants and induction. But how can I verify the design of the state machine before I've written it?
 
 I read David Harels Statecharts: a Visual Formalism for Complex Systems. It gives suggestions on how to draw state charts that can handle more states, but it says nothing about correctness. I guess you just have to check case by case the transitions into the state; the transitions out of the state; and that the program won't get stuck inside the state.
