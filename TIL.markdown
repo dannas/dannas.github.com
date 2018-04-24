@@ -4,6 +4,14 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 24 april 2018
+
+I was designing two moderately complex state machines consisting of  roughly ten states each and I started thinking about how to verify the correctness of them. I can verify the correctness of an algorithm consisting of sequential, iterative and conditional statements using preconditions, postconditions, invariants and induction. But how can I verify the design of the state machine before I've written it?
+
+I read David Harels Statecharts: a Visual Formalism for Complex Systems. It gives suggestions on how to draw state charts that can handle more states, but it says nothing about correctness. I guess you just have to check case by case the transitions into the state; the transitions out of the state; and that the program won't get stuck inside the state.
+
+The [Harel statecharts wikipedia article](https://en.wikipedia.org/wiki/State_diagram#Harel_statechart) lists [YAKINDU Statecharts Tools](https://en.wikipedia.org/wiki/YAKINDU_Statechart_Tools) under the "See Also" section. I downloaded the program and tried a few small FSM:s. It has a simulator that can be used for interactively simulating a state chart. Looked interesting but I didn't have time to learn enough of it to use for my own design.
+
 ## 17 april 2018
 
 Firefox Webassembly JIT-compiler, SpiderMonkey, consists of an interpreter, a baseline compiler and a fullblown compiler. The baseline compiler makes a  trade off between compilation speed and execution speed of the generated code. It generates decent code blazingly fast. It uses a "latent stack" for keeping track of register values. If we don't have any more registers, then they are "spilled" to memory. Today I read through the code and I believe that I finally understand it. It uses a discriminated union for keeping track of whether 
