@@ -4,9 +4,27 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 27 april 2018
+
+[Casey Muratoris talk Designing and Evaluating Resuable Components](https://caseymuratori.com/blog_0024) evaluates an API according to the following principles:
+
+- Granularity (A or BC)
+- Redundancy (A or B)
+- Coupling (A implies B)
+- Retention (A mirrors B)
+- Flow Control (A invokes B)
+
+Micha Mettke expands on Caseys ideas in the gists [API Design: Granularity](https://gist.github.com/vurtun/192cac1f1818417d7b4067d60e4fe921) and [API Design: Modular Data-oriented processes](https://gist.github.com/vurtun/9782db089430167453cff6785b37bb46) and [Library Writing](https://gist.github.com/vurtun/2aeafb0d66272dc29a942e04f94cbe06). 
+
+While reading Michas gists I found a link to Jon Olicks website where he has published [small code snippets for writing and decoding MPEG, JPEG, GIF and WAW data](https://www.jonolick.com/code.html). I was surprised to see how little code was needed.
+
+## 25 april 2018
+
+Since C99 a function that takes an array parameter can use the expression `char buf[static 10]` for expressing that the function must be called with an array of at least size 10. Clang will issue warnings if you call the function with an array of fewer elements or with a NULL pointer. GCC and ICC don't issue a warning. https://hamberg.no/erlend/posts/2013-02-18-static-array-indices.html
+
 ## 24 april 2018
 
-I read Rico Martinis  article [How to make ANY code in ANY system unit-testfriendly](https://blogs.msdn.microsoft.com/ricom/2014/11/20/how-to-make-any-code-in-any-system-unit-test-friendly/ow) where he describes how to factor out code using what Michael Feathers refers to as seams. What I hadn't heard was the term [Ambient authority](https://en.wikipedia.org/wiki/Ambient_authority) which Rico uses when he refers to the seams. A program uses ambient authority if it only needs to specify the name of an object that it wants to perform an action on. The authority is "ambient" in the sens that it exists in a broadly visible environment where any subject can request it by name.
+I read Rico Martinis  articles [The side benefits of comprehensive unit tests](https://medium.com/@ricomariani/the-side-benefits-of-comprehensive-unit-tests-de6c32730b6e) and [How to make ANY code in ANY system unit-testfriendly](https://blogs.msdn.microsoft.com/ricom/2014/11/20/how-to-make-any-code-in-any-system-unit-test-friendly/ow) where he describes how to factor out code using what Michael Feathers refers to as seams. What I hadn't heard was the term [Ambient authority](https://en.wikipedia.org/wiki/Ambient_authority) which Rico uses when he refers to the seams. A program uses ambient authority if it only needs to specify the name of an object that it wants to perform an action on. The authority is "ambient" in the sens that it exists in a broadly visible environment where any subject can request it by name.
 
 In contrast to Ricos opinion on the the usefulness of unit-tests, there's [Write tests, not too many, mostly integration tests](https://blog.kentcdodds.com/write-tests-not-too-many-mostly-integration-5e8c7fff591c) by Kent C. Dodds that makes the case for concentrating on integration tests for the best "bang for the buck". In his view, there's a limiting return when you go above 70% test coverage and unit tests in particular takes a lot of time to write. Martin Sustrik makes similar claims in [Unit Test Fetish](http://250bpm.com/blog:40). 
 
