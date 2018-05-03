@@ -4,6 +4,22 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 3 may 2018
+
+[Niklas Grays blogpost One Button Source Code Builds](http://ourmachinery.com/post/one-button-source-code-builds/) describes how [Our Machinery](http://ourmachinery.com/) uses a C++ program for downloading all dependencies and generating a Visual Studio project. When I was working on Subversion we had a script for fetching dependencies, for Firefox you can invoke `mach bootstrap` and have all needed dependencies downloaded to your computer. It's a very useful thing to have. At work, we rely on the Ubuntu package manager for fetching dependencies which causes headaches when we upgrade our systems.
+
+Niklas mentions that they use premake for generating the actual build files. It's similar to cmake but more limited and not as widely used, though I've seen several game developers making references to it. Here's what I'd like to have in my build system
+
+- A bootstrap command for downloading dependencies
+
+- A  tool that can generate project files for different IDEs
+
+- A simple language for describing build components and targets
+
+- Caching of previously built artifacts similar to ccache
+
+- Ability to distribute build jobs - probably requires something more reliable than timestamps for identifying what needs to be rebuilt
+
 ## 27 april 2018
 
 [Casey Muratoris talk Designing and Evaluating Resuable Components](https://caseymuratori.com/blog_0024) evaluates an API according to the following principles:
