@@ -4,6 +4,52 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 7 may 2018
+
+A GUI-program running on Linux uses the X-server for drawing screen content and receiving keyboard and mouse events. The X-server will be replaced by Wayland but it will take a while: Ubuntu enabled the Wayland display server for 17.10 but had to disable it for 18.04 due to system instability issues. Today, I had to debug  how an application received keyboard events from X. Here is a list of useful tools that I found:
+
+* **xtrace** displays in clear-text the communication between the X server and a program. It does so by acting as a fake X-server,  a proxy.
+* **xev**, the event tester, displays events triggered by mouse, touch pad and keyboard actions.
+* **Xvfb** is useful for testing graphical applications in an environment where there is no X server present, so called headless testing.
+* **xinput** has  a --list option that is useful for displaying which input devices exists on the computer. Peter Hutterers [Input Event Processing in X](https://who-t.blogspot.se/2010/07/input-event-processing-in-x.html) describes how the system is organized: Each physical device is added a a slave. A master device is the union of all attached slave devices. When a slave device generates an event, this event is sent through the master device as well. The XTEST devices are hard coded for each master device and serve as input devices for the XTEST extension. Below is an example from my Dell XPS 15 9550 laptop:
+
+```
+$ xinput --list --short
+⎡ Virtual core pointer                          id=2    [master pointer  (3)]
+⎜   ↳ Virtual core XTEST pointer                id=4    [slave  pointer  (2)]
+⎜   ↳ HID 04b4:0033                             id=11   [slave  pointer  (2)]
+⎜   ↳ Logitech HID compliant keyboard           id=13   [slave  pointer  (2)]
+⎜   ↳ ELAN Touchscreen                          id=15   [slave  pointer  (2)]
+⎜   ↳ DLL06E4:01 06CB:7A13 Touchpad             id=16   [slave  pointer  (2)]
+⎣ Virtual core keyboard                         id=3    [master keyboard (2)]
+    ↳ Virtual core XTEST keyboard               id=5    [slave  keyboard (3)]
+    ↳ Power Button                              id=6    [slave  keyboard (3)]
+    ↳ Video Bus                                 id=7    [slave  keyboard (3)]
+    ↳ Video Bus                                 id=8    [slave  keyboard (3)]
+    ↳ Power Button                              id=9    [slave  keyboard (3)]
+    ↳ Sleep Button                              id=10   [slave  keyboard (3)]
+    ↳ Logitech HID compliant keyboard           id=12   [slave  keyboard (3)]
+    ↳ Integrated_Webcam_HD: Integrate           id=14   [slave  keyboard (3)]
+    ↳ Intel HID events                          id=17   [slave  keyboard (3)]
+    ↳ Dell WMI hotkeys                          id=18   [slave  keyboard (3)]
+    ↳ AT Translated Set 2 keyboard              id=19   [slave  keyboard (3)]
+    ↳ Logitech HID compliant keyboard           id=20   [slave  keyboard (3)]
+```
+
+* **xdotool** lets you programmatically (or manually) simulate X11 keyboard/mouse events. It does this using the previously mentioned X11 XTEST extension.
+
+Jasper St. Pierre describes in [The Linux Graphics Stack](http://blog.mecheye.net/2012/06/the-linux-graphics-stack/) how he X server is hidden behind several API layers. GUI frameworks uses the Xlib library which uses the XCB library for doing the actual X11 protocol exchanges. There are lots of extensions to the original protocol and by now almost no one understands it fully. I remember reading in the book Coders at Work how Joe Armstrong when faced with writing a GUI-framework for Erlang, decided to bypass the XLib and KCB software and instead implement the X11 protocol directly. I tried searching for example programs that uses the X11 protocol directly but didn't find anything.
+
+## 6 may 2018
+
+Eric Shane has created [the entr tool for running arbitary commands when files change](http://www.entrproject.org/).  Rebuilding a project when any of the source files changes can be done with:
+
+```
+$ ag -l | entr make
+```
+
+The inotify system call can be used for implementing programs that wait for file and directory changes. But there is a lot of minutia that `entr` does for us, like detecting when an editor replaces a file upon write; making sure to not run the action command too soon when we're watching a whole directory; hiding the fact that NFS directories  are handled differently than regular directories by inotify.
+
 ## 3 may 2018
 
 [Niklas Grays blogpost One Button Source Code Builds](http://ourmachinery.com/post/one-button-source-code-builds/) describes how [Our Machinery](http://ourmachinery.com/) uses a C++ program for downloading all dependencies and generating a Visual Studio project. When I was working on Subversion we had a script for fetching dependencies, for Firefox you can invoke `mach bootstrap` and have all needed dependencies downloaded to your computer. It's a very useful thing to have. At work, we rely on the Ubuntu package manager for fetching dependencies which causes headaches when we upgrade our systems.
