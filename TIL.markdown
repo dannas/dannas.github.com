@@ -4,6 +4,16 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 8 may 2018
+
+Jasper St. Pierre has created [the interactive site Explanations - play don't show](https://magcius.github.io/xplain/article/index.html) where he explains how the X Window System creates windows and handles input events, but also more advanced topics such as how to add transparency using the COMPOSITE extension and support alpha blending using the X_RENDER extension and basic 2D rasterization. He links to Sean Barrets [How the stb_truetype Anti-Aliased Software Rasterizer v2 works](http://nothings.org/gamedev/rasterize/). 
+
+The most important takeaway for me was reading about pixmaps which allows for memory-backed pixel storage on the server. That storage is memory mapped into the process meaning each process can write data directly to the storage instead of having to copy it over the UNIX domain socket.
+
+[The XCB project has a tutorial](https://xcb.freedesktop.org/tutorial/) which describes how to create windows and handle events, text and fonts and colors and pixmaps. I downloaded the XCB source code. The code can either use a push or a pull API. I didn't quite get how they handle events and request/response pairs arriving out of order. There appears to be a cookie identifier that is used for matching requests to responses. The code for emitting and parsing the protocol messages is auto-generated from xml-files via a python script.
+
+Christophe Tronches [Xlib programming: a short tutorial](https://tronche.com/gui/x/xlib-tutorial/) gives a step-by-step introduction on how to use the X library. I had a peek inside the Xlib source code as well, and it's a bit harder to follow. I expect much of the code to be redundant. The core API as used by for example SDL appears to not have too much of a surface area.
+
 ## 7 may 2018
 
 A GUI-program running on Linux uses the X-server for drawing screen content and receiving keyboard and mouse events. The X-server will be replaced by Wayland but it will take a while: Ubuntu enabled the Wayland display server for 17.10 but had to disable it for 18.04 due to system instability issues. Today, I had to debug  how an application received keyboard events from X. Here is a list of useful tools that I found:
