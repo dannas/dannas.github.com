@@ -4,6 +4,60 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 29 may 2018
+
+Today I was investigating some missing lines from a log file. The last lines that should have been printed immediately before the Linux system was killed by a supervising microprocessor, did not get printed. It turns out that the Linux page cache doesn't write back to disk until the data is more than 30 seconds old and the threads are woken up every 5 seconds. Further some flash-specific file systems has caches that themselves prolong the lifetime of dirty data with 3-5 seconds. I hadn't expected the write-back intervals to be that long! The `/proc/sys/vm/` directory contains four files that starts with `dirty_` which controls the write back timeouts.
+
+[Gustavo Duarte describes in Page Cache, the Affair Between Memory and Files](https://manybutfinite.com/post/page-cache-the-affair-between-memory-and-files/) how the address space of a process maps to the page cache. The Linux page cache is indexed by something similar to an inode (but more general) and a block offset . It uses a structure called `address_space` but a better name would have been `physical_page_of_a_file`.  While a single file may be represented by  ten `vm_area_struct` structures (if say five processes mmap it twice), the file has only one `address_space` structure - just as the file may have many virtual addresses but exist only once in physical memory.
+
+## 28 may 2018
+
+While reading [the Wikipedia article on Optimistic Concurrency Control](https://en.wikipedia.org/wiki/Optimistic_concurrency_control#Web_usage) I found a reference to [the W3C note Detecting the Lost Update Problem Using Unreserved Checkout](https://www.w3.org/1999/04/Editing/). Therein it's described how HTTP being stateless uses a form of Optimistic Concurrency Control when updating resources. First a PUT request is sent with a `If-Match` header containing an etag. If that fails, the client can either abort, merge the content or force an update. The latter case is done by a second PUT request  with a `If-None-Match` header containing the same etag.
+
+## 27 may 2018
+
+A few days back I started writing my first web application in Node.js. One of the main confusion points for me was the caching mechanism in the HyperText Transfer Protocol (HTTP). I read the RFC's but they didn't make things much clearer. Now, finally I found [Mark Nottinghams Caching tutorial for Web Authors and Web Masters](https://www.mnot.net/cache_docs/). He starts of by explaining that there are two key concepts: freshness and validators.
+
+The headers `Cache Control` and `Expires` controls the freshness of a document. The caches in your browser and proxies inspect those headers (where `Cache Control` is a HTTP/1.1 replacement to the old HTTP/1.0 `Expires` header) to decide if the document should be fetched or  not.
+
+The `Last-Modified` and `ETag` headers are validators that the client can use for determining if a document whose freshness has expired needs to be refetched. The `If-Modified-Since` header is used for   timed-based validators and `If-None-Match` is used for ETag based validators.
+
+## 18 may 2018
+
+Marcus Frödin has written [slides for a lightning talk where he illustrates latency times in a computer system as weights](https://www.slideshare.net/marcusf/nonblocking-io-event-loops-and-nodejs):
+
+* L1-cache A big squirrel
+* L2-cache A medium sized cat
+* RAM Mattias, basically
+* Disk Like a 100 blue vales
+* Network Belarus yearly wheat export
+
+He then says that since a web server is I/O intensive, it's latency profile can be described as squirrels buried in cats, fat, vales and wheat. 
+
+## 14 may 2018
+
+[Nicolas Léveillé  has gathered a long list of links realted to The Problem with UI](https://gist.github.com/uucidl/8d4ca362c8341d1bb7bd0553eb3e9a1c). I wonder why User Interface programming is so hard? It's always a state synchronization problem where there is some backing state that's supposed to be reflected in the UI. But there are other axes of evaluation such as composition, data flow,  layout, painting, styling and extension.
+
+[Per Vognsen lists a bunch of paradigms in Slate Notes](https://gist.github.com/pervognsen/279156b894c5d04ca73df7afc12a37ee). I don't quite understand what defines the Document/symbolic model and I'm still a bit lost when it comes to understanding what a reactive UI is.
+
+* Ad-hoc with few reusable parts (e.g. lots of old games).
+* Inheritance-oriented OO toolkits. Subclass if you want to override button click behavior. The darkest days of OO in early 90s.
+* Slots-and-signals OO toolkits. Flatter hierarchies, more composition and reuse. Button click event fires a delegate.
+* Document/symbolic model. Popularized by HTML and rarely copied. Less well known example: Mathematica Notebooks.
+* Immediate mode. Ideal for fully dynamic UIs, no persistent identity for widgets, no inversion of control, fully code driven.
+* Reactive UI toolkits. Born in the functional world. FB's React is a good mainstream example. Surprisingly close to immediate mode.
+
+
+
+## 11 may 2018
+
+I've written an interpreter for the mouse language. Here are the bugs I encountered while doing so:
+
+* Had an off-by-one when I calculated the number of registers as `NUM_REGS = 'Z' - 'A'` instead of `NUM_REGS = 'Z' - 'A' + 1`.
+* Both lowercase and uppercase are allowed for register and macro names, but lowercase and uppercase letters alias each others. I didn't canonicalize them.
+* I had a `BINARY_OP` preprocessor macro for generating arithmetic and compare operations. But for the `=` case I generated an assignment statement instead of a compare expression.
+* For loop statements, I only kept track of the outermost start location, so nested loops didn't work. When I added a `controlStack` for those, I created several bugs where I used `pop()` instead of `top()`.
+
 ## 8 may 2018
 
 Jasper St. Pierre has created [the interactive site Explanations - play don't show](https://magcius.github.io/xplain/article/index.html) where he explains how the X Window System creates windows and handles input events, but also more advanced topics such as how to add transparency using the COMPOSITE extension and support alpha blending using the X_RENDER extension and basic 2D rasterization. He links to Sean Barrets [How the stb_truetype Anti-Aliased Software Rasterizer v2 works](http://nothings.org/gamedev/rasterize/). 
