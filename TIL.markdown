@@ -4,6 +4,14 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 11 june 2018
+
+I've placed `setxkbmap` calls in my .profile file, for swapping the  Caps Lock and Escape buttons and for remapping the Ctrl-keys to the Win tangents. But since Ubuntu switched back to using the Gnome desktop environment, the settings are sometimes restored to their original values. I'm not sure why it happens but it sure is annoying. I found the Ask Ubuntu question [How to Permantently switch Caps Lock and Escape](https://askubuntu.com/questions/363346/how-to-permanently-switch-caps-lock-and-esc) where they use the Gnome Tweak Tool. Let's hope I've gotten rid of that problem now!
+
+## 30 may 2018
+
+I was watching [Day 30 Assembler Macro Expansion of Per Vognsens Bitwise screencast series](https://bitwise.handmade.network/episode/bitwise/bitwise030/). He is writing a static assembler for risc-V, which is a three operand instruction set. But since he's accustomed to x86 and x64, he constructed the assembler language so that it omits one of the operands. He also created pseudo-instructions for call and jump to make the language less verbose. I hadn't thought about an assembler as an abstraction over the instruction set, instead of as a one-to-one mapping. Per also mentioned that some assemblers provides control flow directives like `.if` and `.else`, some even have `.case` directives. I scanned the NASM, YASM and GAS manuals but didn't find any references to such. The MASM have them though. 
+
 ## 29 may 2018
 
 Today I was investigating some missing lines from a log file. The last lines that should have been printed immediately before the Linux system was killed by a supervising microprocessor, did not get printed. It turns out that the Linux page cache doesn't write back to disk until the data is more than 30 seconds old and the threads are woken up every 5 seconds. Further some flash-specific file systems has caches that themselves prolong the lifetime of dirty data with 3-5 seconds. I hadn't expected the write-back intervals to be that long! The `/proc/sys/vm/` directory contains four files that starts with `dirty_` which controls the write back timeouts.
