@@ -4,7 +4,37 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
-## 11 june 2018
+## 14 June 2018
+
+In [Day 32 More Simulator Features of Per Vognsesns Bitwise screencast series](https://bitwise.handmade.network/episode/bitwise/bitwise032/), Per describes a trick for introducing callbacks without inverting control. You have a command loop for your simulator and when you enter a breakpoint callback, you re-enter the command loop.  Note that you can re-enter the command loop, but you can't re-enter the bitwise simulator since it's not designed to be re-entrant.
+
+```
+var is_nested : bool;
+func breakpoint_callback(hart: Hart*) {
+    is_nested = true;
+    cmd_loop(hart);
+    is_nested = false;
+}
+func cmd_loop(hart: Hart*) {
+    for (;;) {
+        c := getchar();
+        switch (c) {
+        // ...
+        case 'c':
+        	if (is_nested) {
+                return;
+        	} else {
+                step(hart);
+        	}
+        }
+      	// ...
+    }
+}
+```
+
+Avoiding inversion of control flow seems to be a recurring theme in the bitwise screen-casts:  Per uses tagged unions instead of inheritance; he uses the above mentioned callback trick as a sort of poor mans co-routine; and he created a platform layer that works like immediate mode GUI's.
+
+## 11 June 2018
 
 I've placed `setxkbmap` calls in my .profile file, for swapping the  Caps Lock and Escape buttons and for remapping the Ctrl-keys to the Win tangents. But since Ubuntu switched back to using the Gnome desktop environment, the settings are sometimes restored to their original values. I'm not sure why it happens but it sure is annoying. I found the Ask Ubuntu question [How to Permantently switch Caps Lock and Escape](https://askubuntu.com/questions/363346/how-to-permanently-switch-caps-lock-and-esc) where they use the Gnome Tweak Tool. Let's hope I've gotten rid of that problem now!
 
