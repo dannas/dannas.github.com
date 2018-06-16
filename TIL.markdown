@@ -8,7 +8,7 @@ title: TIL - Today I've Learned
 
 Simon Tatham describes in [Coroutines in C](https://www.chiark.greenend.org.uk/~sgtatham/coroutines.html) how a coroutine can be implemented by using a variant of Duffs Device. The limitations is that it can't yield from inside a called function and there can't be multiple active coroutines for the same function.
 
-```int function(void) {    static int i, state = 0;    switch (state) {        case 0: /* start of function */        for (i = 0; i &lt; 10; i++) {            state = 1; /* so we will come back to &quot;case 1&quot; */            return i;            case 1:; /* resume control straight after the return */        }    
+```
 int function(void) {
     static int i, state = 0;
     switch (state) {
