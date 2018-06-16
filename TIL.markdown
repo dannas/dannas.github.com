@@ -4,6 +4,48 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 16 June 2018
+
+Simon Tatham describes in [Coroutines in C](https://www.chiark.greenend.org.uk/~sgtatham/coroutines.html) how a coroutine can be implemented by using a variant of Duffs Device. The limitations is that it can't yield from inside a called function and there can't be multiple active coroutines for the same function.
+
+```int function(void) {    static int i, state = 0;    switch (state) {        case 0: /* start of function */        for (i = 0; i &lt; 10; i++) {            state = 1; /* so we will come back to &quot;case 1&quot; */            return i;            case 1:; /* resume control straight after the return */        }    
+int function(void) {
+    static int i, state = 0;
+    switch (state) {
+        case 0: /* start of function */
+        for (i = 0; i < 10; i++) {
+            state = 1; /* so we will come back to "case 1" */
+            return i;
+            case 1:; /* resume control straight after the return */
+        }
+    }
+}
+```
+
+Adam Dunkels describes in [Protothreads under the hood](http://dunkels.com/adam/pt/expansion.html) how PT overcome the "only one active coroutine" limitation by having the state variable `pt` be a parameter. But it's still a stackless coroutine.
+
+```
+struct pt { unsigned short lc; };
+#define PT_THREAD(name_args)  char name_args
+#define PT_BEGIN(pt)          switch(pt->lc) { case 0:
+#define PT_WAIT_UNTIL(pt, c)  pt->lc = __LINE__; case __LINE__: \
+                              if(!(c)) return 0
+#define PT_END(pt)            } pt->lc = 0; return 2
+#define PT_INIT(pt)           pt->lc = 0
+```
+Here's an example coroutine:
+```
+static int counter = 0;
+PT_THREAD(example(struct pt *pt)){
+  PT_BEGIN(pt);
+  while(1) {
+    PT_WAIT_UNTIL(pt, counter == 1000);
+    counter = 0;
+  }
+  PT_END(pt);
+}
+```
+
 ## 15 June 2018
 
 I posted [a question to the Bitwise forum about dealing with inversion of control flow](https://bitwise.handmade.network/forums/t/3207-dealing_with_inversion_of_control_flow), where I expanded on my thoughts from yesterday. The distinction between granularity of concurrency; high level abstractions over control flow; and syntactic sugar over callbacks is something that I've been thinking about for a long time without really coming to any conclusions. 
