@@ -24,7 +24,7 @@ Here are some quotes related to writing and mathematics. I'm especially fond of 
 ​        John Myles White
 
 > Writing is nature's way of telling us how lousy our thinking is.
-
+>If you think without writing, you only think you're thinking.
 > Math is nature's way of letting you know how sloppy your writing is
 
 ​        Leslie Lamport
@@ -43,6 +43,23 @@ Here are some quotes related to writing and mathematics. I'm especially fond of 
 
 ​        Gauss
 
+> Unity is the anchor of good writing. Unity of pronoun. Unity of tense. Unity of mood.
+  William Zinsser On Writing Well
 
 
+> One is still what one is going to cease to be and already what one is going to become. One lives one's death, one dies one's life.
+— Jean-Paul Sartre
 
+
+> We shall never cease from exploration
+> And the end of all our exploring
+> Will be to arrive where we started
+> And know the place for the first time.
+— T.S. Element
+
+
+> Love goes very far beyond the physical person of the beloved. It finds its
+> deepest meaning in his spiritual being, his inner self. Whether or not he is
+> actually present, whether or not he is still alive at all, ceases somehow to be
+> of importance.
+― Viktor E. Frankl, Man's Search for Meaning 
