@@ -4,6 +4,129 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 4 July 2018
+
+Object layout for C++ classes can be inspected with the same clang options as I used yesterday. Here is a class hierarchy without inheritance:
+
+```
+class Base {
+public:
+  int x;
+};
+
+class Derived : public Base {
+  public:
+    int y;
+};
+```
+
+Clang shows the following data layout for Derived:
+
+```
+*** Dumping AST Record Layout
+         0 | class Derived
+         0 |   class Base (base)
+         0 |     int x
+         4 |   int y
+           | [sizeof=8, dsize=8, align=4,
+           |  nvsize=8, nvalign=4]
+```
+
+If I add a virtual member function to `Base` and `Derived` then a vtable is inserted at the beginning of the object.
+
+```
+*** Dumping AST Record Layout
+         0 | class Derived
+         0 |   class Base (primary base)
+         0 |     (Base vtable pointer)
+         8 |     int x
+        12 |   int y
+           | [sizeof=16, dsize=16, align=8,
+           |  nvsize=16, nvalign=8]
+```
+
+## 3 July 2018
+
+I got confused about how alignment works in C and wrote this small experiment.
+
+```
+struct E { _Alignas(16) char c; };
+
+struct P1 { int i; char c; int j; char d; };
+struct P2 { int i; char c; char d; int j; };
+struct P3 { short w[3]; char c[3]; };
+struct P4 { short w[3]; char *c[3]; };
+struct P5 { struct P1 a[2]; struct P2 *p; };
+struct P6 { struct E a[3]; };
+
+int main(int argc, char *argv[])
+{
+  int r = 0;
+  r += sizeof(struct P1);
+  r += sizeof(struct P2);
+  r += sizeof(struct P3);
+  r += sizeof(struct P4);
+  r += sizeof(struct P5);
+  r += sizeof(struct P5);
+  r += sizeof(struct P6);
+
+  return r;
+}
+```
+
+Linux requires that a type of K bytes must be aligned on a K-byte boundary. For compound types, this means that padding may be required between members or after the last member. The `_Alignas` directive can be useful for dictating stricter alignment, for example when using DMA buffers.
+
+Eli Bendersky shows in [Dumping a C++ objects memory layout with Clang](https://eli.thegreenplace.net/2012/12/17/dumping-a-c-objects-memory-layout-with-clang/) how clangs cc1 frontend has a -f command that can be used for inspecting the memory layout. Here is the output for the test cases above.  `P1` has tail padding added.  `P3.c` starts at offset 6, while `P4.c` starts at offset 8: the member with largest alignment dictates how the other members will be laid out.
+
+```
+$ clang -cc1 -fdump-record-layouts test.c
+*** Dumping AST Record Layout
+         0 | struct P1
+         0 |   int i
+         4 |   char c
+         8 |   int j
+        12 |   char d
+           | [sizeof=16, align=4]
+
+*** Dumping AST Record Layout
+         0 | struct E
+         0 |   char c
+           | [sizeof=16, align=16]
+
+*** Dumping AST Record Layout
+         0 | struct P2
+         0 |   int i
+         4 |   char c
+         5 |   char d
+         8 |   int j
+           | [sizeof=12, align=4]
+
+*** Dumping AST Record Layout
+         0 | struct P3
+         0 |   short [3] w
+         6 |   char [3] c
+           | [sizeof=10, align=2]
+
+*** Dumping AST Record Layout
+         0 | struct P4
+         0 |   short [3] w
+         8 |   char *[3] c
+           | [sizeof=32, align=8]
+
+*** Dumping AST Record Layout
+         0 | struct P5
+         0 |   struct P1 [2] a
+        32 |   struct P2 * p
+           | [sizeof=40, align=8]
+
+*** Dumping AST Record Layout
+         0 | struct P6
+         0 |   struct E [3] a
+           | [sizeof=48, align=16]
+```
+
+
+
 ## 16 June 2018
 
 Simon Tatham describes in [Coroutines in C](https://www.chiark.greenend.org.uk/~sgtatham/coroutines.html) how a coroutine can be implemented by using a variant of Duffs Device. The limitations is that it can't yield from inside a called function and there can't be multiple active coroutines for the same function.
