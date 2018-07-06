@@ -4,6 +4,39 @@ title: TIL - Today I've Learned
 ---
 # Today I've learned
 
+## 6 July 2018
+
+I watched [Bitwise Day 43, Domain Specific Languages in Python](https://bitwise.handmade.network/episode/bitwise/bitwise043/). There Per describes how you can create an embedded DSL inside Python. I learned that many things can be overloaded in Python, but the logical operators cannot. If you call `or`, `and` or `not` on an object then it will convert that object to a boolean by calling `__bool__`. If that operator is not defined then it uses `__len__` and if that is not implemented it converts the object to `True`.
+
+```
+class Node:
+   def __and__(self, other):
+		return Node()
+	def __bool__(self):
+		raise TypeError("Cannot treat nodes as logical values")
+x, y = Node(), Node()
+z = x & y
+z = x and y
+```
+
+Another thing is that Python provides special operators for the reverse ordering of arguments. So `x & 1` will work for the code above, but `1 & x` will raise a `TypeError`. By adding a `__rand__` overload, the code will work as intended. What happens under the hood is that the int `__and__` operator gets called and throws and exception, that is caught by the runtime and it tries the left hand side `__rand__` operator instead.
+
+A cool thing about Python is that everything is an object, even types are objects. Per uses that for his interpreter where he does a lookup on the type in a dictionary. Here's a simplified example of his code to show the idea:
+
+```
+evaluators = {
+	int : lambda x : x,
+	str : lambda x : len(x)
+}
+def evaluate(x): return evaluators[type(x)](x)
+```
+
+So `evaluate(42)` will return 42 and `evaluate("hello world")` will return 11.
+
+## 5 July 2018
+
+I read [Michael Nielsens essay Augmenting Long-Term Memory](http://augmentingcognition.com/ltm.html) wherein he describes his experiences of using a "Personal Memory System", here [the software Anki](https://apps.ankiweb.net/), which is a computerized flashcard program that automatically manages the review schedule. Michael mentions concepts that I recognize from taking [Barbara Oakleys online course Learning How to Learn](https://www.coursera.org/learn/learning-how-to-learn), like spaced repetition; the value in memorizing the basics; how different memories are triggered by small variations of cues; and chunking and making connections between chunks. What was new to me was Michaels view that Anki helps him to form better chunks by forcing him to create "atomic" question-answer pairs that are then easier to combine. He sees Anki as not just a system for remembering simple facts, but a way to build up arbitrary complex knowledge. He also describes how "Ankifying" information in a paper by doing several passes and write questions for things  he's learned has helped him to absorb information more quickly.
+
 ## 4 July 2018
 
 Object layout for C++ classes can be inspected with the same clang options as I used yesterday. Here is a class hierarchy without inheritance:
