@@ -1,5 +1,6 @@
 
 /* Taken from c9x.me */
+html              { hyphens: auto }
 pre, p, h2, h3		{ margin: 1.9rem 0px 1.9rem; }
 article, .container	{ width: 800px; margin: auto; }
 h1, h2, h3, h4		{ font-family: arial, sans; }
