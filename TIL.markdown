@@ -1,8 +1,74 @@
 ---
 layout: default
 title: TIL - Today I've Learned
+use_math: true
 ---
 # Today I've learned
+
+## 11 July 2018
+
+Today in the [Discrete Optimization](https://www.coursera.org/learn/discrete-optimization) course I learned about [dynamic programming](https://en.wikipedia.org/wiki/Dynamic_programming) (DP).  A problem must have overlapping subproblems and optimal subproblems must lead to the optimal solution in order for dynamic programming to be applicable. They can either be solved via a bottom-up or a top-down approach. Let's solve the most typical DP problem: Fibonacci numbers. They can be calculated using a  slow recursive algorithm. We can speed it up by adding memoization to avoid recomputing the overlapping subproblems.
+
+```
+def fib_naive(n):
+	if n < 2:
+		return n
+	return fib_naive(n-1) + fib_naive(n-2)
+
+@memo
+def fib_memo(n):
+	if n < 2:
+		return n
+	return fib_memo(n-1) + fib_memo(n-2)
+```
+
+Even with memoization there's still a lot of  recursive calls. If we use a bottom-up approach we can get rid of the recursion.
+
+```
+def fib_tabular(n):
+	table = [0] * (n+1)
+	table[1] = 1
+	for i in range(2, n+1):
+		table[i] = table[i-1] + table[i-2]
+	return table[n]
+```
+
+One thing to keep an eye for with dynamic programming is the size of the tables required. Here we can see that we only need the two previous Fibonacci numbers to calculate the next one.
+
+```
+def fib_tabular_optimized(n):
+	a, b = 0, 1
+	for _ in range(2, n+1):
+		a, b = b, a + b
+	return b
+```
+
+Figuring out how to express the problem as a recurrence relation appears to be the hardest step in solving a DP problem. Nikola Otasevic has a good explanation of that thought process in [Dynamic Programming - 7 steps to solve any DP interview problem](http://blog.refdash.com/dynamic-programming-tutorial-example/).
+
+## 10 July 2018
+
+I signed up for [Pascal Van Henterycks Coursera course Discrete Optimization](https://www.coursera.org/learn/discrete-optimizationhttps://www.coursera.org/learn/discrete-optimization).  He started with a motivating example where Indiana Jones was trying to fill a knapsack with precious art items. Using a greedy algorithm, I can select the items by max value, max weight or by max value-weight density. But none of those three approaches led to the optimal solution. That was an eye opener. 
+
+```
+items_by_worth = sorted(items, key=lambda x: x.value, reverse=True)
+items_by_weight = sorted(items, key=lambda x: x.weight)
+items_by_density = sorted(items, key=lambda x: x.value/x.weight, reverse=True)
+
+def fill_knapsack(seq, capacity=10):
+	weight = 0
+	sack = []
+	for elt in seq:
+	if weight + elt.weight <= capacity:
+		sack.append(elt)
+		weight += elt.weight
+	return sack, sum(x.value for x in sack)
+```
+
+Pascal said that you should start with a greedy approach. It's often easy to code, but seldom closest to the optimal solution. I can always find the optimal solution using brute force, but that has exponential running time.
+
+```
+max((fill_knapsack(x) for x in permutations(items)), key=lambda x: x[1])
+```
 
 ## 6 July 2018
 
