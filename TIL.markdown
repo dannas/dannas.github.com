@@ -5,7 +5,25 @@ use_math: true
 ---
 # Today I've learned
 
-## 11 July 2018
+## 12 August 2018
+
+While doing some dynamic programming exercises involving the calculation of [Bell numbers](https://en.wikipedia.org/wiki/Bell_number) and [Binomial coefficients](https://en.wikipedia.org/wiki/Binomial_coefficient) I noticed that the recursive definitions  for Stirling numbers and Binomial coefficients very much resemble each other. Here is the definition for Stirling numbers:
+
+```
+S(n, k) = S(n-1, k-1) + k * S(n-1, k)
+S(n, 1) = S(n, n) = 1
+```
+
+`S(n, 1)` means putting n items in one pile. That can only be done in one way, and `S(n, n)` means putting n items on n piles. That can also only be done in one way. If `1 < k <n` then we can either create a new pile `S(n-1, k-1)` or put the item on one of the existing piles `k * S(n-1, k)`.
+
+And here is the definition for Binomial Coefficients:
+
+```
+C(n, k) = C(n-1, k-1) + C(n-1, k)
+C(n, 0) = C(n, n) = 1
+```
+
+## 11 August 2018
 
 Today in the [Discrete Optimization](https://www.coursera.org/learn/discrete-optimization) course I learned about [dynamic programming](https://en.wikipedia.org/wiki/Dynamic_programming) (DP).  A problem must have overlapping subproblems and optimal subproblems must lead to the optimal solution in order for dynamic programming to be applicable. They can either be solved via a bottom-up or a top-down approach. Let's solve the most typical DP problem: Fibonacci numbers. They can be calculated using a  slow recursive algorithm. We can speed it up by adding memoization to avoid recomputing the overlapping subproblems.
 
@@ -45,7 +63,7 @@ def fib_tabular_optimized(n):
 
 Figuring out how to express the problem as a recurrence relation appears to be the hardest step in solving a DP problem. Nikola Otasevic has a good explanation of that thought process in [Dynamic Programming - 7 steps to solve any DP interview problem](http://blog.refdash.com/dynamic-programming-tutorial-example/).
 
-## 10 July 2018
+## 10 August 2018
 
 I signed up for [Pascal Van Henterycks Coursera course Discrete Optimization](https://www.coursera.org/learn/discrete-optimizationhttps://www.coursera.org/learn/discrete-optimization).  He started with a motivating example where Indiana Jones was trying to fill a knapsack with precious art items. Using a greedy algorithm, I can select the items by max value, max weight or by max value-weight density. But none of those three approaches led to the optimal solution. That was an eye opener. 
 
