@@ -5,6 +5,14 @@ use_math: true
 ---
 # Today I've learned
 
+## 14 August 2018
+
+The [Discrete Optimization](https://www.coursera.org/learn/discrete-optimization) course covers [dynamic programming](https://en.wikipedia.org/wiki/Dynamic_programming), [constraint programming](https://en.wikipedia.org/wiki/Constraint_programming), [linear programming](https://en.wikipedia.org/wiki/Linear_programming) and and [local search](https://en.wikipedia.org/wiki/Local_search_%28optimization%29). The lectures are somewhat chatty and unorganized. I'll probably need to read some books while going through the material.
+
+Dynamic programming is covered in all my algorithm books: CRLS, Skiena, Dasgupta and Kleinberg&Tardos. Linear programming is covered in CRLS, Dasgupta, Tardos and on a high-level in Skiena. There is a local search chapter in Kleinberg&Tardos. For constraint programming the best resource I've found so far is Roman Bartaks [Online Guide to Constraint Programming](http://kti.ms.mff.cuni.cz/~bartak/constraints/index.html) and Peter Norvigs book [Artifical Intelligense a Modern Approach](http://aima.cs.berkeley.edu/).
+
+David P. Williamsson and David B. Shmoys book [The Design of Approximation Algorithms](http://www.designofapproxalgs.com/) seems to cover a lot of the material for the course as well.
+
 ## 12 August 2018
 
 While doing some dynamic programming exercises involving the calculation of [Bell numbers](https://en.wikipedia.org/wiki/Bell_number) and [Binomial coefficients](https://en.wikipedia.org/wiki/Binomial_coefficient) I noticed that the recursive definitions  for Stirling numbers and Binomial coefficients very much resemble each other. Here is the definition for Stirling numbers:
