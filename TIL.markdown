@@ -5,6 +5,62 @@ use_math: true
 ---
 # Today I've learned
 
+## 16 August 2018
+
+Steven Skiena writes that learning Dynamic Programming (DP) requires that you see  a lot of solved exercises before "it clicks" and you understand how to do them yourself. Well, there's been no "clicking" for me yet! 
+
+The [Longest Increasing Subsequence problem](https://en.wikipedia.org/wiki/Longest_increasing_subsequence) (LIS) is one of the first DP problems that one gets introduced to. It can be viewed as finding the longest path through the directed graph of all permissible transitions! I wrote a recursive version that recurses on both `i` and `j` . I tried replacing the `j` recursion with a for loop but failed. I've noticed that even though I have  a recursive relation for a sequence, I'm still having trouble with implementing it in code.
+
+```
+def lis(X):
+	@memo
+	def _lis(i, j):
+		if i == 0: return 1
+		if j < 0: return 0
+		m = 1 + _lis(i-1, i-2) if X[i] > X[j] else 0
+		return max(m, _lis(i, j-1))
+	return _lis(len(X)-1, len(X)-2)
+```
+
+The recursive version recurses from right to left. I then wrote a bottom-up solution that goes from left to right. Many of the DP problems assumes there's an inherent left-to-right ordering. For bottom-up you have to figure out what the search space is. For LIS, it's a table of i * j but here we only store the max of each column of that table in `L`.
+
+```
+def lis(X):
+	L = [0] * len(X)
+	for i, x in enumerate(X):
+	L[i] = max([y for j, y in enumerate(L[:i]) if X[j] < x] + [0]) + 1
+	return max(L)
+```
+
+The [Longest Common Subsequence problem](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem) (LCS) is a problem I've wanted to understand for a long time. I've written patch and diff programs in the past but they've relied on already implemented LCS algorithms. The recursive relation can be easily written in python.
+
+```
+@memo
+def lcs(X, Y):
+	if len(X) == 0 or len(Y) == 0:
+		return 0
+	if X[0] == Y[0]:
+		return 1 + lcs(X[1:], Y[1:])
+	return max(lcs(X[1:], Y), lcs(X, Y[1:]))
+```
+
+The iterative version can be done with a two dimensional table just like the LIS solution. Each coordinate (i, j) in that table represents the LCS for `X[:i]` and `Y[i:]`. 
+
+```
+def lcs(X, Y):
+	N, M = len(X), len(Y)
+	L = [[0] * (M+1) for _ in range(N+1)]
+	for i in range(N+1):
+		for j in range(M+1):
+			if i == 0 or j == 0:
+				L[i][j] = 0
+			elif X[i-1] == Y[j-1]:
+				L[i][j] = L[i-1][j-1] + 1
+			else:
+				L[i][j] = max(L[i-1][j], L[i][j-1])
+	return L[N][M]
+```
+
 ## 14 August 2018
 
 The [Discrete Optimization](https://www.coursera.org/learn/discrete-optimization) course covers [dynamic programming](https://en.wikipedia.org/wiki/Dynamic_programming), [constraint programming](https://en.wikipedia.org/wiki/Constraint_programming), [linear programming](https://en.wikipedia.org/wiki/Linear_programming) and and [local search](https://en.wikipedia.org/wiki/Local_search_%28optimization%29). The lectures are somewhat chatty and unorganized. I'll probably need to read some books while going through the material.
