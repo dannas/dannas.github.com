@@ -5,6 +5,36 @@ use_math: true
 ---
 # Today I've learned
 
+## 21 August 2018
+
+Dasgupta et.al. writes that every dynamic programming problem has an underlying DAG structure: each node represents a subproblem and each edge represents a precedence constraint on the order in which the subproblems can be tackled. I don't know if that will help me in the  future when I try to solve DP problems, but I guess it's worth to keep in mind. I solved the Knapsack with Repetition problem. You're allowed to take several items of the same kind. You can solve that problem by recursing on the max allowed weight `Ẁ`.
+
+```
+@memo
+def knapsack(values, weights, W):
+	if W == 0: return 0
+	return max([v + knapsack(values, weights, W - w) 
+		for v, w in zip(values, weights) if w <= W] or [0])
+```
+
+ It took some head scratching before I had convinced myself that the algorithm is correct. But once I had done that and had written the top-down version, then writing the bottom-up code was easy. I feel like I'm finally making progress. Yay!
+
+```
+def knapsack(values, weights, W): 
+	K = [0] * (W+1)
+	for i in range(1, W+1):
+	K[i] = max([v + K[i-w] for v, w in zip(values, weights) if w <= i] or [K[i-1]])
+	return K[W]
+```
+
+## 18 August 2018
+
+Brian Deans [Dynamic Programming Practice Problems][https://people.cs.clemson.edu/~bcdean/dp_practice/] contains descriptions of a couple of common DP problems and has short recordings which shows Brian solving them using intuitive table descriptions. Might be worth investigating. By now I've spent a little too much time trying to get an orientation on what dynamic programming really is. The central concepts are recursive definitions and the tables with data flows. I probably just need to work through the examples in CRLS and Dasgupta to get a good grasp on those fundamentals.
+
+## 17 August 2018
+
+Edward Z. Yang writes in [DP Zoo Tour](http://blog.ezyang.com/2010/11/dp-zoo-tour/) that you can almost completely characterize a dynamic programming algorithm by the shape of its table and how the data flows from one cell to another. He has collected a bunch of algorithms from Introduction to Algorithms and drawn up the tables and data flows. I especially liked the arrow notation he used for describing data flow.  The Longest Increasing SubSequence problem (LIS) and knapsack with repepetion has dataflow dependencies on all previous cells. Just seeing the arrows made it much easier for me to reason about those.
+
 ## 16 August 2018
 
 Steven Skiena writes that learning Dynamic Programming (DP) requires that you see  a lot of solved exercises before "it clicks" and you understand how to do them yourself. Well, there's been no "clicking" for me yet! 
