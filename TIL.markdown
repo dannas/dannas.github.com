@@ -5,6 +5,32 @@ use_math: true
 ---
 # Today I've learned
 
+## 22 August 2018
+
+Dynamic programming solutions often has two dimensional arrays and the expressions gets hard to read with all the nesting of the bracket operators, `table[i][j]=table[i][j-1]`. [Numpy](http://www.numpy.org/) arrays allows me to use two indexes inside the brackets which cleans up the the code, `table[i, j] = table[i, j-1]`.
+
+```
+import numpy as np
+def Table(num_rows, num_cols):
+	return np.zeros((num_rows, num_cols), dtype=np.int)
+```
+
+Here's a solution for  Knapsack without repetitions.
+
+```
+def knapsack(items, W):
+	N = len(items)
+	K = Table(N+1, W+1)
+	for  i in range(1, W+1):
+		for j in range(1, N+1):
+			v, w = items[i-1]
+			if w > W:
+				K[i, j] = K[i, j-1]
+			else:
+				K[i, j] = max(K[i, j-1], v + K[i-w, j-1])
+	return K[W, N]
+```
+
 ## 21 August 2018
 
 Dasgupta et.al. writes that every dynamic programming problem has an underlying DAG structure: each node represents a subproblem and each edge represents a precedence constraint on the order in which the subproblems can be tackled. I don't know if that will help me in the  future when I try to solve DP problems, but I guess it's worth to keep in mind. I solved the Knapsack with Repetition problem. You're allowed to take several items of the same kind. You can solve that problem by recursing on the max allowed weight `Ẁ`.
