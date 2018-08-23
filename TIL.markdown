@@ -55,7 +55,7 @@ def knapsack(values, weights, W):
 
 ## 18 August 2018
 
-Brian Deans [Dynamic Programming Practice Problems][https://people.cs.clemson.edu/~bcdean/dp_practice/] contains descriptions of a couple of common DP problems and has short recordings which shows Brian solving them using intuitive table descriptions. Might be worth investigating. By now I've spent a little too much time trying to get an orientation on what dynamic programming really is. The central concepts are recursive definitions and the tables with data flows. I probably just need to work through the examples in CRLS and Dasgupta to get a good grasp on those fundamentals.
+Brian Deans [Dynamic Programming Practice Problems](https://people.cs.clemson.edu/~bcdean/dp_practice/) contains descriptions of a couple of common DP problems and has short recordings which shows Brian solving them using intuitive table descriptions. Might be worth investigating. By now I've spent a little too much time trying to get an orientation on what dynamic programming really is. The central concepts are recursive definitions and the tables with data flows. I probably just need to work through the examples in CRLS and Dasgupta to get a good grasp on those fundamentals.
 
 ## 17 August 2018
 
