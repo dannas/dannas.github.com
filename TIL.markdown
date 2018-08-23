@@ -5,6 +5,21 @@ use_math: true
 ---
 # Today I've learned
 
+## 23 August 2018
+
+I tried to solve the [Chain Matrix Multiplication problem](https://en.wikipedia.org/wiki/Matrix_chain_multiplication) and wow that was a challenge for me. The earlier DP problems I've solved has involved linear recursion in one or two dimensions, but this problem requires tree recursion. But just understanding matrix multiplication was a chore. I've never taken a linear algebra course and it shows. [Kalid Azads article An Intuitive Guide to Linear Algebra](https://betterexplained.com/articles/linear-algebra-guide/) explains matrix multiplication as that a matrix can either consist of data (organized in columns) or operations (organized in rows). When we multiply two matrices, he imagines it as if we're "pouring" the input data through the operations matrix to create the result. It's easier to understand if you see his illustrations.
+
+The Chain Matrix Multiplication problem is about placing parenthesis for optimizing the order in which we perform the calculations. Those parenthesized expressions makes up a tree and the objective is to construct an optimal tree from subtrees.
+
+```
+@memo
+def chain_matrix_mult(M):
+    def C(i, j):
+        if i == j: return 0
+        return min([C(i, k) + C(k+1,j) + M[i-1] * M[k] * M[j] for k in range(i, j)])
+    return C(1, len(M)-1)
+```
+
 ## 22 August 2018
 
 Dynamic programming solutions often has two dimensional arrays and the expressions gets hard to read with all the nesting of the bracket operators, `table[i][j]=table[i][j-1]`. [Numpy](http://www.numpy.org/) arrays allows me to use two indexes inside the brackets which cleans up the the code, `table[i, j] = table[i, j-1]`.
