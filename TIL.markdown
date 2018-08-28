@@ -5,6 +5,12 @@ use_math: true
 ---
 # Today I've learned
 
+## 27 August 2018
+
+I was trying to boot a board from  a regular Debian image at work today and the kernel got blocked on MMC-readings. In the logs there were lines with the text `INFO: task kworker/3:1:79 blocked for more than 120 seconds`, followed by a back-trace for the specific kernel thread. I've seen those messages in the past for different reasons. Now I got curious about which part of the kernel is responsible for printing them.
+
+The file [kernel/hung_task.c](https://elixir.bootlin.com/linux/latest/source/kernel/hung_task.c) creates the `khungtaskd` thread which gets scheduled every 120 seconds and checks if each task that is in interruptible sleep has been scheduled for the last 120 seconds. If it hasn't, then `khungtaskd` dumps the hung tasks call stack. This kernel code is easy to explain, but there's still a couple of details that are fiddle, such as guaranteeing an upper bound on the number of tasks that are traversed and ensuring that the RCU lock is not held for too long, and updating the timeout values in an atomic fashion.
+
 ## 23 August 2018
 
 I tried to solve the [Chain Matrix Multiplication problem](https://en.wikipedia.org/wiki/Matrix_chain_multiplication) and wow that was a challenge for me. The earlier DP problems I've solved has involved linear recursion in one or two dimensions, but this problem requires tree recursion. But just understanding matrix multiplication was a chore. I've never taken a linear algebra course and it shows. [Kalid Azads article An Intuitive Guide to Linear Algebra](https://betterexplained.com/articles/linear-algebra-guide/) explains matrix multiplication as that a matrix can either consist of data (organized in columns) or operations (organized in rows). When we multiply two matrices, he imagines it as if we're "pouring" the input data through the operations matrix to create the result. It's easier to understand if you see his illustrations.
