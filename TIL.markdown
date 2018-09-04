@@ -5,6 +5,43 @@ use_math: true
 ---
 # Today I've learned
 
+## 4 September 2018
+
+When I've  edited files whose names was piped to  `vim` using `find -name pattern | xargs vim` , the terminal has gotten borked afterwards. Today I learned from the Stackexchange question [Invoking vi through xargs | vi breaks my terminal, why](https://superuser.com/questions/336016/invoking-vi-through-find-xargs-breaks-my-terminal-why) that when you invoke a program via `xargs`, the programs stdin points to `/dev/null` (since xargs doesn't know the original stdin, it does the next best thing).  Vim reads the tty settings from `/dev/null` and later applies those to its controlling terminal when exiting. A solution to this problem is to invoke `xargs` with the `-o, --open-tty` option, which will reopen `/dev/tty` as stdin.
+
+## 29 August 2018
+
+Today a colleague asked why a `struct` containing five `uint8_t` members occupied 8 bytes instead of 5 bytes. For code involving structures, the compiler may need to insert gaps in the field allocation to ensure that  each structure member satisfies its alignment requirement. But `uint8_t` can be aligned on each byte boundary. What's going on?
+
+The thing to know about bit-fields is that they are implemented with word- and byte-level mask and rotate instructions operating on machine words, and cannot cross word boundaries. The compiler will try to pack the bit-fields as tightly as possible, but it won't cross word boundaries
+
+```
+struct S {
+  char c[3];
+  char c4 :5;
+  char c5 :5;
+  char c6 :5;
+};
+
+int main(int argc, char *argv[]) {
+  return sizeof(struct S);
+}
+```
+
+Clangs diagnostic command shows this layout on my Linux x64 laptop. Note that the size is 6 instead of 5 bytes.
+
+```
+*** Dumping AST Record Layout
+         0 | struct S
+         0 |   char [3] c
+     3:0-4 |   char c4
+     4:0-4 |   char c5
+     5:0-4 |   char c6
+           | [sizeof=6, align=1]
+```
+
+But that's not the whole story. The compiler we use added padding to structs containing bitfields so that the total size woul be a multiple of the wordsize.
+
 ## 27 August 2018
 
 I was trying to boot a board from  a regular Debian image at work today and the kernel got blocked on MMC-readings. In the logs there were lines with the text `INFO: task kworker/3:1:79 blocked for more than 120 seconds`, followed by a back-trace for the specific kernel thread. I've seen those messages in the past for different reasons. Now I got curious about which part of the kernel is responsible for printing them.
