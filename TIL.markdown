@@ -7,7 +7,7 @@ use_math: true
 
 ## 4 September 2018
 
-When I've  edited files whose names was piped to  `vim` using `find -name pattern | xargs vim` , the terminal has gotten borked afterwards. Today I learned from the Stackexchange question [Invoking vi through xargs | vi breaks my terminal, why](https://superuser.com/questions/336016/invoking-vi-through-find-xargs-breaks-my-terminal-why) that when you invoke a program via `xargs`, the programs stdin points to `/dev/null` (since xargs doesn't know the original stdin, it does the next best thing).  Vim reads the tty settings from `/dev/null` and later applies those to its controlling terminal when exiting. A solution to this problem is to invoke `xargs` with the `-o, --open-tty` option, which will reopen `/dev/tty` as stdin.
+When I've  edited files whose names was piped to  `vim` using `find -name pattern | xargs vim` , the terminal has gotten borked afterwards. Today I learned from the Stackexchange question [Invoking vi through xargs - vi breaks my terminal, why](https://superuser.com/questions/336016/invoking-vi-through-find-xargs-breaks-my-terminal-why) that when you invoke a program via `xargs`, the programs stdin points to `/dev/null` (since xargs doesn't know the original stdin, it does the next best thing).  Vim reads the tty settings from `/dev/null` and later applies those to its controlling terminal when exiting. A solution to this problem is to invoke `xargs` with the `-o, --open-tty` option, which will reopen `/dev/tty` as stdin.
 
 ## 29 August 2018
 
