@@ -5,6 +5,26 @@ use_math: true
 ---
 # Today I've learned
 
+## 14 September 2018
+
+The `ifconfig` tool only shows interfaces that are up, while  `ip link` shows every interface. That tricked me for a while. You can use `ifconfig -a` to list every interface. On recent Linux systems, the `ifup`/`ifdown` scripts has been replaced with `systemd-networkd`. I 
+
+## 13 September 2018
+
+Today while porting a WiFi driver to a new board, I had trouble with the firmware loading and had to read [The Linux Kernel docs for the Linux Firmware API](https://www.kernel.org/doc/html/v4.17/driver-api/firmware/index.html). I was under the impression that every firmware load was triggered by an udev event, but that functionality was removed from the kernel back in 2014. Instead, the driver makes a call through the `request_firmware` function which takes a path as argument and return a firmware object. Internally it calls `kernel_read_file_from_path` which reads the file from the root file-system.
+
+The firmware loading may be subject to races with the mounting of the file system that the firmware file resides on. These races are particularly common when the kernel resumes from suspend. To work around these, a firmware cache is placed behind the `request_firmware` function.
+
+An alternative to placing the firmware file under /lib/firmware is to include it into the kernel, thereby speeding up the loading phase at the expense of a larger kernel image. If the driver that requires the firmware is built into the kernel, then you should place the firmware image in the initramfs as well, to avoid races with root file-system mounting during upstart.
+
+## 12 September 2018
+
+I had built an image using the Yocto build system but when I booted it, a USB module was not detected by a driver I had assumed had been built. How do you figure out if a certain driver has been built or not? Either you search the `/lib/modules/$(uname -r)/` directory if it was built as a module. Or you can search in the `/lib/modules/$(uname -r)/modules.builtin` file. But the easiest way is probably to use `modinfo` which does both for you. One thing you can not rely on is the content of `/sys/module/`: only standalone modules or builtin modules that takes parameters are listed there.
+
+## 5 September 2018
+
+According to the Unix&Linux StackExchange post [USB C to Displayport driver support](https://unix.stackexchange.com/questions/403318/usb-c-%E2%86%92-displayport-adapter-support), I'll have to wait until kernel 4.19 before the kernel can support my Displayport to USB C adapter. The good news is that the driver will support every cable present on the market.
+
 ## 4 September 2018
 
 When I've  edited files whose names was piped to  `vim` using `find -name pattern | xargs vim` , the terminal has gotten borked afterwards. Today I learned from the Stackexchange question [Invoking vi through xargs - vi breaks my terminal, why](https://superuser.com/questions/336016/invoking-vi-through-find-xargs-breaks-my-terminal-why) that when you invoke a program via `xargs`, the programs stdin points to `/dev/null` (since xargs doesn't know the original stdin, it does the next best thing).  Vim reads the tty settings from `/dev/null` and later applies those to its controlling terminal when exiting. A solution to this problem is to invoke `xargs` with the `-o, --open-tty` option, which will reopen `/dev/tty` as stdin.
