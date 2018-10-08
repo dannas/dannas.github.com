@@ -5,6 +5,12 @@ use_math: true
 ---
 # Today I've learned
 
+## 8 September 2018
+
+A colleague was investigating a problem with a Linux Ethernet driver oscillating between reporting that a carrier signal was present and then not present. I started reading up on carrier detection and auto-negotiation and here's what I found: The Ethernet standard consists of many different standards that specify how the physical layer operates. Auto-negotiation works for all twisted-pair media (10Base-T, 100Base-TX, 1000Base-T, 10GBase-TX), but not for fiber optic. The negotiation only works for link segments; the initialization takes place prior to any other communication; and it uses its own signaling system. That signaling system is based upon the link integrity test pulse, which was developed for 10Base-T to help the Ethernet device at either end detect the presence of a communication failure. For faster Ethernet systems there's a continuous stream of signals even when there is no data being sent, which means the link pulse is not needed on faster systems.
+
+The Auto-Negotiation system uses a burst of the normal link pulse (NLP) signal which is called a fast link pulse (FLP). The last link pulse in a burst of fast link pulses is timed as to appear to older 10Base-T equipments as regular link integrity link pulses. The Auto-Negotiation system continuously monitors the link status, and will notice if a link goes down and comes back up (as when disconnecting a patch cord to a station). Once a link comes back up, the Auto-Negotiation process will start again from the beginning.
+
 ## 14 September 2018
 
 The `ifconfig` tool only shows interfaces that are up, while  `ip link` shows every interface. That tricked me for a while. You can use `ifconfig -a` to list every interface. On recent Linux systems, the `ifup`/`ifdown` scripts has been replaced with `systemd-networkd`. I 
