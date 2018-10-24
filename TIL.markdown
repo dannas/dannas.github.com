@@ -5,6 +5,57 @@ use_math: true
 ---
 # Today I've learned
 
+## 23 October 2018
+
+I was trying to explain a C++ linking error today at work and came up short. After reading up, I realized that it was due to how name lookup differs for qualified and unqualified names.  Here is a minimal example of my problem. What is the exported symbol for `x`?
+
+```
+namespace outer { extern int x; }
+using namespace outer;
+int x;
+```
+
+It's `x` and not `outer::x` as I had expected. This struct definition on the other hand has the expected exported symbol `outer::S::x`
+
+```
+namespace outer {  struct S { static int x; }; }
+using namespace outer;
+int S::x;
+```
+
+The difference lies in how qualified and unqualified name lookup is carried out. If the `int x` definition had used qualified name-lookup, then it would have gotten the expected type. An example that will export `outer::inner::x:`, the C++ syntax does not permit `int ::x:` so I had to add an inner namespace to demonstrate my point
+
+```
+namespace outer { namespace inner { extern int x; } }
+using namespace outer;
+int inner::x;
+```
+
+## 19 October 2018
+
+[Mike Hommey writes in How to Waste a lot of Space Without Knowinng](https://glandium.org/blog/?p=2361) about the difference between how pointers to const and const pointers are allocated in ELF files. Consider these three declarations:
+
+```
+const char *ptr = "ptr to const";
+const char * const cptr = "const ptr to const";
+const char buf[] = "char array";
+```
+
+The `ptr` will live in .data while the content it points to will be placed in .rodata. But `cptr` and `buf` will both live in .rodata. That's a net save of 8 bytes on 64bit platform. 
+
+Another source of space waste is the fact that external symbols occupy space in the symbol table (and therefore also occupies space in the string table, and the  gnu hash table). That can be avoided by declaring constants local to a file as static, and constants local to a library should be annotated with visibility=hidden.
+
+## 9 September 2018
+
+The Linux Input API (e.g. /dev/input/event0)  allows multiple processes to open the device and they can all read the input events. Multiple processes can open a tty device as well, but a process that calls `read` consumes the read bytes. This difference in design can be motivated by the different expectation models:
+
+* The event subsystem is designed for unidirectional notification of simple events from multiple writers into the the system with very little (or no) configuration options
+* The tty subsystem is intended for bidirectional end-to-end communication of potentially large amounts of data and provides a reasonable flexible (albeit fairly baroque) configuration mechanism.
+
+The tty subsystem should be viewed as as a point-to-point link between moderately intelligent endpoints who will agree on what the data passing between them will look like. While there are circumstances where "single writer, multiple readers" would make sense (GPS receiver connected to a serial port, continually reporting its position for instance), that's not the main purpose of the system and those use cases can be easily implemented in user space.
+
+Given this, it makes sense to only allow a single process to access a serial-port. I've noticed that `GNU screen` will complain if another instance  has already opened the device, but `cat` can access the device file just fine - How come? It's because `GNU screen`uses file locking, something I've hardly encountered so far. Chapter 55 File Locking of Michael Kerrisks Linux Programming Interface book gives a good introduction. Linux uses advisory file locking using the `flock` and `fcntl` system calls.
+
 ## 8 September 2018
 
 A colleague was investigating a problem with a Linux Ethernet driver oscillating between reporting that a carrier signal was present and then not present. I started reading up on carrier detection and auto-negotiation and here's what I found: The Ethernet standard consists of many different standards that specify how the physical layer operates. Auto-negotiation works for all twisted-pair media (10Base-T, 100Base-TX, 1000Base-T, 10GBase-TX), but not for fiber optic. The negotiation only works for link segments; the initialization takes place prior to any other communication; and it uses its own signaling system. That signaling system is based upon the link integrity test pulse, which was developed for 10Base-T to help the Ethernet device at either end detect the presence of a communication failure. For faster Ethernet systems there's a continuous stream of signals even when there is no data being sent, which means the link pulse is not needed on faster systems.
