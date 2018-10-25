@@ -5,6 +5,39 @@ use_math: true
 ---
 # Today I've learned
 
+## 25 October 2018
+
+I use QtCreator as my IDE for all C++-projects at work. We have  a bunch of them, and I've been annoyed for a while about the hazzle of setting up `make -j` options and using ccache as wrapper for our cross-compilers.  Today i found out that each kit can have settings that applies to all projects that uses that kit. I've  set the build tool to ninja (since it autodectects the number of cores and compiles faster than make) and I've set `CMAKE_CXX_LAUNCHER=ccache`. Now things are blazingly fast!
+
+Today I got surprised by a compile error when I tried to const-override a method for a typedef that I thought was an alias for a reference to the type. I read up and learned in the [Stackoverflow post Function overloading in C Const Pointers](https://stackoverflow.com/questions/37913596/function-overloading-in-c-const-pointers) outermost cv-qualifiers in a parameter declaration are ignored during overload resolution. The thing that tripped me up is how we interpret C declarations: `const int *` is a pointer to const int. So the const is embedded in the declaration, and therefore is significant. But `int * const` is a const pointer to int. There the const specifier is outermost, and should therefore be ignored.
+
+```
+void fun_ptr(int *x) { }
+void fun_ptr(const int *x) { }
+
+void fun_cptr(int *x) { }     
+void fun_cptr(int * const x) { } // compile error
+
+void fun_int(int x) { }
+void fun_int(const int x) { } // compile error
+```
+
+
+
+## 24 October 2018
+
+I attended the [Meet Qt Stockholm seminar](https://www.qt.io/events/meet-qt-stockholm--1537353592/)  today where representatives for the Qt company and KDAB presented the road-map and "insights into the latest trends in embedded development".
+
+Vesa Kyllönen started with presenting a chart of the Qt company's growth. They've increased their revenue substantially over the last couple of years and the Qt software is used in lots of different industries.
+
+Santtu Ahonen described how the touchscreen interfaces of smart-phones affects the user expectations on embedded devices. He notes that the Qt-based devices are often run with with less resources. They see a trend where Cortex-M processors are also being equipped with touch-screens. Some Cortex-M are even more powerful than Cortex-A processors. There's a lot of buzz around Augmented Reality (AR) and they have worked on a few projects involving that.
+
+Kalle Dalheimer, CEO of KDAB, gave examples of how Qt is being used in the medicine and biotech industry. An inspiring talk with lots of advanced 3D visualizations.
+
+Santtu continued after lunch with a presentation of the Qt road map. They've created a Qt Studio tool that will morph with the Qt 3d Studio tool. The LTS releases span 3 years, but longer support contracts can be bought. There are plans for further "componentizing" the Qt distribution in order to allow even more resource-constrained systems to be targets.
+
+Tino Pyssysalo rounded up the day by a demonstration of the integration between Photoshop and Qt Studio.
+
 ## 23 October 2018
 
 I was trying to explain a C++ linking error today at work and came up short. After reading up, I realized that it was due to how name lookup differs for qualified and unqualified names.  Here is a minimal example of my problem. What is the exported symbol for `x`?
