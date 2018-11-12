@@ -5,6 +5,64 @@ use_math: true
 ---
 # Today I've learned
 
+## 12 November 2018
+
+The r ST Microelectronics Cortex-M MCUs are the most sold MCUs in the world. They're great, but I wish that there were readily available HAL-drivers of  higher code quality than the CubeMX generated software. There is a Low-Level API hidden within ST:s HAL drivers. Maybe that's worth reading up on? I've seen many references to it in the eevblog and reddit/r/embedded forums.
+
+## 8 November 2018
+
+Inline functions and template functions in C++ are marked as weak symbols by the linker.  They are defined in multiple translation units and at link-time, only one of the definitions are kept. If the symbols were not marked as weak, then there would be collisions.
+
+```
+inline void f() { }
+void g() { }
+template <typename T> void h() { }
+
+void use() {
+    f();
+    g();
+    h<int>();
+}
+```
+
+Notice here how the inline function `f` and the template function `h` are marked as weak.
+
+```
+$ nm foo.o -C
+0000000000000000 W f()
+0000000000000000 T g()
+0000000000000000 W void h<int>()
+0000000000000007 T use()
+```
+
+## 5 November 2018
+
+I read Edgar Dijkstras EWD 196: The structure of the 'THE'-multiprogramming system which Wikipedia claims to be one of the earliest description of a layered design for a software system. Dijkstra describes how his group designed an operating system by dividing the code into layers that each only depended on the layer beneath it. This lead to code that was easier to verify, inspect and test in isolation. Dijkstra proposed that all software should be modularized in such a way that the set of allowed inputs were small enough to allow exhaustive testing. Now, that's clearly not feasible for most of the code I've read and written, but the idea of layering software has proved it's usefulness over the decades.
+
+I wonder if there are more articles about software design in a similar vein? C.A.R. Hoare has written about his experiences working as a manager for a software project that drowned in it's own complexity.
+
+TODO(dannas): Find the Hoare article.
+
+## 29 October 2018
+
+https://www.movable-type.co.uk/scripts/latlong.html
+
+https://gis.stackexchange.com/questions/25494/how-accurate-is-approximating-the-earth-as-a-sphere#25580
+
+http://www.movable-type.co.uk/scripts/latlong-os-gridref.html
+
+http://www.movable-type.co.uk/scripts/latlong-vectors.html
+
+http://www.movable-type.co.uk/scripts/latlong-vincenty.html
+
+http://www.movable-type.co.uk/scripts/latlong-utm-mgrs.html
+
+https://cs.nyu.edu/visual/home/proj/tiger/gisfaq.html
+
+[DrMath on Deriving the Haversine formula](http://mathforum.org/library/drmath/view/51879.html)
+
+
+
 ## 25 October 2018
 
 I use QtCreator as my IDE for all C++-projects at work. We have  a bunch of them, and I've been annoyed for a while about the hazzle of setting up `make -j` options and using ccache as wrapper for our cross-compilers.  Today i found out that each kit can have settings that applies to all projects that uses that kit. I've  set the build tool to ninja (since it autodectects the number of cores and compiles faster than make) and I've set `CMAKE_CXX_LAUNCHER=ccache`. Now things are blazingly fast!
