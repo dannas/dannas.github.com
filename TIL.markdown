@@ -5,9 +5,19 @@ use_math: true
 ---
 # Today I've learned
 
+## 14 November 2018
+
+Per Vognsen used labels with small integer values in his assembler for the bitwise project. I had never seen that scheme before. Sinclair Target mentions in [The Source History of Cat](https://twobithistory.org/2018/11/12/cat.html) that Ken Thompsson used the same kind of labels for his assembler in Unix v7.
+
+> Thompson added support for “temporary labels” using the digits 0 through 9. These are labels that can be reused throughout a program, thus being, according to the Unix Programmer’s Manual, “less taxing both on the imagination of the programmer and on the symbol space of the assembler.” From any given instruction, you can refer to the next or most recent temporary label `n` using `nf` and `nb` respectively. For example, if you have some code in a block labeled `1:`, you can jump back to that block from further down by using the instruction `jmp 1b`. (But you cannot jump *forward* to that block from above without using `jmp 1f` instead.)
+
+## 13 November 2018
+
+I stumbled across an issue for [replacing llvm::iplist<Instruction> with TaggedList<Instruction>](https://github.com/pytorch/glow/issues/1766) that Jakob Stoklund had written. I had never heard of tagged lists before. They're supposed to be a solution to the [Order Maintenance problem](https://en.wikipedia.org/wiki/Order-maintenance_problem). Jakobs code is based on Michael Bender, Richard Coles et.als. paper [Two Simplified Algorithms for Maintaining Order in a List](https://scholar.google.com/scholar?cluster=5225046542682967685&hl=en&as_sdt=0,5).
+
 ## 12 November 2018
 
-The r ST Microelectronics Cortex-M MCUs are the most sold MCUs in the world. They're great, but I wish that there were readily available HAL-drivers of  higher code quality than the CubeMX generated software. There is a Low-Level API hidden within ST:s HAL drivers. Maybe that's worth reading up on? I've seen many references to it in the eevblog and reddit/r/embedded forums.
+The  ST Microelectronics Cortex-M MCUs are the most sold MCUs in the world. They're great, but I wish that there were readily available HAL-drivers of  higher code quality than the CubeMX generated software. There is a Low-Level API hidden within ST:s HAL drivers. Maybe that's worth reading up on? I've seen many references to it in the eevblog and reddit/r/embedded forums.
 
 ## 8 November 2018
 
@@ -37,7 +47,7 @@ $ nm foo.o -C
 
 ## 5 November 2018
 
-I read Edgar Dijkstras EWD 196: The structure of the 'THE'-multiprogramming system which Wikipedia claims to be one of the earliest description of a layered design for a software system. Dijkstra describes how his group designed an operating system by dividing the code into layers that each only depended on the layer beneath it. This lead to code that was easier to verify, inspect and test in isolation. Dijkstra proposed that all software should be modularized in such a way that the set of allowed inputs were small enough to allow exhaustive testing. Now, that's clearly not feasible for most of the code I've read and written, but the idea of layering software has proved it's usefulness over the decades.
+I read Edgar Dijkstras EWD 196: The structure of the 'THE'-multiprogramming system, which Wikipedia claims to be one of the earliest description of a layered design for a software system. Dijkstra describes how his group designed an operating system by dividing the code into layers that each only depended on the layer beneath it. This lead to code that was easier to verify, inspect and test in isolation. Dijkstra proposed that all software should be modularized in such a way that the set of allowed inputs were small enough to allow exhaustive testing. Now, that's clearly not feasible for most of the code I've read and written, but the idea of layering software has proved it's usefulness over the decades.
 
 I wonder if there are more articles about software design in a similar vein? C.A.R. Hoare has written about his experiences working as a manager for a software project that drowned in it's own complexity.
 
