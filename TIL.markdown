@@ -5,6 +5,10 @@ use_math: true
 ---
 # Today I've learned
 
+## 19 November 2018
+
+I read about [Load-Hit-Store](https://en.wikipedia.org/wiki/Load-Hit-Store) delays today: The Wikipedia page says that reading from a  memory address that has just been the target of a store operation, may stall the pipeline until the store has been finished. I had a misconception here: I believed that the value that was placed in the store queue would be accessible to the cache before the store had been committed but that was not the case. Or, it can be - but it requires store-forwarding which is complicated since the processor must search the store queue for a certain memory address which can be unaligned on x86-processors.
+
 ## 14 November 2018
 
 Per Vognsen used labels with small integer values in his assembler for the bitwise project. I had never seen that scheme before. Sinclair Target mentions in [The Source History of Cat](https://twobithistory.org/2018/11/12/cat.html) that Ken Thompsson used the same kind of labels for his assembler in Unix v7.
@@ -13,7 +17,7 @@ Per Vognsen used labels with small integer values in his assembler for the bitwi
 
 ## 13 November 2018
 
-I stumbled across an issue for [replacing llvm::iplist<Instruction> with TaggedList<Instruction>](https://github.com/pytorch/glow/issues/1766) that Jakob Stoklund had written. I had never heard of tagged lists before. They're supposed to be a solution to the [Order Maintenance problem](https://en.wikipedia.org/wiki/Order-maintenance_problem). Jakobs code is based on Michael Bender, Richard Coles et.als. paper [Two Simplified Algorithms for Maintaining Order in a List](https://scholar.google.com/scholar?cluster=5225046542682967685&hl=en&as_sdt=0,5).
+I stumbled across an issue for [replacing llvm::iplist with TaggedList](https://github.com/pytorch/glow/issues/1766) that Jakob Stoklund had written. I had never heard of tagged lists before. They're supposed to be a solution to the [Order Maintenance problem](https://en.wikipedia.org/wiki/Order-maintenance_problem). Jakobs code is based on Michael Bender, Richard Coles et.als. paper [Two Simplified Algorithms for Maintaining Order in a List](https://scholar.google.com/scholar?cluster=5225046542682967685&hl=en&as_sdt=0,5).
 
 ## 12 November 2018
 
@@ -49,9 +53,7 @@ $ nm foo.o -C
 
 I read Edgar Dijkstras EWD 196: The structure of the 'THE'-multiprogramming system, which Wikipedia claims to be one of the earliest description of a layered design for a software system. Dijkstra describes how his group designed an operating system by dividing the code into layers that each only depended on the layer beneath it. This lead to code that was easier to verify, inspect and test in isolation. Dijkstra proposed that all software should be modularized in such a way that the set of allowed inputs were small enough to allow exhaustive testing. Now, that's clearly not feasible for most of the code I've read and written, but the idea of layering software has proved it's usefulness over the decades.
 
-I wonder if there are more articles about software design in a similar vein? C.A.R. Hoare has written about his experiences working as a manager for a software project that drowned in it's own complexity.
-
-TODO(dannas): Find the Hoare article.
+I wonder if there are more articles about software design in a similar vein? C.A.R. Hoare has written about his experiences working as a manager for a software project that drowned in it's own complexity in [The Emperors Old Clothes](http://zoo.cs.yale.edu/classes/cs422/2010/bib/hoare81emperor.pdf) which provides some insights about how we always must manage complexity. Niklaus Wirths article [A Plea for Lean Software](https://cr.yp.to/bib/1995/wirth.pdf) is another interesting article about complexity.
 
 ## 29 October 2018
 
