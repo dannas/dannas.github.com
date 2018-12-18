@@ -5,6 +5,193 @@ use_math: true
 ---
 # Today I've learned
 
+## 17 December 2018
+
+Nick Parlante describes in his [Linked List Problems](http://cslibrary.stanford.edu/105/LinkedListProblems.pdf) document, 18 different "etudes" for practicing linked list manipulation. Exercise number 6 is about inserting a node into a sorted list. It requires us to handle: an empty list; insertion at first position; insertion somewhere in the middle of the list; and insertion at the end. My solution handles all four cases but requires three if-statements.
+
+```
+void sorted_insert(Node **head, Node *node) {
+    if (*head == NULL) {
+        *head = node;
+        return;
+    }
+    Node *p;
+    Node *prev = NULL;
+    for (p = *head; p != NULL; p = p->next) {
+        if (p->val >= node->val) {
+            break;
+        }
+        prev = p;
+    }
+    if (prev == NULL) {
+        node->next = *head;
+        *head = node;
+    } else {
+        node->next = prev->next;
+        prev->next = node;
+    }
+}
+```
+
+The `if-else` statement at the end is needed for differentiating between insertion at the beginning and insertion elsewhere. Nicks first solution instead checked for both an empty list and insertion at the beginning, at the top of the function.
+
+```
+void sorted_insert2(Node **head, Node *node) {
+    if (*head == NULL || (*head)->val >= node->val) {
+        node->next = *head;
+        *head = node;
+        return;
+    }
+    Node *p;
+    for (p = *head; p->next != NULL; p = p->next) {
+        if (p->next->val >= node->val) {
+            break;
+        }
+    }
+    node->next = p->next;
+    p->next = node;
+}
+```
+
+His solution got rid of the `if-else` statement and the `prev` pointer. But we can do even better if we introduce a dummy node. 
+
+```
+void sorted_insert3(Node **head, Node *node) {
+    Node dummy = {.next = *head};
+
+    Node *p;
+    for (p = &dummy; p->next != NULL; p = p->next) {
+        if (p->next->val >= node->val) {
+            break;
+        }
+    }
+    node->next = p->next;
+    p->next = node;
+    *head = dummy.next;
+}
+```
+
+My original function had 19 lines of code in the body. `sorted_insert3` has 10 lines. Can we do even better? Ye we can, if we iterate using a pointer to a pointer.
+
+```
+void sorted_insert4(Node **head, Node *node) {
+    Node **p;
+    for (pp = head; *pp != NULL; pp = &((*pp)->next)) {
+        if ((*pp)->val >= node->val) {
+            break;
+        }
+    }
+    node->next = *pp;
+    *pp = node;
+}
+```
+
+This latest version is a variation on Linus Torvalds list-removal code that I wrote about yesterday.
+
+## 16 December 2018
+
+Linus Torvalds wrote in the  Slashdot interview [Linus Torvalds answers all your Questions](https://meta.slashdot.org/story/12/10/11/0030249/linus-torvalds-answers-your-questions)  how he feels that many people don't understand pointers.
+
+> [...] I've seen too many people who delete a singly-linked list entry by keeping track of the "prev" entry, and then to delete the entry [...]. People who understand pointers just use a "pointer to the entry pointer", and initialize that with the address of the list_head. And then as they traverse the list, they can remove the entry without using any conditionals, by just doing a "*pp = entry->next".
+
+The bad way of doing a list remove-function would be:
+
+```
+void remove(Node **head, int val) {
+    Node *prev = NULL;
+    for (Node *p = *head; p != NULL; p = p->next) {
+        if (p->val == val) {
+            if (prev) {
+                prev->next = p->next;
+            } else {
+                *head = p->next;
+            }
+        }
+    }
+}
+```
+
+It needs to differentiate between removing an element at the front or somewhere else in the list. Torvalds solutions is leaner. The `pp` pointer points to head at the beginning, on the next iterations it points to the `next` field of the previous node. So we inspect the current value, but still have access to `prev->next`. Very clever!
+
+```
+void remove2(Node **head, int val) {
+    for (Node **pp = head; *pp != NULL; pp = &(*pp)->next) {
+        if ((*pp)->val == val) {
+            *pp = (*pp)->next;
+        }
+    }
+}
+```
+
+Note that neither if these functions actually `free` the deleted node. If the node should instead be detached, it's next field should be set to `NULL`.
+
+## 14 December 2018
+
+In C and C++, arrays passed as parameters decays to pointers. That is a problem if you wish to pass a multidimensional array to a function. Here are the solutions I know of.
+
+If the size of the rows and columns are known globally, then you can declare the parameter as pointer to array of columns
+
+```
+enum {NROWS = 16, NCOLS = 16 }
+
+void f(int *array[NCOLS]) {
+    //
+    int x = array[row][col];
+}
+```
+
+If the size is not known, then you can pass a pointer to a pointer together with `num_rows` and `num_cols` parameters. But then you have to do the address calculations manually.
+
+```
+void f(int **array, size_t n, size_t m) {
+    //
+    int x = array[row * n + col]
+}
+```
+
+In C++ you can use a reference to array parameter.
+
+```
+enum {NROWS = 16, NCOLS = 16 }
+void f(int (&array)[NROWS][NCOLS]) {
+    // 
+    int x = array[row][col];
+}
+```
+
+If the size of the rows and columns is not known globally, then you can use a template function.
+
+```
+template <size_t NROWS, size_t NCOLS>
+void f(int (&array)[NROWS][NCOLS]) {
+    //
+    int x = array[row][col];
+}
+```
+
+In C99, you can specify the size of the array as a parameter, but it must precede the array parameter.
+
+```
+void f(size_t len, int *array[len]) {
+    //
+    int x = array[row][col];
+}
+```
+
+## 27 November 2018
+
+According to Daniel Miesslers blogpost [The Craziest Thing You'll Ever Learn About Pi](http://danielmiessler.com/blog/the-craziest-thing-youll-ever-learn-about-pi) ,pi calculated out to only 39 decimal places would allow one to compute the circumference of the entire universe to the accuracy of less than the diameter of a hydrogen atom. 16 decimal places (approximately what you get with a `double`) should be enough to calculate the diameter of the Solar System with the error less than a hair-width
+
+## 20 November 2018
+
+Brian Canthrill warmly recommends rust in [Falling in Love with Rust](http://dtrace.org/blogs/bmc/2018/09/18/falling-in-love-with-rust/). My own feelings about the language are a bit mixed, but nevertheless I've decided to give it a go. Brian suggest that you start with the exercises in the code repository [Rust Koans](https://github.com/crazymykl/rust-koans) so I did. It consists of unittests and it's your task to make them pass. They give introductions to integers, strings, arrays, vectors, traits, structs and borrowing. Some first observations
+
+* Having strict definitions for integer overflow looks useful.
+* The Vec struct has way too many functions for my taste and they deviate from the STL naming convention.
+* 
+
+
+
 ## 19 November 2018
 
 I read about [Load-Hit-Store](https://en.wikipedia.org/wiki/Load-Hit-Store) delays today: The Wikipedia page says that reading from a  memory address that has just been the target of a store operation, may stall the pipeline until the store has been finished. I had a misconception here: I believed that the value that was placed in the store queue would be accessible to the cache before the store had been committed but that was not the case. Or, it can be - but it requires store-forwarding which is complicated since the processor must search the store queue for a certain memory address which can be unaligned on x86-processors.
