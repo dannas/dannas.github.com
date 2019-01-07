@@ -5,6 +5,115 @@ use_math: true
 ---
 # Today I've learned
 
+## 3 January 2019
+
+You can avoid single stepping into the C++ standard library by adding [skip directives to your .gdbinit according to a blog post on reversed.top](https://reversed.top/2016-05-26/skipping-standard-library-in-gdb/)
+
+```
+skip -gfi /usr/include/c++/*/*/*
+skip -gfi /usr/include/c++/*/*
+skip -gfi /usr/include/c++/*
+```
+
+## 2 January 2019
+
+The Modern C++ twitter debate about debuggers led me to the MSDN article [Debugging Tips and Tricks for C++ in Visual Studio](https://blogs.msdn.microsoft.com/vcblog/2016/07/11/debugging-tips-and-tricks-for-c-in-visual-studio/). I use QtCreator and its gdb-based debugger. It works fairly well but I wish I could have the some Visual Studio features such as: always see function return values; set next statement to be executed by just clicking on the line; make simple edits and just continue debugging without having to recompile; pinning data hover tips for iterative code paths;  easily inspecting how long each line took to execute from within the debugger.
+
+## 1 January 2019
+
+The GCC compiler provides many [Function attributes](https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#Common-Function-Attributes) that can improve performance and helps detect common bugs. The format string attribute is commonly used for `printf` or `scanf`-like functions but another way to provide variable number of arguments is by placing a sentinel at the end of the argument list, most commonly `NULL`. GCC provides a function attribute, `sentinel` for ensuring that the caller really has provided a NULL argument.
+
+## 30 December 2018
+
+Integer division in the C language rounds towards zero. So `3 / 2 == 1` and `-3 / 2 == -1`.  That isn't the only option, [Python for instance, has floor rounding](http://python-history.blogspot.com/2010/08/why-pythons-integer-division-floors.html). It's common to divide a factor by 2 and these are commonly optimized to use shifts. But the `sar` operation in x86 does not round towards zero. So for integer division we add 1 to the dividend if the number is negative.
+
+```
+int idiv2(int x) {
+    return x / 2;
+}
+
+unsigned udiv2(unsigned x) {
+    return x / 2;
+}
+```
+
+Here's the assembly generated. Note how idiv2 has a `shr eax, 31` operation for extracting the sign bit. This pattern has been known for a long time, Mike Abrash mentions it in the chapter [Signed Division with Sar in the book Zen of Assembly](http://www.jagregory.com/abrash-zen-of-asm/#signed-division-with-sar)
+
+```
+idiv2:
+        mov     eax, edi
+        shr     eax, 31
+        add     eax, edi
+        sar     eax
+        ret
+udiv2:
+        mov     eax, edi
+        shr     eax
+        ret
+```
+
+## 29 December 2018
+
+Ever since I read K&R in my first university course, I've known that you have to be careful about parenthesizing parameter names for function macros in C. A definition like `#define SQUARE(x) x * x` will give the wrong answer for an expression like `SQUARE(1+2)` due to the higher precedence of the multiplication operator. But a case where you don't need to parenthesize parameter names is inside function calls, like `#define SQUARE(x) square_helper(x, x)`.
+
+You also have to take be mindful about parenthesizing the whole replacement list. The improved  `#define SQUARE(x) (x) * (x)` definition still fails for `6 / SQUARE(1+2)`. One thing that has bitten me in the past is the fact that  C does not have negative literals. So `-1` is `1` with the `-` operator applied to it. It means that a macro definition like `#define EOF -1` could give unexpected results if used in an expression with operators of lower precedence.
+
+Even `#define SQUARE(x) ((x) * (x))` will fail for `SQUARE(i++)` since i will be incremented twice. One solution is to rely on the [GNU specific typeof keyword](https://gcc.gnu.org/onlinedocs/gcc/Typeof.html) together with the equally [GNU specific compound statement extension](https://gcc.gnu.org/onlinedocs/gcc-2.95.3/gcc_4.html#SEC62). But you're probably better of, just using inlined functions.
+
+```
+#define SQUARE(x) ({typeof (x) _x = (x); _x;})
+```
+
+## 28 December 2018
+
+If you have a buffer with some meta-data in front, it's convenient to declare the buffer as a flexible array member of a header struct. In that way you only need one allocation for buffer and header.
+
+```
+typedef struct BufHdr {
+  size_t len;
+  size_t cap;
+  uint64_t data[];
+} BufHdr;
+```
+
+When you allocate such a buffer, you might calculate the size as the sum of the header-size and the total size of the array.
+
+```
+BufHdr *hdr = malloc(sizeof(*hdr) + num_elems * elem_size);
+```
+
+But that might allocate some more bytes than needed, due to alignment. Use `offsetof` instead.
+
+```
+BufHdr *hdr = malloc(offsetof(BufHdr, data) + N * sizeof
+```
+
+## 27 December 2018
+
+Iterate over a bitmap can be done using the find first set bit function. I thought that you had to use a compiler intrinsics or inline assembly for that but there's a `ffs` function in glibc.
+
+## 26 December 2018
+
+Stack canaries fs:28h TODO
+
+## 19 December 2018
+
+Per Vognsen made some personal comments about productivity in [Bitwise Day 7: More Order-Independent Declarations](https://bitwise.handmade.network/episode/bitwise/bitwise007/#5887). He said that he had improved substantially over the past few years and that progress was due to finding ways to get "unstuck". Here's a transcript:
+
+> [...]I feel like it's a pretty normal middle-stage for a lot of programmers, because when you start out, regardless of how natively smart or whatever you are, you really don't have good taste. So it's very easy to just blast out code and that's why you hear a lot of people who are very productive in say, their teens. But objectively they were terrible. But they didn't have the perception and the understanding that what they were doing was trash, but they were eventually gonna get stuck and not be able to do anything because they were so deep down a hole with their bad decisions. They were making a lot of decisions basically, but they were really bad decisions. And then at some point you grow self-awareness, through experience and what not, and you can easily become kinda paralyzed by thinking about everything that could be better and all that stuff. And hopefully you come out on the other side of that and you can be thoughtful but not completely paralyzed by your thoughtfulness.
+
+## 18 December 2018
+
+Jonathan Corbets LWN article [The problem with prefetch](https://lwn.net/Articles/444336/) describes how Andi Klee, Linus Torvalds and Ingo Molnar figured out that the prefetch directives for linked list traversal was actually hurting performance. The skbuff traversal routines, the linked lists scans for the hash tables and the for_each_x linked list macros used prefetch calls that all made the code slower.
+
+```
+#define list_for_each(pos, head) \
+	for (pos = (head)->next; prefetch(pos->next), pos != (head); \
+            pos = pos->next)
+```
+
+TODO: write about my own experiments
+
 ## 17 December 2018
 
 Nick Parlante describes in his [Linked List Problems](http://cslibrary.stanford.edu/105/LinkedListProblems.pdf) document, 18 different "etudes" for practicing linked list manipulation. Exercise number 6 is about inserting a node into a sorted list. It requires us to handle: an empty list; insertion at first position; insertion somewhere in the middle of the list; and insertion at the end. My solution handles all four cases but requires three if-statements.
