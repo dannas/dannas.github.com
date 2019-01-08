@@ -5,6 +5,96 @@ use_math: true
 ---
 # Today I've learned
 
+## 8 January 2019
+
+The number of binary search trees of size N can be calculated with the following function. It's neat that you don't have to actually create the trees. It reminds me of a Jon Bentley presentation where he reduced quicksort down to a recurrence relation for reasoning about the performance. He didn't even have to run the code to calculate the runtime!
+
+```
+int count_trees(size_t N) {
+    if (N <= 1) return 1;
+    int sum = 0;
+    for (size_t i = 0; i < N; i++) {
+        int left = count_trees(i);
+        int right = count_trees(N-i-1);
+        sum += left * right;
+    }
+    return sum;
+}
+```
+
+I had an off-by-one bug where I recursed with `N-i` for the right subtree. That's the sort of bug that I write very often. I've done it for mergesort, quicksort, quickselect and other algorithms.
+
+## 7 January 2019
+
+The PowerPC instruction set for embedded systems, "Book E", has a Variable Length Encoding (VLE) extension. 16-bit instructions stats with `se_` and 32 bit instructions starts with `e_`.
+
+I wrote some simple functions in [Compiler Explorer for experimenting with PowerPC code generation](https://godbolt.org/z/JWwis0). Some examples of simple simple PowerPC assembly. A return from a function is handled by `blr`, Branch to Link Register.
+
+```
+void empty() { }
+```
+
+```
+empty:
+	blr
+```
+
+The first parameter is passed in `r3` and the return value is stored in `r3` as well.
+
+```
+int return_param(int x) {
+    return x;
+}
+```
+
+```
+return_param:
+	blr
+```
+
+Constants are loaded with `li` Load Immediate.
+
+```
+int return_constant() {
+    return 42;
+}
+```
+
+```
+return_constant:
+	li r3, 42
+	blr
+```
+
+The instructions are always 32 bits. Immediate values can only be 16 bit wide.
+
+```
+int return_large_constant() {
+    return 0x1ffff;
+}
+```
+
+```
+return_large_constant:
+	lis r3, 0x1
+	ori r3, r3, 0xffff
+```
+
+When referencing globals, the constant must be loaded in two steps as well. The expression `X@ha` means high 16-bits sign-bits sign-extended and `X@l` means low 16 bits. The instruction `lis` means Load Immediate Shifted 16 bits and `lwz` is Load Word and Zero extend. 
+
+```
+int X;
+int return_global() {
+    return X;
+}
+```
+
+```
+return_global:
+	lis r9, X@ha
+	lwz r3, X@l(r9)
+```
+
 ## 3 January 2019
 
 You can avoid single stepping into the C++ standard library by adding [skip directives to your .gdbinit according to a blog post on reversed.top](https://reversed.top/2016-05-26/skipping-standard-library-in-gdb/)
