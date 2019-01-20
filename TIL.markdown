@@ -5,6 +5,117 @@ use_math: true
 ---
 # Today I've learned
 
+## 17 January 2019
+
+Same stats, different graphs. https://www.autodeskresearch.com/publications/samestats
+
+https://github.com/tjwei/Animation-with-Identical-Statistics/blob/master/Animation%20with%20Identical%20Statistics.ipynb
+
+TODO: finish
+
+## 15 January 2019
+
+When I've wanted to align pointers or scalars, I've used macros like these:
+
+```
+#define ALIGN_DOWN(val, a) ((val) & ~((a)-1))
+#define ALIGN_DOWN_PTR(ptr, a) (void*)ALIGN_DOWN((uintptr_t)ptr, a)
+```
+
+I read the though [Seastars core/align.hh](https://github.com/scylladb/seastar/blob/master/include/seastar/core/align.hh) which contained the following templates:
+
+```
+template <typename T>
+inline constexpr T align_down(T val, size_t align) {
+    return val & ~(align-1);
+}
+template <typename T>
+inline constexpr T* align_down(T *val, size_t align) {
+	static_assert(sizeof(*val) == 1, "align byte pointers only");
+    return reinterpret_cast<T*>(align_down(reinterpret_cast<uintptr_t>(val), align));
+}
+```
+
+These conversions are typesafe at the expense of the compile time needed for instantiating the templates. I wonder why they only allow byte pointers as inputs?
+
+## 14 January 2019
+
+The C specification defines an abstract machine that says that at each sequence point, all side effects of previous evaluations shall be complete. But what is a side effect? Writing and reading to a file sure is, and writing to an reading from volatile memory is too. But what about reading and writing to global memory? John Regehr writes in the comment section of [Nine Ways to Break Your Systems Code using Volatile](https://blog.regehr.org/archives/28) that all optimizing compilers  treats writes and reads to global memory as a non-side-effect. So the compiler can rearrange those accesses relative to a volatile variable. A [simple example with a buffer and a ready flag](https://godbolt.org/z/gEruMY) does show the problem.
+
+```
+volatile int ready;
+int message[100];
+
+// In the generated assembly, ready is set before message is assigned
+void reordered (int i) {
+  message[i/10] = 42;
+  ready = 1;
+}
+
+// With a compiler barrier, the correct sequence is generated.
+void sequenced (int i) {
+  message[i/10] = 42;
+  asm(""::: "memory");
+  ready = 1;
+}
+```
+
+## 13 January 2019
+
+The AMD64 ABI specification says that only the lower 48 bits of an address shall be used. Andy Wingo describes in [Value Representations in Javascript Implementations](https://wingolog.org/archives/2011/05/18/value-representation-in-javascript-implementations) how the Javascript engines JavascriptCore and SpiderMonkey uses those upper 16 bits for tagged pointers. But according to the StackOverflow post [Using the Extra 16 Bits in 64-bit Pointers](https://stackoverflow.com/questions/16198700/using-the-extra-16-bits-in-64-bit-pointers) those upper 16 bits must all be copies of bit 47 (in a manner akin to sign extension), or the processor will raise an exception. Here's an example that will trigger a segmentation fault.
+
+```
+#include <stdint.h>
+
+int main(int argc, char *argv[]) {
+    int *ptr = &argc;
+    ptr = (int*)((uintptr_t)ptr | (1ULL << 48));
+    return *ptr;
+}
+```
+
+## 12 January 2019
+
+Brendan Gregg points out that `strace` consumes a lot of system resources in his article [Strace Wow Much Syscall](http://www.brendangregg.com/blog/2014-05-11/strace-wow-much-syscall.html) and that `perf trace`, the newer tracing tool is way less taxing. Here I'm reproducing Brendans "upper-bound" test for system call overhead and comparing it to `perf trace`.
+
+```
+$ dd if=/dev/zero of=/dev/null bs=1 count=500k
+512000+0 records in
+512000+0 records out
+512000 bytes (512 kB, 500 KiB) copied, 0.31733 s, 1.6 MB/s
+
+$ strace -eaccept dd if=/dev/zero of=/dev/null bs=1 count=500k
+512000+0 records in
+512000+0 records out
+512000 bytes (512 kB, 500 KiB) copied, 12.0646 s, 42.4 kB/s
+
+$ sudo perf trace -eaccept dd if=/dev/zero of=/dev/null bs=1 count=500k
+512000+0 records in
+512000+0 records out
+512000 bytes (512 kB, 500 KiB) copied, 0.513642 s, 997 kB/s
+```
+
+On my machine, `strace` runs 40x slower and `perf trace` is 1.6x slower. Brendan reports that his strace is 442x slower. I don't know why there's a 10x difference between his results and mine. The `perf trace` time looks great though, but when I tried tracing all system calls I noticed that many events are reported as lost.
+
+```
+$ sudo perf trace dd if=/dev/zero of=/dev/null bs=1 count=500k
+...
+LOST 23 events!                                                                         6.178 ( 0.010 ms): dd/27737 read(buf: 0x55f3d4cb7000, count: 1                                    ) ...                                                                           LOST 28 events!                                                                         6.188 ( 0.012 ms): dd/27737 read(buf: 0x55f3d4cb7000, count: 1                                    ) = 1                                                                           LOST 1 events!                                                                           6.188 ( 0.014 ms): dd/27737  ... [continued]: write()) = 1                               LOST 44 events!
+LOST 47 events!                                                                         6.220 ( 0.019 ms): dd/27737 read(buf: 0x55f3d4cb7000, count: 1                                    ) ...                                                                           LOST 32 events! 
+```
+
+## 11 January 2019
+
+I found a function Inside the logging component in [Googles Abseil C++ library](https://abseil.io/) that computes the `basename` of a path at compile time. It's a `constexpr` statement, something I was aware existed but had never used myself. A `constexpr` function can only contain a return statement so it needs to use recursion for any non-trivial logic. So we're trading compilation time for execution time, but I wonder how much is saved? The function is used for logging. Will the time savings matter, give that
+
+```
+constexpr const char* basename(const char* fname, int offset) {
+  return offset == 0 || fname[offset - 1] == '/' || fname[offset - 1] == '\\'
+             ? fname + offset
+             : basename(fname, offset - 1);
+}
+```
+
 ## 8 January 2019
 
 The number of binary search trees of size N can be calculated with the following function. It's neat that you don't have to actually create the trees. It reminds me of a Jon Bentley presentation where he reduced quicksort down to a recurrence relation for reasoning about the performance. He didn't even have to run the code to calculate the runtime!
