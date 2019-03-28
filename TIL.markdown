@@ -5,6 +5,53 @@ use_math: true
 ---
 # Today I've learned
 
+## 28 Mars 2019
+
+Here's a challenge from the blog post [The Ksplice Pointer Challenge](https://blogs.oracle.com/linux/the-ksplice-pointer-challenge-v2). What does this program print?
+
+```
+#include <stdio.h>
+int main() {
+  int x[5];
+  printf("%p\n", x);
+  printf("%p\n", x+1);
+  printf("%p\n", &x);
+  printf("%p\n", &x+1);
+  return 0;
+}
+```
+
+The first two are straightforward, `x` is an array that decays into a pointer and `x+1` is a pointer to memory located at `x + sizeof(int)`. But when we apply the `sizeof` or `&`-operator (address of) then there's no decay to pointer: `&x` means take the address of the array and `x+1` means take the address of the memory location that we get by incrementing the address of x by the `sizeof` the x array.
+
+There's also a similar quirky behavior for how function designators (function names) decays into pointers to functions. Here's a snippet taken from the Stackoverflow question [Function Pointer and Memory Address in C](https://stackoverflow.com/questions/55396741/function-pointer-and-memory-adress-in-c):
+
+```
+#include <stdio.h>
+void foo(int arg) { }
+int main() {
+    printf("%p\n", &foo);
+    printf("%p\n", foo);
+    printf("%p\n", *foo);
+}
+```
+
+The function designator (the function name) always decays into a pointer unless the `sizeof` or `&` operator is applied to it. So `&foo` takes the address of the function; `foo` decays into a  pointer; and for `*foo`  the `*` is applied to a  pointer giving a function designator, which then again decays into a function pointer.
+
+## 3 February 2019
+
+Avery Pennarun has written the article [An Epic Treatise on Scheduling, Bug Tracking, and Triage](https://apenwarr.ca/log/20171213) which he presented at SRECon as [The Math behind Project Scheduling, Bug Tracking, and Triage](https://www.usenix.org/conference/srecon18europe/presentation/pennarun). The main conclusions from him:
+
+*  People are bad at estimating numbers, but good at estimating ratios: It's better to express the effort needed to finish a product as a ratio of the time it took to do another project.
+* Setting goals is fine but setting time limits leads to student syndrome.
+* Restricted multi-tasking is important
+* Increase the  value provided to customers: ship early
+
+Steve Klabnik has written about [How to be an Opensource Gardener](https://words.steveklabnik.com/how-to-be-an-open-source-gardener) where he describes how he does triage for issues.
+
+## 18 January 2019
+
+Rachel Kroll writes in [strtime's alpha sorted man pages vs well meaning people](https://rachelbythebay.com/w/2018/04/20/iso/) that the libc function strftime may print the incorrect year with the `%G` parameter if the last week of the year is split with the next year.
+
 ## 17 January 2019
 
 Same stats, different graphs. https://www.autodeskresearch.com/publications/samestats
