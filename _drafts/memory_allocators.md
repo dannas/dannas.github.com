@@ -30,6 +30,8 @@ Andrei Weissflogs article [Handles are the Better Pointers](https://floooh.githu
 
 Robert Nystrom describes pool allocators in [the Object Pool chapter in his Game Programming Pattern](http://gameprogrammingpatterns.com/object-pool.html) book.
 
+ScyllaDB uses a log-structured allocator. Is that the same thing as log-structured memory? https://www.usenix.org/system/files/conference/fast14/fast14-paper_rumble.pdf  http://muratbuffalo.blogspot.com/2013/06/ramcloud-reloaded-log-structured-memory.html
+
 https://nfrechette.github.io/2016/10/18/memory_allocators_toc/
 
 Here's a blog series from Molecular Matters about memory allocators:

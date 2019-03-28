@@ -5,6 +5,8 @@ title: First Steps Learning Rust
 
 * Joe Duffy on errors in [The Error Model](http://joeduffyblog.com/2016/02/07/the-error-model/)
 
+* Joe Armstrong Dos and Don'ts of error handling
+
 * Eric Lipperts take in [Vexing Exceptions](https://blogs.msdn.microsoft.com/ericlippert/2008/09/10/vexing-exceptions/)
 
 * Rob Pike in [Errors are Values](https://blog.golang.org/errors-are-values)
