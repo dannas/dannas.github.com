@@ -19,3 +19,8 @@ TODO: http://www.eng.utah.edu/~cs5785/slides-f10/Dangerous+Optimizations.pdf
 TODO: https://gcc.gnu.org/onlinedocs/gccint/Alias-analysis.html
 TODO: https://llvm.org/doxygen/TypeBasedAliasAnalysis_8cpp_source.html
 TODO: https://gustedt.wordpress.com/2014/04/02/dont-use-casts-i/
+
+
+
+[What is the strict aliasing rule and why do we care](https://gist.github.com/shafik/848ae25ee209f698763cffee272a58f8#f6)
+

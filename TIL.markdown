@@ -5,6 +5,24 @@ use_math: true
 ---
 # Today I've learned
 
+## 11 Mars 2019
+
+
+
+## 29 Mars 2019
+
+Rob Pike has written a blog post [The Byte Order Fallacy](https://commandcenter.blogspot.com/2012/04/byte-order-fallacy.html) where he says that you don't need to know the byte order of the computer the program is running on when decoding or encoding a byte stream. What does matter is the byte order of the stream you're decoding. So to decode a 32 bit integer for a little-endian stream you would write:
+
+```
+uint32_t val = (a[0] << 0) | (a[1] << 8) | (a[2] << 16) | (a[3] << 24);
+```
+
+And to decode a big-endian stream you would write:
+
+```
+uint32_t val = (a[3] << 0) | (a[2] << 8) | (a[1] << 16) | (a[0] << 24);
+```
+
 ## 28 Mars 2019
 
 Here's a challenge from the blog post [The Ksplice Pointer Challenge](https://blogs.oracle.com/linux/the-ksplice-pointer-challenge-v2). What does this program print?
