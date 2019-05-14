@@ -5,9 +5,13 @@ use_math: true
 ---
 # Today I've learned
 
-## 11 Mars 2019
+## 14 May 2019
 
+Red Hats article [Recommended Compiler and Linker Flags for GCC](https://developers.redhat.com/blog/2018/03/21/compiler-and-linker-flags-gcc/) mentions `-D_GLIBCXX_ASSERTIONS` that enabled non-intrusive assertions into the standard C++ containers. It does not have the performance penalty as enabling `-D_GLIBCXX_DEBUG`. Using STL in non-optimized builds is often a chore; without inlining the library is unbearable slow. Extra assertions tends to amplify the problem. I wonder what the performance cost of `_GLIBCXX_ASSERTIONS` are?
 
+## 3 May 2019
+
+Today I read Neil Browns LWN article [Ghosts of UNIX past part three: Unfixable designs](https://lwn.net/Articles/414618/) where he points out that the original UNIX signal design had two problems: when should a signal handler be re-armed and what should a system call do if it was interrupted by a signal? The set of signals grew somewhat uncontrolled and the semantics of their delivery remained relatively unspecified. The `sigaction` system call was introduced to allow more control over signal handlers; `pselect` and `ppoll` where created to overcome the race condition commonly fixed with the self-pipe trick; finally `signalfd` was added to make signal delivery synchronous.
 
 ## 29 Mars 2019
 
