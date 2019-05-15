@@ -9,6 +9,71 @@ use_math: true
 
 Red Hats article [Recommended Compiler and Linker Flags for GCC](https://developers.redhat.com/blog/2018/03/21/compiler-and-linker-flags-gcc/) mentions `-D_GLIBCXX_ASSERTIONS` that enabled non-intrusive assertions into the standard C++ containers. It does not have the performance penalty as enabling `-D_GLIBCXX_DEBUG`. Using STL in non-optimized builds is often a chore; without inlining the library is unbearable slow. Extra assertions tends to amplify the problem. I wonder what the performance cost of `_GLIBCXX_ASSERTIONS` are?
 
+## 13 May 2019
+
+Rachel Kroll demonstrates in [Multithreaded Forking and Environment Access Locks](https://rachelbythebay.com/w/2014/08/16/forkenv/) how locks held by threads can cause deadlocks after a fork. Here's a small program she wrote to demonstrate the problem.
+
+```
+#include <stdio.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <sys/wait.h>
+ 
+static void* worker(void* arg) {
+  pthread_detach(pthread_self());
+ 
+  for (;;) {
+    setenv("foo", "bar", 1);
+    usleep(100);
+  }
+ 
+  return NULL;
+}
+ 
+static void sigalrm(int sig) {
+  char a = 'a';
+  write(fileno(stderr), &a, 1);
+}
+ 
+int main() {
+  pthread_t setenv_thread;
+  pthread_create(&setenv_thread, NULL, worker, 0);
+ 
+  for (;;) {
+    pid_t pid = fork();
+ 
+    if (pid == 0) {
+      signal(SIGALRM, sigalrm);
+      alarm(1);
+ 
+      unsetenv("bar");
+      exit(0);
+    }
+ 
+    wait3(NULL, WNOHANG, NULL);
+    usleep(2500);
+  }
+ 
+  return 0;
+}
+```
+
+The worker thread acquires a lock which is never released by the subprocess since the thread holding the lock is not forked - remember, a fork only duplicates the running thread.
+
+## 12 May 2019
+
+Tudor Bosman describes how threads were introduced after fork in [Why Threads and Fork dont mix](https://sigsegv.me/2013/12/02/why-threads-and-fork-dont-mix/). He mentions that Solaris originally had both a `fork1` and a `forkall` system call, but the idea of forking more than one thread was soon abandoned: if there's a thread that's writing to a socket and it gets forked, then now there's a thread in the parent and one in the child writing to the socket. Data will be written twice! Bad.
+
+Another bad thing is if another thread in the parent holds a mutex. No one will be around to release it in the child, so if the child needs to call a function that needs to acquire the same lock - the child will deadlock.
+
+A library can call `pthread_atfork` but then all libraries must do that. And before the fork you need to acquire all mutexes in `pthread_atfork` handlers and hold them across the fork. But in what order should those mutexes be held?
+
+## 11 May 2019
+
+Theo De Raadts [Exploit Migration Techniques](https://www.openbsd.org/papers/ru13-deraadt/index.html) slides describes how OpenBSD added random stack gaps; W^X address policies; ASLR; stack protectors. They were first and the rest followed (atleast according to Theo). 
+
 ## 3 May 2019
 
 Today I read Neil Browns LWN article [Ghosts of UNIX past part three: Unfixable designs](https://lwn.net/Articles/414618/) where he points out that the original UNIX signal design had two problems: when should a signal handler be re-armed and what should a system call do if it was interrupted by a signal? The set of signals grew somewhat uncontrolled and the semantics of their delivery remained relatively unspecified. The `sigaction` system call was introduced to allow more control over signal handlers; `pselect` and `ppoll` where created to overcome the race condition commonly fixed with the self-pipe trick; finally `signalfd` was added to make signal delivery synchronous.
