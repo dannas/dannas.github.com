@@ -5,7 +5,7 @@ title: First Steps Learning Rust
 
 * Joe Duffy on errors in [The Error Model](http://joeduffyblog.com/2016/02/07/the-error-model/)
 
-* Joe Armstrong Dos and Don'ts of error handling
+* Joe Armstrong presentation [Dos and Don'ts of error handling](https://www.softwaretalks.io/v/4611/goto-2018-o-the-dos-and-donts-of-error-handling-o-joe-armstrong)
 
 * Eric Lipperts take in [Vexing Exceptions](https://blogs.msdn.microsoft.com/ericlippert/2008/09/10/vexing-exceptions/)
 
