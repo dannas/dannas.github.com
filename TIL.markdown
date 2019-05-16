@@ -5,6 +5,30 @@ use_math: true
 ---
 # Today I've learned
 
+## 15 May 2019
+
+Downloading photos from my Samsung S7 phone to my Ubuntu 18.10 laptop using Nautilus or Shotwell stalls indefinitely if any of the photos contains parenthesis, [here's an Askubuntu post reporting the same findings](https://askubuntu.com/questions/995383/nautilus-hangs-on-accessing-dcim-camera-on-android). Renaming or removing the files with parenthesis fixed the problem for me.
+
+I also noticed that downloading files using Shotwell by importing from the DCIM/Camera directory misses many files that are downloaded when using Shotwells "Importing from Camera" action.
+
+My end goal was to create a photo book using [Fujifilms online Photobook creator](https://myfujifilm.se/). For that I needed a directory of the selected photos. I obtained such by first tagging the wanted photos using `Ctrl-T` in Shotwell. I then ran this small shell script. 
+
+```
+srcdir=$1
+dstdir=$2
+tag=$3
+
+find "$srcdir" -name "*.jpg" | while read fname ; do
+    if identify -verbose $fname | grep --quiet "$tag" ; then
+        echo $fname
+        cp $fname "$dstdir"
+    fi
+    
+done
+```
+
+The identity program is part of the ImageMagick suite which was already installed. It was very slow (each file took more than 2 seconds to inspect), so I should look into writing a small program or installing something like exiftool instead.
+
 ## 14 May 2019
 
 Red Hats article [Recommended Compiler and Linker Flags for GCC](https://developers.redhat.com/blog/2018/03/21/compiler-and-linker-flags-gcc/) mentions `-D_GLIBCXX_ASSERTIONS` that enabled non-intrusive assertions into the standard C++ containers. It does not have the performance penalty as enabling `-D_GLIBCXX_DEBUG`. Using STL in non-optimized builds is often a chore; without inlining the library is unbearable slow. Extra assertions tends to amplify the problem. I wonder what the performance cost of `_GLIBCXX_ASSERTIONS` are?
