@@ -5,6 +5,44 @@ use_math: true
 ---
 # Today I've learned
 
+## 20 May 2019
+
+Michael Kerrisks book The Linux Programming Interface has a long table in section 28.4 that describes how process attributes are changed during the `fork` and `exec` system calls.  Things related to the process address space are pretty intuitive: an `exec` replaces the process image so therefore the text, stack, heap and data segments are overwritten.  A `fork` doesn't replace anything so they are left intact. But memory locks  are not preserved across a `fork`.  Why?
+
+I had a fuzzy idea about what memory locks are used for. Michael describes in the notes section of `mlock` that there are two use-cases: You have a secret in memory that you don't want  the system to swap to disk or you have a real-time process and don't want to risk having delays introduced by paging. But `fork` prepares the address space for a copy-on-write operation. Any write that follows will cause a page fault. So I guess in the light of that, it makes sense to drop the memory locks since they're not obeyed by the system anyway.
+
+## 16 May 2019
+
+While writing a function for translating `enum` values into strings, I started thinking about what types string literals have in C and C++. A function such as `f1` will compile in C but give a warning in C++. In C, string literals have type `char*` while in C++ they are `const char*`. You can add the `-Wwrite-strings` as an option to gcc to make it treat literals like C++. Const was added to C in C90. I assume that the types of string literals weren't changed to prevent too much code churn in legacy code bases due to [const poisoning](https://www.airs.com/blog/archives/428).
+
+```
+char* f1(size_t i) {
+    char* a[] = { "s1", "s2" };
+    return a[i];
+}
+```
+
+CERTS [STR30-C Do not attempt to modify String Literals](https://wiki.sei.cmu.edu/confluence/display/c/STR30-C.+Do+not+attempt+to+modify+string+literals) says that modifying any portion of a string literal is undefined behavior. They are L-values in the sense that you can take the address of them, but you can't modify them. This function will  replace `'s`' with `'t'` in clang 8.0, but gcc 9.1 will ignore the assignment.
+
+```
+char* f1_mod(size_t i) {
+    char* a[] = { "s1", "s2" };
+    a[i][0] = 't'; // Undefined
+    return a[i];
+}
+```
+
+It's worth keeping in mind the distinction between string literals and char arrays. A statement such as `char buf[] = "abc"` means that the `"abc"` literal will be copied to the address of `buf`. So this code will return a stack address!
+
+```
+char* f2(size_t i) {
+    char a[][3] = { "s1", "s2" };
+    return a[i]; // BUG!
+}
+```
+
+Here's a  [Compiler Explorer project that experiments with string literals](https://godbolt.org/z/BbNUgs)
+
 ## 15 May 2019
 
 Downloading photos from my Samsung S7 phone to my Ubuntu 18.10 laptop using Nautilus or Shotwell stalls indefinitely if any of the photos contains parenthesis, [here's an Askubuntu post reporting the same findings](https://askubuntu.com/questions/995383/nautilus-hangs-on-accessing-dcim-camera-on-android). Renaming or removing the files with parenthesis fixed the problem for me.
