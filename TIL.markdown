@@ -5,11 +5,69 @@ use_math: true
 ---
 # Today I've learned
 
+## 21 May 2019
+
+Whenever I need to measure elapsed time for some ad-hoc benchmark, I always create at least two silly bugs when converting between `timespec` values to intervals. From now on I'm gonna use this template.
+
+```
+struct timespec now() {
+  struct timespec now;
+  clock_gettime(CLOCK_MONOTONIC, &now);
+  return now;
+}
+
+long interval_ns(struct timespec tick, struct timespec tock) {
+  return (tock.tv_sec - tick.tv_sec) * 1000000000L
+      + (tock.tv_nsec - tick.tv_nsec);
+}
+
+int main(){
+  struct timespec tick, tock;
+  
+  tick = now();
+  // ### Code to benchmark
+  tock = now();
+  long ns = interval_ns(tick, tock)
+  printf("It took %.2fus\n",  (double) ns / 1e3);
+}
+```
+
 ## 20 May 2019
 
 Michael Kerrisks book The Linux Programming Interface has a long table in section 28.4 that describes how process attributes are changed during the `fork` and `exec` system calls.  Things related to the process address space are pretty intuitive: an `exec` replaces the process image so therefore the text, stack, heap and data segments are overwritten.  A `fork` doesn't replace anything so they are left intact. But memory locks  are not preserved across a `fork`.  Why?
 
 I had a fuzzy idea about what memory locks are used for. Michael describes in the notes section of `mlock` that there are two use-cases: You have a secret in memory that you don't want  the system to swap to disk or you have a real-time process and don't want to risk having delays introduced by paging. But `fork` prepares the address space for a copy-on-write operation. Any write that follows will cause a page fault. So I guess in the light of that, it makes sense to drop the memory locks since they're not obeyed by the system anyway.
+
+## 18 May 2019
+
+Neil Brown describes in [Ghosts of UNIX Past: a historical search for design patterns](https://lwn.net/Articles/411845/) how the UNIX operating system rests on two key ideas: a hierarchal file system incorporating demountable volumes and compatible file, device and inter-process I/O. He  mentions that Richie and Thompsson in their original paper pointed out that the UNIX system isn't bringing new inventions but rather, it fully exploits a few fertile ideas. Neil thinks that many of the shortcomings of the UNIX design comes from places where an idea wasn't fully exploited. The filesystem for devices is one of these shortcomings. It's a separate namespace that is not accessible from the filesystem. The top hierarchy would be the type  (block, character, etcera); the next level is the major id identifying the driver; then the minor id for blocks or identity of a controller. Various solutions to this shortcoming has been invented like devpts, udev, sysfs and devtmpfs but there are still rough edges.
+
+## 17 May 2019
+
+Martin Cracauer makes a case in [Proper Handling of SIGINT/SIGQUIT](https://www.cons.org/cracauer/sigint.html) for writing commandline programs that let the parent know if they've been killed by `SIGINT` or `SIGQUIT`. If they don't and the program is part of a shell script, then the shell don't know if they've run successfully or been aborted. Here's an example.
+
+```
+#! /bin/sh
+# let's assume there are 300 *.dat files
+for file in *.dat ; do
+	dat2ascii $dat
+done
+```
+
+If the shell wouldn't end when the user hits `^C`then he would have to press `^C` 300 times! The solution is to implement signal handlers to re-trigger the signal if they want to terminate the program.
+
+```
+void sigint_handler(void) {
+    struct sigaction sa;
+    sa.sa_handler = SIG_DFL;
+    sa.sa_flags = 0;
+    sigemptyset(&sa.sa_mask);
+    sigaction(SIGINT, &sa, NULL);
+    kill(getpid(), SIGINT);
+}
+```
+
+The shell should call `WIFSIGNALED(status)` and `WTERMSIG(status)` to tell whether the child exited due to `SIGINT` or `SIGQUIT`.  If so, the script should be discontinued.
 
 ## 16 May 2019
 
