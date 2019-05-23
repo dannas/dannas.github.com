@@ -5,6 +5,12 @@ use_math: true
 ---
 # Today I've learned
 
+## 22 May 2019
+
+I always learn something new when reading Nicholas Nethercotes blog posts about the performance optimizations he's done on the Firefox web-browser. In [Ad Hoc Profiling](https://blog.mozilla.org/nnethercote/2018/07/24/ad-hoc-profiling/) he describes a small utility, `counts`, that he uses to tally line frequencies within a text file, an improvement over the UNIX command chain `sort | uniq -c`.
+
+With `counts` you can get a distribution of lines counts or a distribution of weights. It's advantage is the swiftness with how you can obtain data. Alternatives like tracing frameworks or histogram hash tables takes time to setup. With `counts` you just have to insert `printf` statements and do the post-processing on the resulting file.
+
 ## 21 May 2019
 
 Whenever I need to measure elapsed time for some ad-hoc benchmark, I always create at least two silly bugs when converting between `timespec` values to intervals. From now on I'm gonna use this template.
