@@ -5,6 +5,16 @@ use_math: true
 ---
 # Today I've learned
 
+## 25 May 2019
+
+Rico Marianis [Approximately Correct Notes on Threading Models](https://medium.com/@ricomariani/approximately-correct-notes-on-selected-threading-models-f96543c7c4a2) describes what he thinks are the main kind of choices you have for designing threading solutions. The idea is that you're going to get an object O from some provider P and then use it.
+
+**Apartment Threaded**. When you ask for an O from P it must allocate the memory for O on your thread. You can then use O but only from your thread. O does not need any locking, it's constrained to be used in one thread. Most UI objects are allocated this way.
+
+**Free Threaded**. When you ask for O from P it can give you any O it has lying around. It may or may not have been allocated on your thread and it may or may not be currently in use by some other thread. Lots of shared collections and caches try to do this business.
+
+**Rental**. It’s kind of a blend. This is Ricos favorite threading model. P can keep a cache of objects O to hand out. It manages them. Once an O has been given out no other thread is allowed to use that O. That means O doesn't need any locking. It is being used by exactly one thread, different threads over its lifetime (so it can’t use thread local storage) but only one at a time. Sometimes database wrappers are rented, or file wrappers.
+
 ## 24 May 2019
 
 Gregory Szorcs article [Absorbing Commit changes in Mercurial 4.8](https://gregoryszorc.com/blog/2018/11/05/absorbing-commit-changes-in-mercurial-4.8/) describes a new subcommand that will make the task of incorporating changes after coding reviews easier. Right now I use `hg histedit` and `hg commit --interactive`  but it's tedious work. With `hg absorb` the version control system can automatically figure out which changes ought to go to which commits, and most of the time get it right! Even better - it just skips changes that are ambiguous so it will never produce merge conflicts. That's because it operates on the history of lines instead of doing a three-way merge like `hg histedit` or `git rebase`. Gregory has examples to demonstrate the effectiveness of the new tool.
