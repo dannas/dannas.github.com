@@ -5,6 +5,14 @@ use_math: true
 ---
 # Today I've learned
 
+## 27 May 2019
+
+The Bradfield School of Computer Science has published [Teach Yourself Computer Science](https://teachyourselfcs.com/), a guide for acquiring the skills you'd obtain from getting a Computer Science degree from a university. They recommend books and online courses. It's a guide I wish I had read before I started picking courses for my degree. I prefer Bryant and O'hallarans [Computer Systems: a Programmers Perspective](https://csapp.cs.cmu.edu/) over the Patterson and Henneys book for computer architecture and Appels [Modern Compiler Implementation in ML](https://www.cs.princeton.edu/~appel/modern/ml/) over the Dragon Book. Those books are more applied and the expense of some depth.
+
+## 26 May 2019
+
+Rico Mariani has written ton of useful articles about optimizing computer programs. In [Holistic Approaches to Performance Analysis](https://blogs.msdn.microsoft.com/ricom/2015/05/31/holistic-approaches-to-performance-analysis/) he says that many tools and methodologies for evaluating performance misses the "when". You get summary data that hides both the variance and the time stamps when things went awry. I've found that time-line graphs of consumption metrics like CPU time, disk accesses and invocation of interrupt handlers makes it much easier to pinpoint problems. Adding [invasive tracing that generates data that can be viewed by Google Chromes builtin tracer](https://www.gamasutra.com/view/news/176420/Indepth_Using_Chrometracing_to_view_your_inline_profiling_data.php) is one easy way to get that kind of time-line. I've also used [ITM and ETM tracing with sigroks PulseView](http://essentialscrap.com/tips/arm_trace/theory.html) for getting time-line graphs for embedded systems.
+
 ## 25 May 2019
 
 Rico Marianis [Approximately Correct Notes on Threading Models](https://medium.com/@ricomariani/approximately-correct-notes-on-selected-threading-models-f96543c7c4a2) describes what he thinks are the main kind of choices you have for designing threading solutions. The idea is that you're going to get an object O from some provider P and then use it.
