@@ -5,6 +5,22 @@ use_math: true
 ---
 # Today I've learned
 
+## 24 May 2019
+
+Gregory Szorcs article [Absorbing Commit changes in Mercurial 4.8](https://gregoryszorc.com/blog/2018/11/05/absorbing-commit-changes-in-mercurial-4.8/) describes a new subcommand that will make the task of incorporating changes after coding reviews easier. Right now I use `hg histedit` and `hg commit --interactive`  but it's tedious work. With `hg absorb` the version control system can automatically figure out which changes ought to go to which commits, and most of the time get it right! Even better - it just skips changes that are ambiguous so it will never produce merge conflicts. That's because it operates on the history of lines instead of doing a three-way merge like `hg histedit` or `git rebase`. Gregory has examples to demonstrate the effectiveness of the new tool.
+
+## 23 May 2019
+
+Philip Johnstons article [Beyond Continual Improvement](https://embeddedartistry.com/blog/2019/2/5/beyond-continual-improvement) summarizes a talk by Russ Ackhoff. The definition of a system as "a whole with interdependent parts that can have an effect on the overall system behavior" was enlightening to me. Ackhoff uses the human body as an example: what the lungs are doing are affected by what the brain is doing and what the heart is doing. 
+
+When an organization tries to optimize something they rarely take the whole system into account, but when a system is taken apart it looses its essential properties. Take the car: the essential property of a car is that it can carry you from one place to another, no part of a car can do that. You can write, your hand can't write. It's easy to demonstrate, just cut it off, put it on the table and watch what it does.
+
+A system is not the sum of its part, it's the product of their interactions. If you use the best engine from all available cars, the best transmission, the best battery and so on, you won't get the best car. When a client comes in to an architect and says I want to build a house for my family with three bedrooms, two toilets and a garage, the architect won't start to design each room individually. No, he draws the house and make the rooms fit into the house.
+
+Finding deficiencies and getting rid of them is not a way of improving the performance of a system. What you need to do is to sit down and think to yourself: what would I do if I could do whatever I wanted. Some people can't answer that, but if they can't figure out what they want, how are they gonna know what they want under constraints?
+
+Discontinuous improvement are more important than continual improvement. When you look at what the Japanese has done in the sixties and seventies there is no doubt that they have improved the quality of the automobile, but it's the wrong kind of quality. There's a fundamental difference between doing things right and doing the right thing. The car is destroying urban life all around, just visit Mexico City and you'll find congestion and pollution so bad that children has to be kept home from school. Quality ought to contain a notion of value, not just efficiency.
+
 ## 22 May 2019
 
 I always learn something new when reading Nicholas Nethercotes blog posts about the performance optimizations he's done on the Firefox web-browser. In [Ad Hoc Profiling](https://blog.mozilla.org/nnethercote/2018/07/24/ad-hoc-profiling/) he describes a small utility, `counts`, that he uses to tally line frequencies within a text file, an improvement over the UNIX command chain `sort | uniq -c`.
