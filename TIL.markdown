@@ -5,6 +5,28 @@ use_math: true
 ---
 # Today I've learned
 
+## 11 June 2019
+
+Arjun Narajans blog post [A History of Transaction Histories](https://ristret.com/s/f643zk/history_transaction_histories) has long been on my reading list. To me a transaction means a set of actions that can be done atomically: either they all succeed or the transaction is undone (rolled back in database-parlance). But what happens if there can be multiple transactions in flight at the same time? What level of isolation can the system provide? Here, things start to get complicated. ANSI SQL has defined four isolation levels: serializable; repeatable reads; read committed; and read uncommitted. Those were defined in terms of the locking strategies needed to avoid dirty reads, non-repeatable reads and phantom reads. But that definition was not good enough. The isolation levels should have been defined in terms of  the transaction histories (the interleaving) that fulfil the isolation requirements. That didn't happen until just a few years ago.
+
+This blog post was talking about things that I haven't thought much about before. Atleast now I'm familiar with some terms and definitions, but there's much left to learn.
+
+## 10 June 2019
+
+Mike Actons talk at GDC 2019 [Everyone Watching this is Fired](https://gdcvault.com/play/1025778/Everyone-Watching-This-Is) was just as confrontational and harsh as every other recorded talks I've watched by him. And just as the others, packed with ton of useful insights!  Mike asks the audience to keep track of their answers to 50 yes/no questions that he poses. Everyone that answers no to any of those questions are fired! It's questions like "can you articulated precisely what problem you're trying to solve", "Do you have a plan B if your current solutions doesn't work out", "can you articulate the steps needed to solve your problem", "can you articulate the various latency and throughput requirements"? And the list of questions goes on and on.
+
+Some questions are about knowing the machine, some are about having work ethics, some are about making room for the unexpected and a couple of the most important ones are about how to minimize uncertainty about what it is really you're trying to achieve. Those reminded me of Brian Hooks blog post [Productivity vs Uncertainty and Apathy](http://bookofhook.blogspot.com/2012/09/productivity-vs-uncertainty-apathy.html). Brian writes about high-level uncertainty - when you don't know where you are and what you want to do; about strategic uncertainty - when you have a defined goal but are unsure how to go about it; and low-level uncertainty - when you know what you're supposed to do but are just staring at your editor, unsure what to do next. Luckily, he has suggestions for solutions to all of those (which unfortunately is more than what Mike Acton offers).
+
+## 9 June 2019
+
+I've been doing som Scratch-programming with my daughter. We've built simple maze games, platform games, paint programs etcetera. It's been fun but I've felt a bit uncertain about the underlying computation model: How many threads are running in a Scratch program? How are events handled? David J. Malans tutorial [Scratch for budding Computer Scientists](https://cs.harvard.edu/malan/scratch/index.php) says that each sprite can have multiple threads and that each thread is started by a when block. These threads can communicate via events that are sent using the broadcast block and received using the "When I receive"-block.
+
+[Scratch wiki section for Computer Science](https://en.scratch-wiki.info/wiki/Category:Computer_Science) goes into more detail about these things.
+
+## 28 May 2019
+
+ Marc Costas blogpost [Tips on Writing Code for Data-Oriented Design](https://marccgk.github.io/blog/tips-on-writing-code-for-data-oriented-design/) discusses common themes when writing Data Oriented code. Write straight forward code and wait with factoring it until logic has been duplicated three times. Use simple allocation strategies like temp allocators and arena allocators. Avoid RAII since it ties allocation to initialization making it harder to write custom allocators. Prefer discriminated unions or composing types with an explicit type header to class hierarchies. Keep data that is processed similarly together. 
+
 ## 27 May 2019
 
 The Bradfield School of Computer Science has published [Teach Yourself Computer Science](https://teachyourselfcs.com/), a guide for acquiring the skills you'd obtain from getting a Computer Science degree from a university. They recommend books and online courses. It's a guide I wish I had read before I started picking courses for my degree. I prefer Bryant and O'hallarans [Computer Systems: a Programmers Perspective](https://csapp.cs.cmu.edu/) over the Patterson and Henneys book for computer architecture and Appels [Modern Compiler Implementation in ML](https://www.cs.princeton.edu/~appel/modern/ml/) over the Dragon Book. Those books are more applied and the expense of some depth.
