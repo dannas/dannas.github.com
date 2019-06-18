@@ -5,6 +5,37 @@ use_math: true
 ---
 # Today I've learned
 
+## 17 June 2019
+
+A process under Linux has an upper limit on number of allowed open file descriptors. Finding a reliable way to read out the highest open file descriptor has turned out to be a bit of a challenge. There is the `OPEN_MAX` define but it is set at compile time - the system can change the limit at runtime. Using `sysconf(_SC_OPEN_MAX)` gives a value that may be too high if `setrlimit(RT_NOFILE)` has set a lower value.  And on some systems `sysconf` just return `INT_MAX` .You can iterate over the symbolic links in `/proc/self/fd/` but `proc` is not guaranteed to be mounted in a `chroot` environment for example. 
+
+## 14 June 2019
+
+Here's a small script written by Rob Landley for listing functions in a binary and for printing the disassembly of a chosen function. I've added options to `objdump` for printing in Intel syntax; showing in C++ symbols in plain-text; and for printing relocation entries.
+
+```
+[ $# -lt 1 ] || [ $# -gt 2 ] && { echo "usage: showasm file function"; exit 1; }
+[ ! -f $1 ] && { echo "File $1 not found"; exit 1; }
+if [ $# -eq 1 ]
+then
+  objdump -d $1 | sed -n -e 's/^[0-9a-fA-F]* <\(.*\)>:$/\1/p'
+  exit 0
+fi
+objdump -drwC -Mintel $1 | sed -n -e '/./{H;$!d}' -e "x;/^.[0-9a-fA-F]* <$2>:/p"
+```
+
+## 13 June 2019
+
+Serial ports drivers consists of a tty, line discipline and uart layer.
+
+* tty deals with job control and signals
+
+* There's a `serial_core` framework that is part of the `tty` leayer. It eases the development of serial (uart) drivers.
+* N_TTY is the line discipline for normal serial ports (others exists for IR, SLIP, etcetera)
+* uart controls speed, modem control lines (RTS, CTS, DTD, etcetera), break signals, xon/xoff flushing, CSIZE, CSTOPB, PARENB, PARODD, 
+
+Bootlin (former Free Electrons) has published [document describing Linux serial drivers](https://bootlin.com/doc/legacy/serial-drivers/linux-serial-drivers.pdf). Nelson Elhages blog article [A Brief Introduction to Termios and Stty](https://blog.nelhage.com/2009/12/a-brief-introduction-to-termios-termios3-and-stty/) gives a good summary of how which setting belongs to which layer in the serial driver stack.
+
 ## 11 June 2019
 
 Arjun Narajans blog post [A History of Transaction Histories](https://ristret.com/s/f643zk/history_transaction_histories) has long been on my reading list. To me a transaction means a set of actions that can be done atomically: either they all succeed or the transaction is undone (rolled back in database-parlance). But what happens if there can be multiple transactions in flight at the same time? What level of isolation can the system provide? Here, things start to get complicated. ANSI SQL has defined four isolation levels: serializable; repeatable reads; read committed; and read uncommitted. Those were defined in terms of the locking strategies needed to avoid dirty reads, non-repeatable reads and phantom reads. But that definition was not good enough. The isolation levels should have been defined in terms of  the transaction histories (the interleaving) that fulfil the isolation requirements. That didn't happen until just a few years ago.
