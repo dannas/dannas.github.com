@@ -3,6 +3,8 @@ layout: post
 title: Let's Implement System
 ---
 
+As a learning exercise for myself, I was writing a shell and started thinking about the security implications of running a subprocess from within a process. Here are my findings. I'll write a function that executes a program and blocks for the duration of it's execution, like `system(3)`.
+
 ## A first unsafe implementation of system(3)
 
 A basic implementation of `system` will call `fork` then do an `exec` of `sh` in the child and call `waitpid`  in the parent. 
@@ -28,7 +30,7 @@ int system1(const char *cmd) {
 }
 ```
 
-The standard specifies that `SIGCHLD` should be blocked in the parent and that `SIGINT` and `SIGQUIT` should be ignored. This leads to a much more verbose implementation. I will base future changes on `system1` to to improve readability.
+The [system(3)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/system.html) standard specifies that `SIGCHLD` should be blocked in the parent and that `SIGINT` and `SIGQUIT` should be ignored. This leads to a much more verbose implementation. I will base future changes on `system1` to to improve readability.
 
 ```
 int system2(const char *cmd) {
@@ -105,7 +107,7 @@ int main() {
 }
 ```
 
-The child can the read or write to the file depending on what mode it was opened with in the parent. For the program above, the `fd` for /etc/passwd will be `3` so this program will write the content of the file to `stdout`.
+The child can then read or write to the file depending on what mode it was opened with in the parent. For the program above, the `fd` for `/etc/passwd` will be `3` so this program will write the content of the file to `stdout`.
 
 ```
 int main() {
@@ -140,7 +142,6 @@ int system3(const char *cmd) {
 }
 ```
 
-* File descriptors are shared across fork+exec
 * https://gitlab.freedesktop.org/libbsd/libbsd/blob/master/src/closefrom.c
 *  [**Bug 10353**](https://sourceware.org/bugzilla/show_bug.cgi?id=10353) - Methods for deleting all file descriptors greater than given integer (closefrom)    
 * https://stackoverflow.com/questions/899038/getting-the-highest-allocated-file-descriptor
@@ -149,29 +150,39 @@ int system3(const char *cmd) {
 * https://github.com/python/cpython/blob/9e4f2f3a6b8ee995c365e86d976937c141d867f8/Modules/_posixsubprocess.c#L261
 * TAOSSA 7.6.4 discusses file descriptor leaks
 
+## Drop Privilegies
+
+Linux has an all or nothing security model. Either you're root and are allowed to do everything on the system, or you're a regular user. A process inherits its user id and group id from its parent, unless the setuid flag is set on the executable. Then it's running as whatever user owns the file.
+
+You should drop all privilegies that are not needed when calling `exec`.  The API for that is not cross platform and has a certain number of wrinkles which mostly have been smoothed out on linux with the introduction of `setreuid` and `setregid`.
+
+* Each file has an owner. 
+
+* Each file has permissions. Those dictate what the owner, group and others can do with the file.
+
+* A process inherits the user-id from its parent (it's not the owner set on the executable)
+
+* But it can be overridden if the set-user bit is set on the executable file.
+
+* Privilege checks are done against the effective user id.
+* A process also has a saved user id.
+* There are also ancillary groups
+
+
+
+- setgid
+- Check return values seteuid to avoid https://thesnkchrmr.wordpress.com/2011/03/24/rageagainstthecage/
+- setuid
+- prctl(PR_SET_NO_NEW_PRIVS, ...)
+
 ## Sanitize environment
 
 - TAOSSA 7.6.4 discusses env
 - Can't call malloc after fork
 
-## The standard
-
-https://pubs.opengroup.org/onlinepubs/9699919799/functions/system.html
-
-> Ignoring SIGINT and SIGQUIT in the parent process prevents coordination problems (two processes reading from the same terminal, for example) when the executed command ignores or catches one of the signals. It is also usually the correct action when the user has given a command to the application to be executed synchronously (as in the `'!'` command in many interactive applications). In either case, the signal should be delivered only to the child process, not to the application itself. There is one situation where ignoring the signals might have less than the desired effect. This is when the application uses *system*() to perform some task invisible to the user. If the user typed the interrupt character ( `"^C"`, for example) while*system*() is being used in this way, one would expect the application to be killed, but only the executed command is killed. Applications that use *system*() in this way should carefully check the return status from *system*() to see if the executed command was successful, and should take appropriate action when the command fails.
-
-> Blocking SIGCHLD while waiting for the child to terminate prevents the application from catching the signal and obtaining status from *system*()'s child process before *system*() can get the status itself.
-
 ## Call libc system
 
 * Discuss input sanitizing
-
-## Drop Privilegies
-
-* setgid
-* Check return values seteuid to avoid https://thesnkchrmr.wordpress.com/2011/03/24/rageagainstthecage/
-* setuid
-* prctl(PR_SET_NO_NEW_PRIVS, ...)
 
 * 
 
