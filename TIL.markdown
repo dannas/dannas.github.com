@@ -5,6 +5,10 @@ use_math: true
 ---
 # Today I've learned
 
+## 19 June 2019
+
+I was discussing endianess with a colleague and realized that I had  a fuzzy idea about why there are little-endian and big-endian systems. A quick search led me to Danny Cohens [On Holy Wars and a Plea for Peace](https://tools.ietf.org/rfc/ien/ien137.txt) that introduced the endianess concept.
+
 ## 17 June 2019
 
 A process under Linux has an upper limit on number of allowed open file descriptors. Finding a reliable way to read out the highest open file descriptor has turned out to be a bit of a challenge. There is the `OPEN_MAX` define but it is set at compile time - the system can change the limit at runtime. Using `sysconf(_SC_OPEN_MAX)` gives a value that may be too high if `setrlimit(RT_NOFILE)` has set a lower value.  And on some systems `sysconf` just return `INT_MAX` .You can iterate over the symbolic links in `/proc/self/fd/` but `proc` is not guaranteed to be mounted in a `chroot` environment for example. 
