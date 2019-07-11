@@ -1,20 +1,71 @@
+/* Taken from peter.bourgon.org */
+body {
+	margin: 0;
+	font-size: 14pt;
+	font-family: serif;
+	line-height: 1.6em;
+	background-color: #fff;
+	color: #000;
+}
 
-/* Taken from c9x.me */
-html              { hyphens: auto }
-pre, p, h2, h3		{ margin: 1.9rem 0px 1.9rem; }
-article, .container	{ width: 800px; margin: auto; }
-h1, h2, h3, h4		{ font-family: arial, sans; }
-h2                  { margin-top: 5rem; }
-pre, code		    { background-color: #eeeeff; line-height: normal; overflow: auto; }
-#logo			    { vertical-align: middle; margin-right: 16px; }
-body			    { font-size: 1.9rem; line-height: 135%; }
-p			        { text-align: justify; }
-html			    { font-size: 62.5%; }
-.bnf			    { background-color: white; padding-left: 2rem; }
+div#wrapper {
+	min-width: 20em;
+	max-width: 40em;
+	margin-top: 7%;
+	margin-left: 10%;
+	margin-right: 10%;
+	margin-bottom: 7%;
+}
 
-@media only screen and (max-device-width: 480px) {
-html			    { font-size: 50%; }
-article, .container	{ width: 90%; }
-p			        { text-align: left; }
+a:link {
+	text-decoration: underline;
+	color: #000;
+}
+
+a:visited {
+	color: #000;
+}
+
+a:hover {
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+header * {
+	margin: 0 0.25em 0 0;
+}
+
+header > a {
+	text-decoration: none;
+	border-bottom: solid 1px #000;
+}
+
+img {
+	margin: 1em 0 0 0;
+}
+
+pre {
+	font-size: 11pt;
+	line-height: 1.3em;
+	margin: 1em;
+	padding: 1em 0;
+	border-top: solid 1px #ddd;
+	border-bottom: solid 1px #ddd;
+}
+
+code {
+	font-size: 11pt;
+	background-color: #eee;
+}
+
+pre > code {
+	background-color: inherit;
+}
+
+h2 {
+	font-style: italic;
+}
+
+h2 a:link, h3 a:link {
+	text-decoration: none;
 }
 

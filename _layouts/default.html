@@ -42,17 +42,16 @@ layout: nil
 
     </head> 
     <body>
-        <div class="wrapper">
+        <div id="wrapper">
             <header>
-                <a href="/index.html">Daniel Näslund</a>'s thoughts and writings
+                <p>
+                    <strong>Daniel Näslund</strong>
+                    <a href="/" title="Home">Home</>
+                    <a href="/about.html">About</a>
+                    <a href="/archive.html">Articles</a>
+                    <a href="/TIL.html">Blog</a>
+                </p>
             </header>
-            <div class="navigation">
-                <ul>
-                    <li><a href="/TIL.html">Today I learned</a></li>
-                    <li><a href="/archive.html">archive</a></li>
-                    <li><a href="/about.html">about me</a></li>
-                </ul>
-            </div>
 
             <article>
                 {{ content }}

@@ -3,22 +3,15 @@ layout: default
 title: dannas
 ---
 
-{% for post in paginator.posts %}
-	<h2 class="title"><a href="{{ post.url }}" class="title-link">{{ post.title }}</a></h2>
-	<h3 class="date">{{ post.date | date_to_string }}</h3>
+<p>
+GitHub <a href="https://github.com/dannas">dannas</a><br/>
+Twitter <a href="https://twitter.com/dannas_">@dannas_</a><br/>
+Linkedin <a href="https://linkedin.com/in/dannas">dannas</a><br/>
+Email <a href="mailto:dannas@dannas.name">dannas [at] dannas.name</a><br/>
+</p>
 
-    {{ post.content }}
-
-{% endfor %}
-	
-{% if paginator.previous_page %}
-    {% if paginator.previous_page == 1 %}
-        <a href="/">&laquo; Read newer entries</a>
-    {% else %}
-        <a href="/page{{ paginator.previous_page }}">&laquo; Read newer entries</a>
-    {% endif %}
-{% endif %}
-{% if paginator.next_page %}
-    <a href="/page{{ paginator.next_page }}">Read older entries &raquo;</a>
-{% endif %}
-
+<p>
+You might be interested in…<br/>
+&bull; <a href="/2016/08/27/review-of-seymor-paperts-mindstorms.html">Review of Seymor Paperts Mindstorms</a><br/>
+&bull; <a href="2016/03/06/what-are-the-next-steps-for-rr.html">What are the next steps for rr</a><br/>
+</p>
