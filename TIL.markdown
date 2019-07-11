@@ -5,6 +5,26 @@ use_math: true
 ---
 # Today I've learned
 
+## 11 July 2019
+
+Russ Cox article [Surviving Software Dependencies](https://queue.acm.org/detail.cfm?id=3344149) hits close to home. I think I've gone full circle by now. First the realization that you don't have to write your own platform layer but can rely on something like Qt. Then I started using smaller libraries like zlib and providing shims allowing them to be switched out for other better solutions. I now longer had to model my application around a framework, but could just call into the library. And that worked okay and I started writing and using internal libraries at work that depended on other libraries and suddenly realized that there's a transitive cost when one of the libraries dependencies got upgraded and introduced a hard to track down memory leak. So Javascript got its dependency manager NPM and created even more fine grained libraries - some just exports a single function. When I created my first Node.js project I was stunned when I realized that adding just `express` as a dependency to my `package.json` imported 250 modules!
+
+Sean Barretts single header libraries is a reaction to this trend. He packages a single-purpose library into a format that is easy to put in a vendor directory and that is easy to debug and has no transitive dependencies. In the meantime the new mainstream programming languages `Swift`, `Go` and `Rust` all provide their own, or discuss how to provide their own, dependency manager. And the `Python` community who opted for a batteries included standard library to avoid the whole dependency problem is now starting to have problems with out-dated modules that slows down the development speed of the project. The problems faced by software resuse is more complex that what first meets the eye. Russ article is a good starting point for a discussion that has just started.
+
+## 10 July 2019
+
+Michael Hicks asks the question [What is Memory Safety](http://www.pl-enthusiast.net/2014/07/21/memory-safety/) and the answer is tricker that I would have expected. He says that a first attempt at a definition would list the things that are not allowed in a memory safe program including:
+
+* buffer overflows
+* null pointer dereferences
+* use after free
+* use of uninitialized memory
+* use after free (of an already freed pointer, or a non-allocated pointer)
+
+Michal asks: what is the idea that unifies these errors? He starts off  by making a distinction between defined and undefined memory. Memory that has been allocated is defined and memory that not allocated is undefined. But that does not help prevent buffer overflows - a buffer pointer can point into memory that is allocated, but is outside of the intended range of the buffer.
+
+To help with that he extends the definition to say that pointers are capabilities that consists of the pointer and a range `[base, extent)` that describes the defined memory that his pointer is allowed to dereference. He then goes into technicalites about how the pointer can be incremented as long as it points within its allowed range and that the pointer can be convered to an integer representation, but that it will then still carry with it, it's range so that a later conversion back to a pointer can be checked for correctness.
+
 ## 19 June 2019
 
 I was discussing endianess with a colleague and realized that I had  a fuzzy idea about why there are little-endian and big-endian systems. A quick search led me to Danny Cohens [On Holy Wars and a Plea for Peace](https://tools.ietf.org/rfc/ien/ien137.txt) that introduced the endianess concept.
