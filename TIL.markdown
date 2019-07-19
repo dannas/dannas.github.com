@@ -5,6 +5,24 @@ use_math: true
 ---
 # Today I've learned
 
+## 13 July 2019
+
+Alex Evans describes in [Database Programming is Fun](https://web.archive.org/web/20111014034211/http://altdevblogaday.com/2011/03/07/database-programming-is-fun/) how he implemented check-pointing in his database by forking and relying on Linux Copy-on-Write semantics. He would fork the process regularly and do the time consuming writes of the database log to disk in the subprocess while keeping the parent free to accept incoming requests. Salvatore Sanfilippo (antirez) used the same scheme in Redis for snapshotting as described in [Redis Persistence Demystified](http://oldblog.antirez.com/post/redis-persistence-demystified.html). Redis also has other means for ensuring the integrity of the data, such as the Append Only File (AOF).
+
+## 12 July 2019
+
+I was re-reading Jason Robert Carey Patterson article [Modern Microprocessors - a 90 Minute Guide](http://www.lighterra.com/papers/modernmicroprocessors/) which is a fun and informative guide to how CPUs have evolved over the years. It's for someone who understands the content of the books [Code: the Hidden Language of Computer Hardware and Software](https://www.amazon.com/Code-Language-Computer-Hardware-Software/dp/0735611319) and [The Elements of Computing Systems](https://www.amazon.com/Elements-Computing-Systems-Building-Principles/dp/0262640686) but hasn't yet dived into pipelining, superscalar execution and memory caches.
+
+Processors can be made faster not just by increasing the clock frequency (which has an upper ceiling due to the increased heat emitted) but by doing more things in parallel. One single instruction consists of at least a  fetch, decode, execute and write-back stage. If we allow multiple instructions to be in flight, then those stages can operate at the same time. If we manage to split the stages into even more sub-stages then we can have even more instructions in flight. That's pipelining.
+
+But the execute phase will become a bottleneck after a while. What if we could have several execution units? Yes we can! That's superscalar execution. A typical CPU has several ALUs, some FPU and a memory load unit.
+
+For sequential code, the CPU can just do its fetch-decode,execute-write-back thing over and over again. But what about branches? With a deep pipeline, every time we head of in the wrong direction at a crossroad, incurs a large cost. How can we avoid taking the wrong decision ahead of time? The hardware designers has figured out that most branches are very regular - we loop over an array a thousand times and only bail out at the end. So they've created logic circuits that keeps track of which path was choosen through a branch the last time. That's branch prediction.
+
+But what if there are data dependencies between the instructions? Then we can't just schedule them in parallel?  If we have a bank of virtual registers then we can write many results and discard the ones we don't need and keep the ones that are true dependencies. That's register renaming and Out of Order (OoO) execution.
+
+The article talks about the Braniac debate where some hardware designers and compiler writers argued that the processor could be made sufficiently smart (a Braniac) in order to figure out the optimal instruction scheduling by themselves, at the cost of the extra transistors needed to implement that logic. Others researches thought that we should go in the opposite direction and instead invest in our compilers and create "speed-daemons". It's worth noting that many smart-phones are equipped with both OoO cores like Cortex-A72 and more energy effective in-order cores such as Coretex-A57.
+
 ## 11 July 2019
 
 Russ Cox article [Surviving Software Dependencies](https://queue.acm.org/detail.cfm?id=3344149) hits close to home. I think I've gone full circle by now. First the realization that you don't have to write your own platform layer but can rely on something like Qt. Then I started using smaller libraries like zlib and providing shims allowing them to be switched out for other better solutions. I now longer had to model my application around a framework, but could just call into the library. And that worked okay and I started writing and using internal libraries at work that depended on other libraries and suddenly realized that there's a transitive cost when one of the libraries dependencies got upgraded and introduced a hard to track down memory leak. So Javascript got its dependency manager NPM and created even more fine grained libraries - some just exports a single function. When I created my first Node.js project I was stunned when I realized that adding just `express` as a dependency to my `package.json` imported 250 modules!
