@@ -5,6 +5,12 @@ use_math: true
 ---
 # Today I've learned
 
+## 21 July 2019
+
+The Linux kernel maintains several stable kernels that are regularly updated with bug fixes. For details see Greg Kroah-Hartmans [What Stable Kernel Should I Use?](http://kroah.com/log/blog/2018/08/24/what-stable-kernel-should-i-use/). Identifying which commits should be back-ported is a hard task due to the large number of applied changesets each day. If the project relies solely on the vigilance of it's maintainers then important commits can be missed due to human oversight. As for automation, there is no clear marking of commits that can identify which commits should be back-ported and the issue tracker is often unused in favor of mailing list.  How determine which commits to apply?
+
+On the Linux kernel stable mailing list there are regularly patch series posted with the prefix `[PATCH AUTOSEL]`. Those represents commits that can be automatically back-ported to one of the stable branches. There's a tool that creates these patch series by using the machine learning framework described in  Julia Lawall et.al.s paper [Identifying Linux Bug Fixing Patches](https://soarsmu.github.io/papers/icse12-patch.pdf). I haven't found the tool though. The paper says that it beats a pure keyword-based approach by 53%. It looks to me like those `[PATCH AUTOSEL]` series are always applied to the stable kernels. Seems a little risky, given the low test coverage of the kernel.
+
 ## 13 July 2019
 
 Alex Evans describes in [Database Programming is Fun](https://web.archive.org/web/20111014034211/http://altdevblogaday.com/2011/03/07/database-programming-is-fun/) how he implemented check-pointing in his database by forking and relying on Linux Copy-on-Write semantics. He would fork the process regularly and do the time consuming writes of the database log to disk in the subprocess while keeping the parent free to accept incoming requests. Salvatore Sanfilippo (antirez) used the same scheme in Redis for snapshotting as described in [Redis Persistence Demystified](http://oldblog.antirez.com/post/redis-persistence-demystified.html). Redis also has other means for ensuring the integrity of the data, such as the Append Only File (AOF).
