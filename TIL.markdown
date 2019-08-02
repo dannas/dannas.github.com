@@ -5,6 +5,22 @@ use_math: true
 ---
 # Today I've learned
 
+## 2 August 2019
+
+I tried to import photos from an SD card but my Ubuntu 18.10 OS complained about a not supported file system. The card was formatted using [exFAT (Extended File Allocation Table)](https://en.wikipedia.org/wiki/ExFAT) which is a proprietary file system whose patent is owned by Microsoft. The Linux Kernel therefore has no driver for it, but there's a FUSE file system that can be installed with:
+
+```
+sudo apt-get install exfat-fuse exfat-utils
+```
+
+I had never heard of exFAT. It's better than FAT since it can handle larger disks than 32 GiB and it's better than NTFS since it's more robust to unplugging of removable media. Just as the name implies, It seems to me as an extension of FAT. It's simple to implement; the metadata doesn't take up much space; but it's a little more resilient to corruption due to extra checksumming.
+
+## 22 July 2019
+
+Thomas A. Limoncelli has published an article in ACM Queue, [Manual Work is a Bug](https://queue.acm.org/detail.cfm?id=3197520), where he argues that every developer and system administrator should strive to always automate as much work as can be done. This is a commonly held opinion, but often life gets in the way: there's too little time so you grind through a long list of manual steps in order to test the release or deploy it at the customers site. Thomas says that you need to start small, with the mindset that this task will eventually be automated. He suggests that you should start writing down the manual steps taken into a wiki or gist or what have you, and then refine it by replacing the instructions with shell script commands. Once you have a script it is probably wise to replace it with a program written in a proper programming language like Go or Python. The last step is to create some sort of self-service portal, probably a web interface.
+
+To me, the most important part in that process would be agreeing on a shared location for these evolving instructions manuals, soon to be scripts, and encourage everyone to take part in improving them. There are  large benefits to reap here!
+
 ## 21 July 2019
 
 The Linux kernel maintains several stable kernels that are regularly updated with bug fixes. For details see Greg Kroah-Hartmans [What Stable Kernel Should I Use?](http://kroah.com/log/blog/2018/08/24/what-stable-kernel-should-i-use/). Identifying which commits should be back-ported is a hard task due to the large number of applied changesets each day. If the project relies solely on the vigilance of it's maintainers then important commits can be missed due to human oversight. As for automation, there is no clear marking of commits that can identify which commits should be back-ported and the issue tracker is often unused in favor of mailing list.  How determine which commits to apply?
