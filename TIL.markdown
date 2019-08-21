@@ -5,6 +5,10 @@ use_math: true
 ---
 # Today I've learned
 
+## 20 August 2019
+
+Jonas Wagner has created a web application, [Timestretch Player](https://29a.ch/timestretch/), that I've used for slowing down the playback speed of songs that I want to practice on my guitar. He has written a blog article [Time Stretching Audio in Javascript](https://29a.ch/2015/12/06/time-stretching-audio-javascript). There he describes how the time stretching algorithm cuts up the song into overlapping chunks that are decomposed using FFT, the phases are adjusted and then the chunks are recomposed with a different overlap. He makes references to Jean Laroches and Mark Dolsons paper [Improved Phase Vocoder Time-Scale Modification of Audio](http://www.cmap.polytechnique.fr/~bacry/MVA/getpapers.php?file=phase_vocoder.pdf&type=pdf). I only knew about time-domain-based techniques, but according to the paper, frequency-domain time-scaling techniques such as the phase vocoder gives much better results but with a much higher computational cost.
+
 ## 2 August 2019
 
 I tried to import photos from an SD card but my Ubuntu 18.10 OS complained about a not supported file system. The card was formatted using [exFAT (Extended File Allocation Table)](https://en.wikipedia.org/wiki/ExFAT) which is a proprietary file system whose patent is owned by Microsoft. The Linux Kernel therefore has no driver for it, but there's a FUSE file system that can be installed with:
