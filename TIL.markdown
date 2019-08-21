@@ -5,6 +5,12 @@ use_math: true
 ---
 # Today I've learned
 
+## 21 August 2019
+
+Irina Shestaks article [Tracing, Tracing, Tracing in your Applications (Illustrated)](https://medium.com/@_lrlna/tracing-tracing-tracing-in-your-applications-illustrated-11a67def6431) describes the Javascript Performance Timeline API that allows a developer to not just create logs with `console.log` but create a trace. She defines a trace as a collection of timestamped events grouped by transaction. The Performance API allows that grouping to be done either inline with X-headers or by using the external API. The browser can then display a tree of spans for each trace. Irina says that she learned a lot about tracing from reading Googles paper [Dapper, a Large-Scale Distributed Systems Tracing Infrastructure](https://ai.google/research/pubs/pub36356). 
+
+I imagine that one limitation of the Performance Timeline API is that the traces can only be grouped by one transaction. That is not a problem if we just want to inspect HTTP requests and responses but for deeper investigations of performance problems, we might want to inspect that data along more axises. I'd like to be able to attach arbitary key-value metadata to my logs. Carlos Buena has a good discussion about how to do that in his book [The Mature Optimization Handbook](http://carlos.bueno.org/optimization/).
+
 ## 20 August 2019
 
 Jonas Wagner has created a web application, [Timestretch Player](https://29a.ch/timestretch/), that I've used for slowing down the playback speed of songs that I want to practice on my guitar. He has written a blog article [Time Stretching Audio in Javascript](https://29a.ch/2015/12/06/time-stretching-audio-javascript). There he describes how the time stretching algorithm cuts up the song into overlapping chunks that are decomposed using FFT, the phases are adjusted and then the chunks are recomposed with a different overlap. He makes references to Jean Laroches and Mark Dolsons paper [Improved Phase Vocoder Time-Scale Modification of Audio](http://www.cmap.polytechnique.fr/~bacry/MVA/getpapers.php?file=phase_vocoder.pdf&type=pdf). I only knew about time-domain-based techniques, but according to the paper, frequency-domain time-scaling techniques such as the phase vocoder gives much better results but with a much higher computational cost.
