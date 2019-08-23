@@ -5,6 +5,38 @@ use_math: true
 ---
 # Today I've learned
 
+## 22 August 2019
+
+Michael Mbebenitas article [Lets Write Pong in Webassembly](https://medium.com/@mbebenita/lets-write-pong-in-webassembly-ac3a8e7c4591) describes how to write a simple game in C and defer event handling and rendering to Javascript. He exports a Javascript function `jsSetInterval` that calls  `setInterval` which allows the the event loop to wired up from C.
+
+```
+int tick() {
+  ...
+}int main() {
+  jsSetInterval(tick);
+}
+```
+
+For rendering, `jsFillRect` and `jsClearRect` are exported. The rendering in C can then be written as:
+
+```
+int drawWorld() {
+  int c = sizeof(world) / sizeof(Object);
+  for (int i = 0; i < c; i++) {
+    fillRect(world[i].r);
+  }
+}
+int tick() {
+  jsClearRect(0, 0, W, H);
+  drawWorld();
+  move(&world[6]); // 6th game object is our ball.
+}
+```
+
+Michael then goes on to describe different alternatives to the above architecture. If he moves the rendering to Javascript, then the Javascript code needs to read the offset of the state object which is kinda gross. If he moved the game state to Javascript, then the C code would have need a lot of Javascript helper functions which is bad as well. If he copied the state back and forth between the C code and Javscript code, he would have the problem of keeping the state in sync. If he wrote the whole thing in C, then he would have to copy a large image buffer on every frame into the Canvas object and the code would be slower than `clearRect` and `fillRect`.
+
+I wonder how games that run under Webassembly are architectured? Do they write everything in C or do SDL (or what graphics library is in use) call into `clearRect` and `fillRect` with friends like Michaels example code?
+
 ## 21 August 2019
 
 Irina Shestaks article [Tracing, Tracing, Tracing in your Applications (Illustrated)](https://medium.com/@_lrlna/tracing-tracing-tracing-in-your-applications-illustrated-11a67def6431) describes the Javascript Performance Timeline API that allows a developer to not just create logs with `console.log` but create a trace. She defines a trace as a collection of timestamped events grouped by transaction. The Performance API allows that grouping to be done either inline with X-headers or by using the external API. The browser can then display a tree of spans for each trace. Irina says that she learned a lot about tracing from reading Googles paper [Dapper, a Large-Scale Distributed Systems Tracing Infrastructure](https://ai.google/research/pubs/pub36356). 
