@@ -5,6 +5,36 @@ use_math: true
 ---
 # Today I've learned
 
+## 26 August 2019
+
+Mark Smothermans article [Interrupts](https://people.cs.clemson.edu/~mark/interrupts.html) describes how interrupts were invented in the fifties for exception handling and were later applied to I/O events. It's a long detailed piece that describes the interrupt functionality for atleast 15 different systems from the 50s until now. It's a great complement to the books I've written about the evolution and design of microprocessors. Those have concentrated on the instruction set and components involved in the CPU pipeline and cache hierarchy but have had little to say about I/O.
+
+ Mark cites a comp.arch Usenet post that Rob Warnick wrote on 16 July 2001 about optimizing interrupt service routines (ISR). 
+
+> [...] we made simple interrupt-percharacter PIO-based terminal controllers that were -- in terms of host
+> CPU cycles -- *more* efficient (and a lot cheaper!) than DEC's complex DMA-based controllers, partly because we used three simple techniques, two programming and one hardware: (1) interrupt "coalescing", (2) "dallying" before dismissing an interrupt, and (3) interrupt "holdoff". That is, (1) during a single interrupt, process *all* of the data that's available or that *becomes* available (looping to repeat the availability test as needed) during a single interrupt; (2) spin-wait/test a certain amount (which may
+> even be context/data-dependent!) before dismissing an interrupt, so as to catch new data and process it without having to dismiss/interrupt again; and (3) once you finally *do* dismiss an interrupt, arrange the hardware so that you won't get another one until a certain (sometimes dynamically)
+> chosen time interval has expired (also known as "interrupt rate-limiting", which, together with the other two, prevents "thrashing" in the interrupt service routine).
+>
+> [There's another variant of #2 that's worth mentioning: when doing PIO writes to a FIFO and hitting a FIFO-full condition, "dallying" (spin-waiting) a certain amount first rather than enabling a watermark interrupt and going away. If you pick the dally amount appropriately, by "wasting" a few cycles you actually can save *lots* of total CPU time, since you (hopefully) avoid a later heavy-weight interrupt/context-switch/dismiss.]
+
+In a system, you want to minimize the time spent inside any ISR since the blocking of interrupts during that time causes jitter in the system. It can also be the case that the processing of the ISR payload requires access to functions and data that are not safe to access from an ISR. Deferred interrupt handling is a solution to that problem. The interrupt is acknowledged in the ISR and then a task is scheduled to run once the ISR returns. That's  the bottom-half handlers in the Linux Kernel. In the article deferred interrupt handling is referred to as a "Cutler kernel" design approach. David Cutler explored that design for the DEC RSX-11, DEC  VMS, DEC Mica and MS WinNT. 
+
+## 25 August 2019
+
+The [Segger Ozone debugger has a shapshot feature](https://wiki.segger.com/Using_snapshots). It allows you to save the entire state including RAM, Flash, CPU registers, Selected Peripherals, Timeline and more. After loading a snapshot, all debug windows show the same information they did at the time the snapshot had been created. Even advanced target state, such as clock, IRQ and peripheral configurations, can be precisely restored from a snapshot. But you do have to explicitely save peripheral state, by using the scripting functionality provided by Ozone. I wonder how exact the replication is? Tried googling for test reports but couldn't find anything.
+
+## 23 August 2019
+
+Yoctos bitbake tool has a `--dry-run (-n)` option. I was experimenting with setting different variants for the `virtual/kernel` package, and running `bitbake -vn core-image-minimal` but my overrides never took effect. I tried to select `linux-dummy` but `linux-ti-staging` (which is set in the meta-ti layers `conf/machine/include` folder) was always set.
+
+```
+MACHINE = "beaglebone"
+PREFERRED_PROVIDER_virtual/kernel = "linux-dummy"
+```
+
+I guess not every configuration variable can be overridden from `local.conf`. The interactions between different layers is still not  clear to me. Changing the `MACHINE` configuration variable to `qemuarm` did allow `linux-dummy` to be selected though.
+
 ## 22 August 2019
 
 Michael Mbebenitas article [Lets Write Pong in Webassembly](https://medium.com/@mbebenita/lets-write-pong-in-webassembly-ac3a8e7c4591) describes how to write a simple game in C and defer event handling and rendering to Javascript. He exports a Javascript function `jsSetInterval` that calls  `setInterval` which allows the the event loop to wired up from C.
