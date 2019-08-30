@@ -5,6 +5,153 @@ use_math: true
 ---
 # Today I've learned
 
+## 30 August 2019
+
+I solved [Leetcode 1122 - Relative Sort Array](https://leetcode.com/problems/relative-sort-array) today in a few languages. The problem description:
+
+> Given two arrays `a` and `b`, the elements of `b` are distinct, and all elements in `b` are also in `a`.
+>
+> Sort the elements of `a` such that the relative ordering of items in `a` are the same as in `b`.  Elements that don't appear in `b` should be placed at the end of `b` in **ascending** order.
+
+The elements is in the range `[0, 1000]` so this can be solved with a stack-allocated array as map. The C code first. It builds a frequency table, then appends elements from `a` in the order dictated by `b` and finally fills in the rest. 
+
+```
+int* relativeSortArray(int* a, int a_len, int* b, int b_len, int* len){
+    int freq[1001] = {0};
+    int n = 0;
+    int* r = malloc(a_len * sizeof(int));
+    for (int *ptr = a; ptr < a + a_len; ptr++) {
+        freq[*ptr]++;
+    }
+    for (int *ptr = b; ptr < b + b_len; ptr++) {
+        for (int j = 0; j < freq[*ptr]; j++) {
+            r[n++] = *ptr;
+        }
+        freq[*ptr] = 0;
+    }
+    for (int i = 0; i < 1001; i++) {
+        for (int j = 0; j < freq[i]; j++) {
+            r[n++] = i;
+        }
+    }
+    *len = a_len;
+    return r;
+}
+```
+
+Using C++ allows me to replace expressions dealing with `ptr, len` with just the vector.
+
+```
+vector<int> relativeSortArray(vector<int>& a, vector<int>& b) {
+        int freq[1001] = {0};
+        vector<int> r;
+        for (int i = 0; i < a.size(); i++) {
+            freq[a[i]]++;
+        }
+        for (int i = 0; i < b.size(); i++) {
+            for (int j = 0; j < freq[b[i]]; j++) {
+                r.push_back(b[i]);
+            }
+            freq[b[i]] = 0;
+        }
+        for (int i = 0; i < 1001; i++) {
+            for (int j = 0; j < freq[i]; j++) {
+                r.push_back(i);
+            }
+        }
+        return r;
+    }
+```
+
+Using the auto-for loop from C++11 and the`std::fill_n` reduces the code with a few more lines
+
+```
+vector<int> relativeSortArray(vector<int>& a, vector<int>& b) {
+        int freq[1001] = {0};
+        vector<int> r(a.size());
+        auto it = begin(r);
+        for (auto& val : a) {
+            freq[val]++;
+        }
+        for (auto& val : b) {
+            it = fill_n(it, freq[val], val);
+            freq[val] = 0;
+        }
+        for (int i = 0; i < 1001; i++) {
+            it = fill_n(it, freq[i], i);
+        }
+        return r;
+    }
+```
+
+These were the first lines I've written in Go and they just fell into place. Having slices as builtins really simplify the code.
+
+```
+func relativeSortArray(a []int, b []int) []int {
+    var freq [1001]int
+    var r []int
+    
+    for _, val := range a {
+        freq[val] += 1
+    }
+    for _, val := range b {
+        for j := 0; j < freq[val]; j++ {
+            r = append(r, val)
+        }
+        freq[val] = 0
+    }
+    for i, num := range freq {
+        for j := 0; j < num; j++ {
+            r = append(r, i)
+        }
+    }
+    return r;
+}
+```
+
+With Python I can compress the code a little more. The `[val] * freq[val]` is equivalent to the `fill_n` statement from the C++ code.
+
+```
+ def relativeSortArray(self, a: List[int], b: List[int]) -> List[int]:
+        freq = [0] * 1001
+        r = []
+        for val in a:
+            freq[val] += 1
+        for val in b:
+            r += [val] * freq[val]
+            freq[val] = 0
+        for i, num in enumerate(freq):
+            r += [i] * num
+        return r
+```
+
+I have tried to do some small exercises in the past for learning Rust but not much of it had stuck I guess. Every line was a fight. The compiler is really picky about type conversions and needing to dereference the iterators due to borrowing was new as well. 
+
+```
+    pub fn relative_sort_array(a: Vec<i32>, b: Vec<i32>) -> Vec<i32> {
+        let mut freq : [i32; 1001] = [0; 1001]; 
+        let mut r : Vec<i32> = Vec::new();
+        
+        for val in a.iter() {
+            freq[*val as usize] += 1;
+        }
+        for val in b.iter() {
+            for j in 0..freq[*val as usize] {
+                r.push(*val);
+            }
+            freq[*val as usize] = 0;
+        }
+        for (i, num) in freq.iter().enumerate() {
+            for j in 0..*num {
+                r.push(i as i32);
+            }
+        } 
+        r
+    }
+```
+
+That's it. Four different languages, but the code looks very much the same.
+
 ## 26 August 2019
 
 Mark Smothermans article [Interrupts](https://people.cs.clemson.edu/~mark/interrupts.html) describes how interrupts were invented in the fifties for exception handling and were later applied to I/O events. It's a long detailed piece that describes the interrupt functionality for atleast 15 different systems from the 50s until now. It's a great complement to the books I've written about the evolution and design of microprocessors. Those have concentrated on the instruction set and components involved in the CPU pipeline and cache hierarchy but have had little to say about I/O.
