@@ -5,6 +5,75 @@ use_math: true
 ---
 # Today I've learned
 
+## 2 September 2019
+
+I solved [Leetcode 1170 - Compare Strings by Frequency of Smallest Character](https://leetcode.com/problems/compare-strings-by-frequency-of-the-smallest-character/). Here's the problem description (which I had to read several times).
+
+> Let's define a function `f(s)` over a non-empty string `s`, which calculates the frequency of the smallest character in `s`. For example, if `s = "dcce"` then `f(s) = 2` because the smallest character is `"c"` and its frequency is 2.
+>
+> Now, given string arrays `queries` and `words`, return an integer array `answer`, where each `answer[i]` is the number of words such that `f(queries[i])` < `f(W)`, where `W` is a word in `words`.
+
+First I wrote it as a sequence of `min_element` and `count` statements. That took 48 ms but the fastest submission did it in 15 ms. What was I missing?
+
+```
+    vector<int> numSmallerByFrequency(vector<string>& queries, vector<string>& words) {
+        vector<int> fw(words.size());
+        vector<int> answer(queries.size());
+        
+        // Calculate f(W)
+        for (size_t i = 0; i < words.size(); ++i) {
+            string& str = words[i];
+            char c = *min_element(begin(str), end(str));
+            fw[i] = count(begin(str), end(str), c);
+            
+        }
+        // Calculate f(queries[i]) and count number of words smaller.
+        for (size_t i = 0; i < queries.size(); ++i) {
+            string &q = queries[i];
+            char c = *min_element(begin(q), end(q));
+            int freq = count(begin(q), end(q), c);
+            answer[i] = count_if(begin(fw), end(fw), [freq](int x) { return freq < x; });
+        }
+        return answer;
+    }
+```
+
+I had to cheat and look at some other submissions. They used a cumulative frequency table. Since each word could at most be 10 characters long  according to the problem specification, we can use a local array for keeping track of the frequencies.
+
+    // Return frequency of smallest character.
+    int f(string& str) {
+        int a[26] = {0};
+        for (size_t i = 0; i < str.size(); i++) {
+            a[str[i] - 'a']++;
+        }
+        for (size_t i = 0; i < 26; i++) {
+            if (a[i] > 0) {
+                return a[i];
+            }
+        }
+        return 0;
+    }
+    
+    vector<int> numSmallerByFrequency(vector<string>& queries, vector<string>& words) {
+        vector<int> answer(queries.size());
+        int freq[12] = {0};
+        
+        // Record frequencies of counts.
+        for (size_t i = 0; i < words.size(); i++) {
+            int n = f(words[i]);
+            freq[n]++;
+        }
+        // Calculate cumulative frequencies.
+        for (size_t i = 10; i > 0; i--) {
+            freq[i-1] += freq[i];
+        }
+        // Lookup number of words in the cumulative frequency table
+        for (size_t i = 0; i < queries.size(); i++) {
+            int n = f(queries[i]);
+            answer[i] = freq[n+1];
+        }
+        return answer;
+    }
 ## 30 August 2019
 
 I solved [Leetcode 1122 - Relative Sort Array](https://leetcode.com/problems/relative-sort-array) today in a few languages. The problem description:
