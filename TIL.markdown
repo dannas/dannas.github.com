@@ -5,6 +5,14 @@ use_math: true
 ---
 # Today I've learned
 
+## 3 September 2019
+
+Ted Kaminski talks about how all synchronous UNIX API:s  hides the underlying concurrency in [Concurrency vs Paralellism](https://www.tedinski.com/2018/10/16/concurrency-vs-parallelism.html). He means that a process always exists in a concurrent context. Check the size of a file? It might have changed from the time you check until the time you use it. Read from that file? The user might send a signal that you need to handle while blocking in the `read` call. And the very `read` call itself hides a lot of concurrency. You issue a read request and the disk scheduler goes off to do its thing and then the disk controller does a bunch of things. All while your program is just sitting there waiting in that `read` call. So it seems like he's advocating for exposing that concurrency as events consumed by event loops. The Go designers makes the same distinction between concurrency and parallelism but their solution is to hide it even more. When you call `read` in Go, the Go userspace scheduler just let's another goroutine run, much like how the OS scheduler puts a process in a wait queue and goes on to execute another process.
+
+But Kaminski prefers having the event loops exposed. But if you're coding an event-loop then you need a state machine. But a state machine can't handle that many states. Maybe you'd use callbacks instead like in Node.js. But those callbacks leads to entangled control flow. Enter Promises which allows us to compose those future computations. But with Promises you still see a lot of `.then(...)` statements that obscure the control flow. The final solution then is `async/await`, which allows you to write your control flow in a way that looks similar to calling blocking functions but the `async` and `await` keywords clearly communicate that they're really asynchronous calls.
+
+Kaminski continues in [Concurrency Models](https://www.tedinski.com/2018/11/06/concurrency-models.html) where he describes the trade offs between a green threads approach like in Erlang and Go and Rusts `async/await` design. He talks a lot about how green threads typically fare worse when it comes to performance and that is probably true. But having goroutines and channels is way more ergonomic than having to deal with a gazillion different libraries that each have their own concurrency model. Some use callbacks, some use promises and some use `async/await`.
+
 ## 2 September 2019
 
 I solved [Leetcode 1170 - Compare Strings by Frequency of Smallest Character](https://leetcode.com/problems/compare-strings-by-frequency-of-the-smallest-character/). Here's the problem description (which I had to read several times).
