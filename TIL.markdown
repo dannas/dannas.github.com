@@ -5,6 +5,14 @@ use_math: true
 ---
 # Today I've learned
 
+## 4 September 2019
+
+Thomas Ptacek has written a blog article [The PGP Problem](https://latacora.micro.blog/2019/07/16/the-pgp-problem.html) for the Latacora company blog where he says that PGP is bad. It is too complex, mired in backwards compability, with an obnoxious UX (I can attest to that). What surprised me was Ptaceks critique of PGP:s use of longterm keys. I've done the key-signing thing at meetups, and I believed that the "web of trust" was the only way to prove identity. I didn't quite get what he is suggesting instead. Another thing that PGP doesn't provide is forward secrecy. If some attacker obtains your private key, then he shouldn't be able to read prior conversations. But that's not the case with PGP. What you should have is a private session key and a longer term trusted key.
+
+The backward compatibility complexity is common theme through cryptography. Ptacek writes "The flaws in cryptosystems tend to appear in the joinery, not the lumber, and expansive crypto compatibility increases the amount of joinery". 
+
+The article ends with suggestions on alternatives to PGP:s many usecases. For talking to people  it recommends Signal. Don't ever rely on secure email since that's not possible to provide. Use Magic Wormhole for file transfers. Use Tarsnap for backups and disk encryption for offline backups. Use Signify for signing packages. Use libsodium for encrypting application data.
+
 ## 3 September 2019
 
 Ted Kaminski talks about how all synchronous UNIX API:s  hides the underlying concurrency in [Concurrency vs Paralellism](https://www.tedinski.com/2018/10/16/concurrency-vs-parallelism.html). He means that a process always exists in a concurrent context. Check the size of a file? It might have changed from the time you check until the time you use it. Read from that file? The user might send a signal that you need to handle while blocking in the `read` call. And the very `read` call itself hides a lot of concurrency. You issue a read request and the disk scheduler goes off to do its thing and then the disk controller does a bunch of things. All while your program is just sitting there waiting in that `read` call. So it seems like he's advocating for exposing that concurrency as events consumed by event loops. The Go designers makes the same distinction between concurrency and parallelism but their solution is to hide it even more. When you call `read` in Go, the Go userspace scheduler just let's another goroutine run, much like how the OS scheduler puts a process in a wait queue and goes on to execute another process.
