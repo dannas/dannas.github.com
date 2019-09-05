@@ -5,6 +5,18 @@ use_math: true
 ---
 # Today I've learned
 
+## 5 September 2016
+
+The Crome browsers developer documentation has a document called [The Rule of 2](https://chromium.googlesource.com/chromium/src/+/master/docs/security/rule-of-2.md). The rule of 2 is: Pick no more than two of
+
+* untrustworthy inputs;
+* unsafe implementation language; and
+* high privilege.
+
+Their main concern is reducing the number of bugs due to memory unsafety. An untrustworthy input is something that comes from an untrusted source and/or have a non-trivial grammar. Unsafe implementation languages are those that lack memory safety including at least C, C++ and Assembly. High privilege processes in the browser are those that are not sandboxed and thus has not got site isolation or origin isolation.
+
+A web browser is a truly hostile environment. It needs to accept a lot of programs and data from unknown sources and it needs a lot of access to the environment it's running on. I can see how crucial sandboxing and having [structured types](https://chromium.googlesource.com/chromium/src/+/master/docs/security/mojo.md#Use-structured-types) are to them. I wonder how other programs solves this problem? How about Android/iOS? What about the infotainment systems running in automobiles? On my university security course I was told to always be conservative in what my programs accepts and to provide boundaries even for internal modules. But that is not enough. Todays fuzzer will find lots of security holes in memory unsafe languages and they will find lots of bugs in every parser for complicated formats. And the boundaries that user separation and privilege separation provides is not sufficient. You need proper sandboxing!
+
 ## 4 September 2019
 
 Thomas Ptacek has written a blog article [The PGP Problem](https://latacora.micro.blog/2019/07/16/the-pgp-problem.html) for the Latacora company blog where he says that PGP is bad. It is too complex, mired in backwards compability, with an obnoxious UX (I can attest to that). What surprised me was Ptaceks critique of PGP:s use of longterm keys. I've done the key-signing thing at meetups, and I believed that the "web of trust" was the only way to prove identity. I didn't quite get what he is suggesting instead. Another thing that PGP doesn't provide is forward secrecy. If some attacker obtains your private key, then he shouldn't be able to read prior conversations. But that's not the case with PGP. What you should have is a private session key and a longer term trusted key.
