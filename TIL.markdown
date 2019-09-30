@@ -5,7 +5,134 @@ use_math: true
 ---
 # Today I've learned
 
-## 5 September 2016
+## 30 September 2019
+
+William Swansson has created a C preprocesor [Map macro](https://github.com/swansontec/map-macro/blob/master/map.h). It's about applying a function to each element of a list which requires recursion which the preprocessor does not support. William solves it  by feeding unexpanded macros to other macros. Paul Fultz has a good explanation of how that works in [Is the C Preprocessor Turing Complete](https://github.com/pfultz2/Cloak/wiki/Is-the-C-preprocessor-Turing-complete%3F).
+
+## 19 September 2019
+
+I solved [Leetcode 746 - Min Cost Climbing Stairs](https://leetcode.com/problems/min-cost-climbing-stairs/). A typical DP problem. You're supposed to find the optimal path through an array where you at each point can take one or two steps.
+
+```
+ int minCostClimbingStairs(vector<int>& cost) {
+        size_t N = cost.size();
+        vector<int> a(N);
+        a[0] = cost[0];
+        a[1] = cost[1];
+        
+        for (int i = 2; i < (int)N; i++) {
+            a[i] = cost[i] + min(a[i-1], a[i-2]);
+        }
+        return min(a[N-1], a[N-2]);
+    }
+```
+
+That submission took 8ms to execute. I managed to cut the runtime in half by using two integers instead of an array of N entries for the table.
+
+```
+int minCostClimbingStairs(vector<int>& cost) {
+        int a = cost[0];
+        int b = cost[1];
+        int c;
+        
+        for (size_t i = 2; i < cost.size(); i++) {
+            c = cost[i] + min(a, b);
+            a = b;
+            b = c;
+        }
+        return min(a, b);
+    }
+```
+
+## 18 September 2019
+
+I solved  [Leetcode121 - Best Time to Buy and Sell Stocks](https://leetcode.com/problems/best-time-to-buy-and-sell-stock) . It is about finding the max difference in an array. I first did the brute force solution.
+
+```
+int maxProfit(vector<int>& prices) {
+        int max_profit = 0;        
+        for (size_t i = 0; i < prices.size(); i++) {
+            for (size_t j = i+1; j < prices.size(); j++) {
+                int profit = prices[j] - prices[i];
+                max_profit = max(profit, max_profit)
+            }
+        }
+        return max_profit;
+    }
+```
+
+That was correct but took 776ms.  So I tried a DP solution.
+
+```
+    int maxProfit(vector<int>& prices) {
+        int max_profit = 0;
+        int min_price = INT_MAX
+        
+        for (size_t i = 0; i < prices.size(); i++) {
+            min_price = min(min_price, prices[i]);
+            max_profit = max(max_profit, prices[i] - min_price);
+        }
+        return max_profit;
+    }
+```
+
+It took only 4ms. From the forums I learned that it's a variant of  [Kadanes algorithm](https://afshinm.name/2018/06/24/why-kadane-algorithm-works/) - calculating the maximum subarray.
+
+## 10 September 2019: 
+
+Today I was reading code consisted of statements like these:
+
+```
+char *buf = malloc(N+1);
+size_t len = 0;
+strcpy(buf, "foo...");
+len += strlen("foo...");
+strcpy(buf+len, "bar...");
+len += strlen("bar...");
+```
+
+The `strcpy` function returns a `ptr` to the beginning of the buffer instead of the end. With `stpcpy` the above could have been written as:
+
+```
+char *buf = malloc(N+1);
+char *ptr = buf;
+ptr = stpcpy(ptr, "foo...");
+ptr = stpcpy(ptr, "bar...");
+```
+
+Martin Sebor discusses this performance pitfall in [Efficient String Copying and Concatenation in C](https://developers.redhat.com/blog/2019/08/12/efficient-string-copying-and-concatenation-in-c/).
+
+## 9 September 2019
+
+Eli Benderski gives two examples of subtle bugs when iterating using unsigned integers in [The Perils of Unsigned Iteration in C/C++](https://eli.thegreenplace.net/2010/06/11/the-perils-of-unsigned-iteration-in-cc). This code is buggy since it underflows when `i` is zero.
+
+```
+size_t len = strlen(str);
+for (size_t i = len - 1; i >= 0; --i) {
+  // Do stuff with str[i], backwards
+}
+```
+
+I've started writing backward-loops on this form. It removes this class of bus at the expense of harder to understand code.
+
+```
+for (size_t i = len; i-- > 0; ) {
+    // Do stuff with str[i], backwards
+}
+```
+
+Eli gives an example of a loop that goes forward that is buggy too, since the expression `len - 1` will underflow if `len` is 0.
+
+```
+size_t len = strlen(str);
+for (size_t i = 0; i < len - 1; ++i) {
+  // Do stuff with str[i] and some_c_str[i+1].
+}
+```
+
+These bugs can be avoided if the loop counter is signed but since `sizeof` returns `size_t` and all C++ container classes uses `size_t` you'll end up with lots of typecasts.
+
+## 5 September 2019
 
 The Crome browsers developer documentation has a document called [The Rule of 2](https://chromium.googlesource.com/chromium/src/+/master/docs/security/rule-of-2.md). The rule of 2 is: Pick no more than two of
 
