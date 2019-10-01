@@ -5,9 +5,64 @@ use_math: true
 ---
 # Today I've learned
 
+## 1 October 2019
+
+I solved [Leetcode 674 - Longest Increasing Continous Subsequence](https://leetcode.com/problems/longest-continuous-increasing-subsequence/). Given an unsorted array of integers, find the length of longest continuous increasing subsequence (subarray).
+
+Whenever I've had to write an algorithm where I've needed to compare each element to the previous one, I've introduced a `prev` variable and initialized it as `int prev = arr[0]`. But that requires that I introduce an early return if the array is empty. Today I realized that instead I could just add an extra expression to the if statement inside the for loop. So that only took me ten years to figure out!
+
+```
+ int findLengthOfLCIS(vector<int>& nums) {
+        int len = 0;
+        int m = 0;
+        for (size_t i = 0; i < nums.size(); i++) {
+            if (i == 0 || nums[i-1] < nums[i]) {
+                m = max(m, ++len);
+            } else {
+                len = 1;
+            }
+        }
+        return m;
+    }
+```
+
 ## 30 September 2019
 
 William Swansson has created a C preprocesor [Map macro](https://github.com/swansontec/map-macro/blob/master/map.h). It's about applying a function to each element of a list which requires recursion which the preprocessor does not support. William solves it  by feeding unexpanded macros to other macros. Paul Fultz has a good explanation of how that works in [Is the C Preprocessor Turing Complete](https://github.com/pfultz2/Cloak/wiki/Is-the-C-preprocessor-Turing-complete%3F).
+
+## 29 September 2019
+
+[Leetcode 1010 - Pairs of Songs with Total Duration Divisible by 60](https://leetcode.com/problems/pairs-of-songs-with-total-durations-divisible-by-60/) and [Leetcode 1128 - Number of Equivalent Domino Pairs](https://leetcode.com/problems/number-of-equivalent-domino-pairs/) can both be solved by using a table  that keeps counts of items visited. The trick is to compute the pairs before I increment the table.
+
+```
+  int numPairsDivisibleBy60(vector<int>& time) {
+        int n = 0;
+        int m[60] = {0};
+        
+        for (size_t i = 0; i < time.size(); i++) {
+            int x = time[i] % 60;
+            int y = (60 - x) % 60;
+            n += m[y];
+            m[x]++;
+        }
+        return n;
+    }
+```
+
+```
+  int numEquivDominoPairs(vector<vector<int>>& dominoes) {
+        int t[11][11] = {0};
+        int n = 0;
+        
+        for (auto &d : dominoes) {
+            int a = min(d[0], d[1]);
+            int b = max(d[0], d[1]);
+            n += t[a][b];
+            t[a][b]++;
+        }
+        return n;
+    }
+```
 
 ## 19 September 2019
 
