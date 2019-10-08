@@ -5,6 +5,29 @@ use_math: true
 ---
 # Today I've learned
 
+## 8 October 2019
+
+Daniel Bernstein published [a specification for netstrings back in the 90's](http://cr.yp.to/proto/netstrings.txt). A netstring is an encoding that is easy to generate and to parse. Any string of 8-bit bytes may be encoded as `[len]":"[string]","`. The following C code generates a netstring from a buffer and a len.
+
+```
+if (printf("%lu:",len) < 0) barf();
+if (fwrite(buf,1,len,stdout) < len) barf();
+if (putchar(',') < 0) barf();
+```
+
+The following C code reads a netstring and decodes it into a dynamically allocated buffer of size `len`.
+
+```
+ if (scanf("%9lu",&len) < 1) barf();  /* >999999999 bytes is bad */
+ if (getchar() != ':') barf();
+ buf = malloc(len + 1);       /* malloc(0) is not portable */
+ if (!buf) barf();
+ if (fread(buf,1,len,stdin) < len) barf();
+ if (getchar() != ',') barf();
+```
+
+I wish that more encodings were this simple!
+
 ## 4 October 2019
 
 I solved [Leetcode 893 - Groups of Special-Equivalent Strings](https://leetcode.com/problems/groups-of-special-equivalent-strings/).  The problem description was cryptic. You're supposed to find groups of strings which can be made equal by swapping characters at odd positions and characters at even positions.
