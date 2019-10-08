@@ -5,6 +5,102 @@ use_math: true
 ---
 # Today I've learned
 
+## 4 October 2019
+
+I solved [Leetcode 893 - Groups of Special-Equivalent Strings](https://leetcode.com/problems/groups-of-special-equivalent-strings/).  The problem description was cryptic. You're supposed to find groups of strings which can be made equal by swapping characters at odd positions and characters at even positions.
+
+```
+ int numSpecialEquivGroups(vector<string>& A) {
+    set<string> S;
+    for (string &s : A) {
+            string odd;
+            string even;
+            for (size_t i = 0; i < s.size(); i++) {
+                if (i % 2) {
+                    odd.push_back(s[i]);
+                } else {
+                    even.push_back(s[i]);
+                }
+            }
+            sort(begin(odd), end(odd));
+            sort(begin(even), end(even));
+            S.insert(odd+even);
+        }
+        return S.size();
+}
+```
+
+Once again a problem that can be solved with some variation of Counting sort. Problem setters just can't get enough of those I guess. Too bad most real-life text uses Unicode which has way too many code points to make a counting sort feasible.
+
+```
+  int numSpecialEquivGroups(vector<string>& A) {
+ set<string> S;
+        for (string &s : A) {
+            int count[52] = {0};
+            for (size_t i = 0; i < s.size(); i++) {
+                count[s[i] - 'a' + 26 * (i % 2)]++;
+            }
+            S.insert(string(count, count + 52));
+        }
+        return S.size();
+    }
+```
+
+## 3 October 2019
+
+[Leetcode 557. Reverse Words in a String III](https://leetcode.com/problems/reverse-words-in-a-string-iii) requires two pointers to keep track of each `[b, e)` span. If the outer loop scans for `e`,  then we also need a `b < end(s)` check at the end.  For other similar algorithms where we initially need to dereference `b` we might need an early exit `if (s.size() < threshold) return` statement as well.
+
+```
+   string reverseWords(string s) {
+       auto b = begin(s);       
+       for (auto i = begin(s); i != end(s); i++){
+            if (*i == ' ') {
+                reverse(b, i-1);
+                b = i+1;
+            }
+        }
+        if (b < end(s)) {
+            reverse(b, i-1);
+        }
+        return s;
+    }
+```
+
+If the outer loop instead scans for the start of the span, then we don't need the prologue or epilogue from the previous solution.
+
+```
+string reverseWords(string s) {}
+    for (auto i = begin(s); i != end(s); ++i) {
+        if (*i != ' ') {
+            auto e = find(i, end(s), ' ');
+            reverse(i, e);
+            i = e-1;
+        }
+    }
+    return s;
+}
+```
+
+## 2 October 2019
+
+The number or ways a subset can be chosen from a set if we ignore the ordering of the selection is:
+$$
+{n\choose k} =\frac{n!}{k!(n-k)!}
+$$
+I can see how that is true. The $n$ elements can be rearranged in $n!$ ways but we don't need to bother with the $(n-k)!$ elements that we haven't chosen and for the $k$ elements that we have selected we can ignore the $k!$ ways those can be rearranged. 
+
+
+
+Today I found this explanation in a [Math Stackexchange question](https://math.stackexchange.com/questions/2214839/exactly-how-does-the-equation-nn-1-2-determine-the-number-of-pairs-of-a-given):
+
+> Among the other ways to think about this problem (and one which kids find first). Imagine the people entering the room one at a time and  introducing themselves. The first person has nothing to do. The second person shakes one hand. The third person shakes with the two already there, and so on. The last person has *n*−1 hands to shake. So the total number of handshakes is  0+1+⋯+(n−1).
+
+That is ${n(n-1)}/{2}$  which is the same as $n\choose 2$
+$$
+\frac{n!}{2!(n-2)!} = \frac{n(n-1)}{2}
+$$
+To me that connection between arithmetic series and combinatorics was unexpected. This [Stackoverflow question about counting number of times an if statement was executed](https://stackoverflow.com/questions/30101232/calculating-the-number-of-times-an-if-statement-is-executed) has a derivation for the arithmetic series that equals $n\choose 3$.
+
 ## 1 October 2019
 
 I solved [Leetcode 674 - Longest Increasing Continous Subsequence](https://leetcode.com/problems/longest-continuous-increasing-subsequence/). Given an unsorted array of integers, find the length of longest continuous increasing subsequence (subarray).
