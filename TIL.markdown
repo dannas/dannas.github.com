@@ -5,6 +5,14 @@ use_math: true
 ---
 # Today I've learned
 
+## 15 October 2019
+
+Chris Colemans [A Deep Dive into ARM Cortex-M Debug Interfaces](https://interrupt.memfault.com/blog/a-deep-dive-into-arm-cortex-m-debug-interfaces) describes the bewildering landscape of  ARM debugging standards, IP-blocks, connectors and debug probes. One thing that I hadn't heard of before was the CMSIS-DAP protocol which is a standardized protocol for interfacing with the ARM Debug Access Port. ARM provides an open source implementation of the specification known as DAPLink. I have only used the ST-Link and Segger Jlink debug probes before.
+
+The DAPLink firmware can be used together with the [pyOCD](https://github.com/mbedmicro/pyOCD) GDB server. But pyOCD can also handle ST-Link probes.
+
+Coleman discusses mentions the Debug Access Port and the registers that controls it but doesn't go very deep into the details. My interpretation is that a transaction is sent over SWD to read from a specific register in a DAP. The DAP then goes onto the AHB or APB bus and reads from the memory mapping that maps to the register content. The SWD reply is processed by the GDB server which the returns the reply to the debugger client.
+
 ## 8 October 2019
 
 Daniel Bernstein published [a specification for netstrings back in the 90's](http://cr.yp.to/proto/netstrings.txt). A netstring is an encoding that is easy to generate and to parse. Any string of 8-bit bytes may be encoded as `[len]":"[string]","`. The following C code generates a netstring from a buffer and a len.
