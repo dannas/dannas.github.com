@@ -5,6 +5,64 @@ use_math: true
 ---
 # Today I've learned
 
+## 17 October 2019
+
+I solved a Leetcode problem that involved identifying vowels. I got curious about the relative performance of different approaches.
+
+```
+bool isVowel(unsigned char c) {
+        return c=='a' || c=='e' || c=='i' || c=='o' || c=='u' ||  c=='y' ||
+            c=='A' || c=='E' || c=='I' || c=='O' || c=='U' || c=='Y';
+}
+
+bool isVowel2(unsigned char c) {
+    c = tolower(c);
+    return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'y';
+}
+
+bool isVowel3(unsigned char c) {
+    c |= 0x20;
+    return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'y';
+}
+
+bool isVowel4(unsigned char c) {
+    c |= 0x20;
+    switch(c) {
+        case 'a':
+        case 'e':
+        case 'i':
+        case 'o':
+        case 'u':
+        case 'y':
+        return true;
+        default:
+        return false;
+    }
+}
+
+```
+
+And here are the timings on my machine:
+
+```
+Run on (6 X 3500 MHz CPU s)
+CPU Caches:
+  L1 Data 32K (x3)
+  L1 Instruction 32K (x3)
+  L2 Unified 256K (x3)
+  L3 Unified 6144K (x1)
+----------------------------------------------------------
+Benchmark                   Time           CPU Iterations
+----------------------------------------------------------
+BM_Ascii<isVowel>         633 ns        633 ns    1080390
+BM_Ascii<isVowel2>       1416 ns       1415 ns     524516
+BM_Ascii<isVowel3>        655 ns        655 ns    1064901
+BM_Ascii<isVowel4>        772 ns        772 ns     877848
+
+```
+
+Here's a [Compiler Explorer output](https://godbolt.org/z/jlVAgb) for the four different functions. Looks like the simplest code is fastest. The `tolower` call won't be inlined so it has the overhead of a function call.
+
 ## 15 October 2019
 
 Chris Colemans [A Deep Dive into ARM Cortex-M Debug Interfaces](https://interrupt.memfault.com/blog/a-deep-dive-into-arm-cortex-m-debug-interfaces) describes the bewildering landscape of  ARM debugging standards, IP-blocks, connectors and debug probes. One thing that I hadn't heard of before was the CMSIS-DAP protocol which is a standardized protocol for interfacing with the ARM Debug Access Port. ARM provides an open source implementation of the specification known as DAPLink. I have only used the ST-Link and Segger Jlink debug probes before.
