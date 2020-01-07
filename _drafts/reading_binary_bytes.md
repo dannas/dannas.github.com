@@ -11,6 +11,8 @@ https://godbolt.org/z/odxDne
 
 // I was surprised to see that they all generate the same assembly code.
 
+But see https://t0rakka.silvrback.com/compilers, not all compilers may optimize r1.
+
 ```
 // The portable clean way, see Rob Pikes article
 
