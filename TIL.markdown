@@ -5,6 +5,20 @@ use_math: true
 ---
 # Today I've learned
 
+## 7 January 2020
+
+Denis Bakhvalovs article [Benchmarking: compare measurements and check which is faster](https://easyperf.net/blog/2019/12/30/Comparing-performance-measurements) and Laurence Tratts [Minimum Times Tend to Mislead when Benchmarking](https://tratt.net/laurie/blog/entries/minimum_times_tend_to_mislead_when_benchmarking.html) both discusses pitfalls that arise when an experimenter fails to take the distribution of the data into account. I find it strange that Googles Benchmark library, Facebooks Folly Benchmark module and the Go Benchmark module all just reports a single number. Denis and Laurence explanations are good, but still a bit superficial. I wish that Catherine McGeochs book A Guide to Experimental Algorithms, was more videly known, as she goes into these issues in more depth.
+
+## 14 November 2019
+
+Volatile loads for side effects might be optimized away by some compilers.
+
+* https://blog.regehr.org/archives/28
+* https://embeddedgurus.com/stack-overflow/2010/03/reading-a-register-for-its-side-effects-in-c-and-c/
+* https://godbolt.org/z/amTG3g
+* https://embeddedartistry.com/newsletters/march-2019-deprecating-volatile
+* https://barrgroup.com/Embedded-Systems/How-To/C-Volatile-Keyword
+
 ## 17 October 2019
 
 I solved a Leetcode problem that involved identifying vowels. I got curious about the relative performance of different approaches.
