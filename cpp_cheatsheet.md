@@ -1,3 +1,30 @@
+<style type="text/css" rel="stylesheet"> article { white-space: pre; } </style>
+
+# C++ Concepts
+entities
+    objects
+    references
+    structured bindings
+    functions
+    enumerators
+    types
+    class members
+    templates
+    template specializations
+    namespaces
+    parameter packs
+
+entities are introduced by declarations
+
+functions := sequence of stmts
+name lookup
+    qualified
+        on the right side of ::
+    unqualified
+scope
+linkage
+
+
 # Input/Output
 ios::sync_with_stdio(0);                    // don't sync C and C++ streams
 cin::tie(0);                                // don't auto-flush between cin and cout calls
@@ -22,11 +49,24 @@ sin,cos,tan
 
 # Containers
 n = s.size();                               // size
+    Having it named size() is confusing when it returns length, not number of
+    bytes. But I guess length gives the impression that the content is stored linearly which
+    is not true for the map/set containers.
 for (auto val : s) use(val);                // iterate
+    Remember t
 T c = {...};                                // construct via initializer_list
 it = begin(c);
 it = end(c);
 it = back_inserter(c);
+
+# Vector
+    Vector should have been called Array or DynArray. Naming is hard.
+vector<int> v;                              // construct
+vector<int> v(n, val=T)                     // construct n elts
+v.resize(n, val=T);                         // create n elts with value val
+v.reserve(new_cap);                         // v.buf = malloc(new_cap)
+v.push_back(val);                           // append val
+v.insert(end(v), b, e);                     // append other[b:e] to v
 
 # String
 string s;                                   // construct
@@ -36,21 +76,15 @@ s.push_back(c);                             // append a char
 s.append(str);                              // append a string
 s.append(n, c);                             // append n characters
 s.append(str, pos, n);                      // append str(pos, pos+n)
+s = s.substr(pos, n);                       // strdup + strlcpy(s, s+pos, n)
 for (char c : s) use(c);                    // iterate
-pos = s.find(c);                            // strchr(s, c)
-pos = s.find(str);                          // strstr(s, str)
-pos = s.find_first_of(str);                 // strpbrk(s, str)
-pos = s.find_first_not_of(str);             // strspn(s, str)
+pos = s.find(c, pos=0);                     // strchr(s+pos, c)
+pos = s.find(str, pos=0);                   // strstr(s+pos, str)
+pos = s.find_first_of(str, pos=0);          // strpbrk(s+pos, str)
+pos = s.find_first_not_of(str, pos=0);      // strspn(s+pos, str)
+pos = s.find_last_of(str, pos=npos);        // strrpbrk(s+pos, str)
 r = s.compare(other);                       // strcmp(s, other)
 r = s.compare(i, n, other, j, m);           // strncmp(s[i:n], other[j:m], min(n, m)
-
-# Vector
-vector<int> v;                              // construct
-vector<int> v(n, val=T)                     // construct n elts
-v.resize(n, val=T);                         // create n elts with value val
-v.reserve(new_cap);                         // v.buf = malloc(new_cap)
-v.push_back(val);                           // append val
-v.insert(end(v), b, e);                     // append other[b:e] to v
 
 # Set
 set<int> s;                                 // construct empty set
@@ -64,6 +98,7 @@ val = m[key];                               // Get val. NOTE: [key,val is create
 m[key] = val;                               // Constructs (key, val). NOTE: [Double construction, perf problem][CHEN-2019]
 m.insert_or_assign(key, val);
 val = m.at(key)
+n = m.count(key);                           // Check if m contains key
 for (auto &kv : m) use(k->first,k->second); // iterate
 
 # Algorithms
@@ -73,18 +108,18 @@ stable_sort(b, e);                          // mergesort
 stable_sort(b, e, less);                    // mergesort with bool less(x, y) comparator
 val = accumulate(b, e, start_val);
 reverse(b, e);
-i = find(b, e);
+i = find(b, e, val);
 val = min({...});                             // Return min. Requires [^initializer_list]
 val = max({...});
 
 # Time Estimates
 input size    required time complexity
 n≤10        O(n!)
-n≤20        O(2n)
-n≤500       O(n3)
-n≤5000      O(n2)
-n≤10^6      O(nlogn) or O(n)
-n is large  O(1) or O(logn)
+n≤20        O(2^n)
+n≤500       O(n^3)
+n≤5000      O(n^2)
+n≤10^6      O(n log n) or O(n)
+n is large  O(1) or O(log n)
 
 # Competetive programming specific
 const int INF = 0x3f3f3f3f;                 // Since INF+INF does not overflow and you can set an array to infinity with memset(a, 0x3f, sizeof(a))
@@ -95,10 +130,11 @@ const int INF = 0x3f3f3f3f;                 // Since INF+INF does not overflow a
 // Iterate with indices
 for (size_t i = 0; i < N; i++) 
     use(v[i]);
+
+// Iterate without indices
 for (auto i = begin(v); i != end(v); ++i) 
     use(*i);
 
-// Iterate without indices
 for (auto &val : v) 
     use(val);
 
@@ -118,7 +154,7 @@ for (size_t i = 0; i < N; i++) {
 
 // Find longest span
 for (size_t i = 0; i < N; i++) {
-    if (i == 0 || pred(v[i-1], v[i])) {
+    if (i == 1 || pred(v[i-1], v[i])) {
         m = max(m, ++len);
     } else {
         len = 1;
