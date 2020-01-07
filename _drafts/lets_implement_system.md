@@ -3,6 +3,8 @@ layout: post
 title: Let's Implement System
 ---
 
+# Let's Implement a Safe System(3)
+
 As a learning exercise for myself, I was writing a shell and started thinking about the security implications of running a subprocess from within a process. Here are my findings. I'll write a function that executes a program and blocks for the duration of it's execution, like `system(3)`.
 
 ## A first unsafe implementation of system(3)
@@ -30,7 +32,7 @@ int system1(const char *cmd) {
 }
 ```
 
-The [system(3)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/system.html) standard specifies that `SIGCHLD` should be blocked in the parent and that `SIGINT` and `SIGQUIT` should be ignored. This leads to a much more verbose implementation. I will base future changes on `system1` to to improve readability.
+The [system(3)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/system.html) standard specifies that `SIGCHLD` should be blocked in the parent and that `SIGINT` and `SIGQUIT` should be ignored. This leads to a much more verbose implementation. I will base future changes on `system1` for the sake of readability.
 
 ```
 int system2(const char *cmd) {
@@ -97,17 +99,17 @@ int system2(const char *cmd) {
 
 ## Ensure files are closed
 
-File descriptors are shared across `fork+exec`. Any files that has been opened in the parent remains open in the child, unless the file was opened with the `O_CLOEXEC` flag set.  If the parent calls a program with `/etc/passwd` open, then it may be accessible to the child as well.
+File descriptors are shared across `fork+exec`. Any files that has been opened in the parent remains open in the child, unless the file was opened with the `O_CLOEXEC` flag set.  If the parent calls a program with `/etc/shadow` open, then it may be accessible to the child as well.
 
 ```
 int main() {
-    int fd = open("/etc/passwd", O_RDONLY);
+    int fd = open("/etc/shadow", O_RDONLY);
     (void)fd;
     system("./exploit_fd");
 }
 ```
 
-The child can then read or write to the file depending on what mode it was opened with in the parent. For the program above, the `fd` for `/etc/passwd` will be `3` so this program will write the content of the file to `stdout`.
+The child can then read or write to the file depending on what mode it was opened with in the parent. For the program above, the `fd` for `/etc/shadow` will be `3` so this program will write the content of the file to `stdout`.
 
 ```
 int main() {
@@ -142,53 +144,80 @@ int system3(const char *cmd) {
 }
 ```
 
-* https://gitlab.freedesktop.org/libbsd/libbsd/blob/master/src/closefrom.c
-*  [**Bug 10353**](https://sourceware.org/bugzilla/show_bug.cgi?id=10353) - Methods for deleting all file descriptors greater than given integer (closefrom)    
-* https://stackoverflow.com/questions/899038/getting-the-highest-allocated-file-descriptor
-* https://stackoverflow.com/questions/18513454/is-there-an-async-signal-safe-way-of-reading-a-directory-listing-on-linux
-* getdtablesize
-* https://github.com/python/cpython/blob/9e4f2f3a6b8ee995c365e86d976937c141d867f8/Modules/_posixsubprocess.c#L261
-* TAOSSA 7.6.4 discusses file descriptor leaks
-
-## Drop Privilegies
+## Drop Privileges
 
 Linux has an all or nothing security model. Either you're root and are allowed to do everything on the system, or you're a regular user. A process inherits its user id and group id from its parent, unless the setuid flag is set on the executable. Then it's running as whatever user owns the file.
 
-You should drop all privilegies that are not needed when calling `exec`.  The API for that is not cross platform and has a certain number of wrinkles which mostly have been smoothed out on linux with the introduction of `setreuid` and `setregid`.
+You should drop all privileges that are not needed when calling `exec`.  The API for that is not cross platform and has a certain number of wrinkles which mostly have been smoothed out on Linux with the introduction of `setreuid` and `setregid`.
 
-* Each file has an owner. 
+```
+int system4(const char *cmd) {
+    int status;
+    pid_t pid;
 
-* Each file has permissions. Those dictate what the owner, group and others can do with the file.
+    switch (pid = fork()) {
+    case -1:
+        return -1;
+    case 0: {
+        gid_t new_gid = getgid();
+        gid_t old_gid = getegid();
+        uid_t new_uid = getuid();
+        uid_t old_uid = geteuid();
 
-* A process inherits the user-id from its parent (it's not the owner set on the executable)
+        // Drop all ancillary groups.
+        setgroups(1, &new_gid);
 
-* But it can be overridden if the set-user bit is set on the executable file.
+        // Drop effective group id.
+        if (new_gid != old_gid) {
+            if (setregid(new_gid, new_gid) == -1) {
+                abort();
+            }
+        }
 
-* Privilege checks are done against the effective user id.
-* A process also has a saved user id.
-* There are also ancillary groups
+        // Drop effective user id.
+        if (new_uid != old_uid) {
+            if (setreuid(new_uid, new_uid) == -1) {
+                abort();
+            }
+        }
 
+        // Verify that the changes took effect.
+        if (new_gid != old_gid && getegid() != new_gid) {
+            abort();
+        }
+        if (new_uid != old_uid && geteuid() != new_uid) {
+            abort();
+        }
 
+        execl("/bin/sh", "sh", "-c", (char **)cmd, NULL);
+        _exit(127);
+    }
 
-- setgid
-- Check return values seteuid to avoid https://thesnkchrmr.wordpress.com/2011/03/24/rageagainstthecage/
-- setuid
-- prctl(PR_SET_NO_NEW_PRIVS, ...)
+    default:
+        if (waitpid(pid, &status, 0) == -1) {
+            return -1;
+        }
+    }
+    return status;
+}
+```
 
-## Sanitize environment
+## Sanitize the Environment
 
 - TAOSSA 7.6.4 discusses env
 - Can't call malloc after fork
 
-## Call libc system
+## Call Libc System
 
 * Discuss input sanitizing
 
 * 
 
-## Block signals during fork
+## Block Signals during Fork
 
 * To avoid race condition parent/child when child kills signal handlers.
+* We don't want signal handlers from the parent to be executed in the child
+* Need to block all signal handlers until exec is called
 
 ## Ensure that killed subprograms get reaped
 
@@ -200,16 +229,15 @@ Use prctl(PR_SET_PDEATHSIG, ...) and possibly prctl(PR_SET_CHILD_REAPER)
 
 * https://wiki.sei.cmu.edu/confluence/pages/viewpage.action?pageId=87152177
 * http://redhat-crypto.gitlab.io/defensive-coding-guide/#sect-Defensive_Coding-Shell-Edit_Guard
-
 * A list of vulnerabilities https://www.security-database.com/cwe.php?name=CWE-88
 * Another list https://www.security-database.com/cwe.php?name=CWE-78
-
 * https://www.exploit-db.com/papers/13197 about returning into libc attacks
-
 * [Don't mix Threads and Forks](https://rachelbythebay.com/w/2011/06/07/forked/)
 * https://chriswarrick.com/blog/2017/09/02/spawning-subprocesses-smartly-and-securely/
 * Fork-one safety problems related to locks (pthread_atfork workaround) https://docs.oracle.com/cd/E19455-01/806-5257/6je9h0334/index.html#gen-92888
 * The Art of Software Security Assessment chapter 10 UNIX processes
+* https://bugzilla.mozilla.org/show_bug.cgi?id=1314711#c5 fork and returning zero
+* http://rachelbythebay.com/w/2014/08/19/fork/ fork can fail
 
 ## The Implementation
 
