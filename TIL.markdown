@@ -5,6 +5,32 @@ use_math: true
 ---
 # Today I've learned
 
+## 9 January 2020
+
+I was trying to debug multiple elf files using S32 Studio as described in [HOWTO: Debug multiple elf files in S32 Design Studio with GDB](https://community.nxp.com/docs/DOC-342385), but couldn't get the debug symbols to match up with the code. It turned out that I was using the wrong sections LMA value when calculating the offset to use for gdbs `add-symbol-file`. The application had a header section containing non-runnable code, I should have used the LMA of the first section containing machine code.
+
+While figuring this out, I learned that the LMA and VMA terms are GNU specific. The ELF files program header consists of  an array of `Phdr` structures representing a segment. Each of those structures   contain a `p_paddr` (LMA) and a `p_vaddr` (VMA) field. Here's a good explanation of the uses of LMA and VMA addresses in embedded from the forum post [VMA vs LMA](https://www.embeddedrelated.com/showthread/comp.arch.embedded/77071-1.php) :
+
+> ```
+> LMA/VMA are different because you have a program in flash, initialised  data in flash, and variables in ram.  This is extremely common in  embedded systems - I'll assume this is the situation you are talking  about here from now on. For the code section, the LMA and the VMA are the same - the program  runs directly from the flash it resides in.  Similarly, the LMA and VMA  for bss data (i.e., uninitialised data that is cleared at startup) is  the same, although the LMA doesn't really matter as nothing is ever  loaded.  The only complication is the initialised data section, which  can be thought of as two parts - a RAM block containing the variables  (this is at the VMA), and a flash block containing their initial values  (at the LMA).  Startup code copies the initial values into the ram.
+> ```
+
+## 8 January 2020
+
+Show files changed between tags
+
+```
+svn diff --summarize OLD-TAG NEW-TAG
+```
+
+Show log between tags
+
+```
+rev1=${svn info OLD-TAG | grep "Last Changed Rev" | grep -oP "[0-9]+"}
+rev2=${svn info NEW-TAG | grep "Last Changed Rev" | grep -oP "[0-9]+"}
+svn log -v -r $rev1:r$ev2
+```
+
 ## 7 January 2020
 
 Denis Bakhvalovs article [Benchmarking: compare measurements and check which is faster](https://easyperf.net/blog/2019/12/30/Comparing-performance-measurements) and Laurence Tratts [Minimum Times Tend to Mislead when Benchmarking](https://tratt.net/laurie/blog/entries/minimum_times_tend_to_mislead_when_benchmarking.html) both discusses pitfalls that arise when an experimenter fails to take the distribution of the data into account. I find it strange that Googles Benchmark library, Facebooks Folly Benchmark module and the Go Benchmark module all just reports a single number. Denis and Laurence explanations are good, but still a bit superficial. I wish that Catherine McGeochs book A Guide to Experimental Algorithms, was more videly known, as she goes into these issues in more depth.
