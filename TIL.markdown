@@ -5,6 +5,10 @@ use_math: true
 ---
 # Today I've learned
 
+## 10 January 2020
+
+pahole from dwarves package.
+
 ## 9 January 2020
 
 I was trying to debug multiple elf files using S32 Studio as described in [HOWTO: Debug multiple elf files in S32 Design Studio with GDB](https://community.nxp.com/docs/DOC-342385), but couldn't get the debug symbols to match up with the code. It turned out that I was using the wrong sections LMA value when calculating the offset to use for gdbs `add-symbol-file`. The application had a header section containing non-runnable code, I should have used the LMA of the first section containing machine code.
