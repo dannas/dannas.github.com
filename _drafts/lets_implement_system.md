@@ -7,6 +7,12 @@ title: Let's Implement System
 
 As a learning exercise for myself, I was writing a shell and started thinking about the security implications of running a subprocess from within a process. Here are my findings. I'll write a function that executes a program and blocks for the duration of it's execution, like `system(3)`.
 
+## Table of Contents
+
+* TOC
+
+{:toc}
+
 ## A first unsafe implementation of system(3)
 
 A basic implementation of `system` will call `fork` then do an `exec` of `sh` in the child and call `waitpid`  in the parent. 
@@ -144,6 +150,37 @@ int system3(const char *cmd) {
 }
 ```
 
+## Sanitize the Environment
+
+A newly created process inherits the environment from its parent. If the environment is under the control of the attacker, the he/she may modify the `PATH`, `IFS` or other variables. Here's a program that tries to call `ping`.
+
+```
+int main() {
+    system("ping 8.8.8.8 -c 1"); 
+}
+```
+
+But system(3) starts a shell which uses the `PATH` environment variable for  finding executables. If we can modify the environment, then we can fool the program into looking elsewhere for the `ping` program.
+
+```
+int main(int argc, char *argv[]) {
+    printf("BAM! I'm a ping impersonator. You've been pwned\n");
+}
+```
+
+```
+$ gcc exploit_env.c -o ping
+$ PATH=. ./system_env
+BAM! I'm a ping impersonator. You've been pwned
+```
+
+A way around that is to sanitize the environment.
+
+- TAOSSA 7.6.4 discusses env
+- Can't call malloc after fork
+
+When we start a new process, it should have a minimal
+
 ## Drop Privileges
 
 Linux has an all or nothing security model. Either you're root and are allowed to do everything on the system, or you're a regular user. A process inherits its user id and group id from its parent, unless the setuid flag is set on the executable. Then it's running as whatever user owns the file.
@@ -202,20 +239,9 @@ int system4(const char *cmd) {
 }
 ```
 
-## Sanitize the Environment
-
-- TAOSSA 7.6.4 discusses env
-- Can't call malloc after fork
-
-## Call Libc System
-
-* Discuss input sanitizing
-
-* 
-
 ## Block Signals during Fork
 
-* To avoid race condition parent/child when child kills signal handlers.
+* To avoid race condition parent/child when child kills signal handlers. https://pubs.opengroup.org/onlinepubs/009695399/functions/fork.html#tag_03_177_08
 * We don't want signal handlers from the parent to be executed in the child
 * Need to block all signal handlers until exec is called
 
