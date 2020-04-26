@@ -4,8 +4,8 @@ layout: post
 ---
 [Schaik, Stephan van, et al. “RIDL: Rogue In-Flight Data Load.” 2019 IEEE Symposium on Security and Privacy (SP), 2019, pp. 88–105](https://mdsattacks.com/files/ridl.pdf)
 
-I've intended to read up on the speculative execution attacks that has been
-published the last year but I alway postponed it. But when Vaishali Thakkar
+I've intended to read up on the speculative execution attacks that have been
+published last year but I always postponed it. But when Vaishali Thakkar
 started a virtual [papers reading group](https://app.slack.com/client/T0114V1EM4Y/),
 I finally found enough motivation.
 
@@ -48,7 +48,7 @@ Foreshadow exploits is that the victim thread can leak data even if it is just
 running straight-line code, no need for branches or page faults.
 
 # The Line Fill Buffer
-A modern Out-Of-Order CPU has lots of buffers and units. I had never heard of a Line Fill Buffer but here's how my current understanding of how it works: When data is to be stored it follows this schema[^travdowns]:
+A modern Out-Of-Order CPU has lots of buffers and units. I had never heard of a Line Fill Buffer but here is my current understanding of how it works: When data is to be stored it follows this schema[^travdowns]:
 1. A store instruction gets scheduled and have a store buffer entry allocated.
 2. The instruction executes.
 3. When all older instructions have retired, the store instruction retires
@@ -56,8 +56,8 @@ A modern Out-Of-Order CPU has lots of buffers and units. I had never heard of a 
 6. In the miss scenario the LFB eventually comes back with the full content of
 the line, which is committed to the L1 and the pending store can commit.
 
-# How determine that the Line Fill Buffer leaks?
-The authors wrote a kernel moddule to mark memory in the victim thread as
+# How to determine that the Line Fill Buffer leaks?
+The authors wrote a kernel module to mark memory in the victim thread as
 write-back (WB), write-through (WT)[^petercordes], write-combine (WC) and uncacheable (UC).
 For the first experiment they compared number of succesful retrieval (hits)
 of the victim data to the `lfb_hit` performance counter and saw a strong
@@ -139,4 +139,4 @@ The authors recommend that SMT be disabled. The Intel mitigation involves update
 
 ---
 [^petercordes]: I thought that write-back and write-through were properties of the hardware caches and not something that could be set on memory pages. I asked [When use write-through cache policy for pages](https://stackoverflow.com/questions/61129142/when-use-write-through-cache-policy-for-pages) and Peter Cordes gave a precise exhaustive answer. It looks like there are very few real-world uses for write-through caches and the only real advantage to them is that they make the hardware designers job easier.
-[^travdowns]: I was puzzled about how the store buffer and LFB interacts and asked [How do the store buffer and line fill buffer interact on Stackoverflow](https://stackoverflow.com/questions/61129773/how-do-the-store-buffer-and-line-fill-buffer-interact-with-each-other). Travis Downs gave gave a detailed explanation (which I've only summarized). In particular the exact point when the different steps (issue, retire, commit) happens has lots details.
+[^travdowns]: I was puzzled about how the store buffer and LFB interacts and asked [How do the store buffer and line fill buffer interact on Stackoverflow](https://stackoverflow.com/questions/61129773/how-do-the-store-buffer-and-line-fill-buffer-interact-with-each-other). Travis Downs gave a detailed explanation (which I've only summarized). In particular the exact point when the different steps (issue, retire, commit) happens has lots of details.
