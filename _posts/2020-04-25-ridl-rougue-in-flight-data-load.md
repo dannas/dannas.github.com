@@ -10,9 +10,9 @@ started a virtual [papers reading group](https://app.slack.com/client/T0114V1EM4
 I finally found enough motivation.
 
 RIDL is a recent exploit and is part of a set of microarchitectural data
-sampling attacks, more information can be found at the [MDS Attacks web page](https://mdsattacks.com). I had to learn many new things about microprocessor internals in order to understand the exploit. Hopefully it will be easier to read the Spectre, Meltdown and Foreshadow papers now. 
+sampling attacks, more information can be found at the [MDS Attacks web page](https://mdsattacks.com). I had to learn many new things about microprocessor internals to understand the exploit. Hopefully, it will be easier to read the Spectre, Meltdown, and Foreshadow papers now. 
 
-I was surprised by how ineffective the exploits are: the paper describes how it took 24 hours to retrieve 26 bytes from a `/etc/shadow` file. On the other hand as Stephen Röttger shows in [Escaping the Chrome Sandbox with RIDL](https://googleprojectzero.blogspot.com/2020/02/escaping-chrome-sandbox-with-ridl.html), it is possible to attack real systems!
+I was surprised by how ineffective the exploits are: the paper describes how it took 24 hours to retrieve 26 bytes from a `/etc/shadow` file. On the other hand, as Stephen Röttger shows in [Escaping the Chrome Sandbox with RIDL](https://googleprojectzero.blogspot.com/2020/02/escaping-chrome-sandbox-with-ridl.html), it is possible to attack real systems!
 
 # The Attack
 The victim makes a load or store which causes data to be put in the Line Fill
@@ -49,25 +49,25 @@ running straight-line code, no need for branches or page faults.
 
 # The Line Fill Buffer
 A modern Out-Of-Order CPU has lots of buffers and units. I had never heard of a Line Fill Buffer but here is my current understanding of how it works: When data is to be stored it follows this schema[^travdowns]:
-1. A store instruction gets scheduled and have a store buffer entry allocated.
+1. A store instruction gets scheduled and has a store buffer entry allocated.
 2. The instruction executes.
 3. When all older instructions have retired, the store instruction retires
-4. The store waits until it is at the head of the store buffer (it is the oldest not committed store) at which point it will commit (become globally visible) into the L1, if the associated cache line is present and in MESIF Modified or Exclusive state. 5. If the line is not present in the required state, a Line Fill Buffer (LFB) is allocated.
-6. In the miss scenario the LFB eventually comes back with the full content of
-the line, which is committed to the L1 and the pending store can commit.
+4. The store waits until it is at the head of the store buffer (it is the oldest not committed store) at which point it will commit (become globally visible) into the L1 if the associated cache line is present and in MESIF Modified or Exclusive state. 5. If the line is not present in the required state, a Line Fill Buffer (LFB) is allocated.
+6. In the miss scenario, the LFB eventually comes back with the full content of
+the line, which is committed to the L1, and the pending store can commit.
 
 # How to determine that the Line Fill Buffer leaks?
 The authors wrote a kernel module to mark memory in the victim thread as
 write-back (WB), write-through (WT)[^petercordes], write-combine (WC) and uncacheable (UC).
-For the first experiment they compared number of succesful retrieval (hits)
+For the first experiment, they compared the number of successful retrievals (hits)
 of the victim data to the `lfb_hit` performance counter and saw a strong
 correspondence.
 
-For the second experiment a victim thread initially writes a known value to a
-fix memory address and then reads it back in a loop, where each read is
-followed by a mfence. The number of hits in the attacker was recorded. The
+For the second experiment, a victim thread initially writes a known value to a
+fixed memory address and then reads it back in a loop, where each read is
+followed by a `mfence`. The number of hits in the attacker was recorded. The
 experiment was done for all four memory types, WB, WT, WC, UC. The experiment
-was also done for all memory types with the cache flushed using the clflush
+was also done for all memory types with the cache flushed using the `clflush`
 instruction.
 
 ```
@@ -86,7 +86,7 @@ the cache was not the cause of the leak. And store-to-load forwarding can not
 be the cause since we're leaking from a load.
 
 In the third experiment, the victim thread writes four different values to
-four sequenctial cache lines, followed by an mfence. 
+four sequential cache lines, followed by a `mfence`. 
 
 ```
 while (true) {
@@ -118,15 +118,15 @@ They also made a cross-VM version where a victim VM runs passwd and the attacker
 runs in another VM. They were then able to retrieve 16 characters in 24 hours.
 
 Kernel context can also be attacked. They wrote a victim program that read 0
-bytes from `/proc/self/maps`, so no bytes were copied to user space. But the
+bytes from `/proc/self/maps`, so no bytes were copied to userspace. But the
 attacker could still retrieve the first 64 bytes of the victim process memory
 mapping.
 
-Of course they also targeted SGX (I sometimes think that SGX was created so that
+Of course, they also targeted SGX (I sometimes think that SGX was created so that
 security researchers had something to write papers about, on the other hand
 protecting a system from itself is hard).
 
-Finally the sandbox environment running Javascript can be targetted. There is
+Finally, the sandbox environment running Javascript can be targetted. There is
 no `clflush` instruction available so they had to rely on the much noiser
 Evict+Reload technique instead. High-resolution timers are disabled, but there
 are ways around that (by using SharedArrayBuffer or GPU-based counters). They
@@ -134,9 +134,9 @@ used an old version of Firefox with the high-resolution timers still enabled.
 That sounds like cheating to me. Nevertheless, they were able to leak data from
 a victim process running on the same system.
 
-# How mitigate RIDL?
-The authors recommend that SMT be disabled. The Intel mitigation involves updated microcode which allows software to flush several types of in-fligh buffers (LFBs, load ports and store buffers) using the `verw` instruction. The updated microcode also flushes these buffers when flushing the L1 cache and when leaving/exiting SGX.
+# How To Mitigate RIDL?
+The authors recommend that SMT be disabled. The Intel mitigation involves updated microcode which allows the software to flush several types of in-flight buffers (LFBs, load ports, and store buffers) using the `verw` instruction. The updated microcode also flushes these buffers when flushing the L1 cache and when leaving/exiting SGX.
 
 ---
-[^petercordes]: I thought that write-back and write-through were properties of the hardware caches and not something that could be set on memory pages. I asked [When use write-through cache policy for pages](https://stackoverflow.com/questions/61129142/when-use-write-through-cache-policy-for-pages) and Peter Cordes gave a precise exhaustive answer. It looks like there are very few real-world uses for write-through caches and the only real advantage to them is that they make the hardware designers job easier.
-[^travdowns]: I was puzzled about how the store buffer and LFB interacts and asked [How do the store buffer and line fill buffer interact on Stackoverflow](https://stackoverflow.com/questions/61129773/how-do-the-store-buffer-and-line-fill-buffer-interact-with-each-other). Travis Downs gave a detailed explanation (which I've only summarized). In particular the exact point when the different steps (issue, retire, commit) happens has lots of details.
+[^petercordes]: I thought that write-back and write-through were properties of the hardware caches and not something that could be set on memory pages. I asked [When to use write-through cache policy for pages](https://stackoverflow.com/questions/61129142/when-use-write-through-cache-policy-for-pages) and Peter Cordes gave a precise exhaustive answer. It looks like there are very few real-world uses for write-through caches and the only real advantage to them is that they make the hardware designer's job easier.
+[^travdowns]: I was puzzled about how the store buffer and LFB interact and asked [How do the store buffer and line fill buffer interact on Stackoverflow](https://stackoverflow.com/questions/61129773/how-do-the-store-buffer-and-line-fill-buffer-interact-with-each-other). Travis Downs gave a detailed explanation (which I've only summarized). In particular, the exact point when the different steps (issue, retire, commit) happens has lots of details.
