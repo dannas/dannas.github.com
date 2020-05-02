@@ -1,5 +1,5 @@
 ---
-title: Paper, RIDL Rogue In-Flight Data Load
+title: Paper&#58;  RIDL Rogue In-Flight Data Load
 layout: post
 ---
 [Schaik, Stephan van, et al. “RIDL: Rogue In-Flight Data Load.” 2019 IEEE Symposium on Security and Privacy (SP), 2019, pp. 88–105](https://mdsattacks.com/files/ridl.pdf)
