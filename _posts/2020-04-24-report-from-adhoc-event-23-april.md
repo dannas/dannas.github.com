@@ -46,6 +46,10 @@ which that I knew more about memory reclamations, but it sounds like a great ide
 to me at least!
 
 # A 15-minute History of Task Isolation on Linux
+
+**Update**: Matt has written a blog post summarising his talk: [Reducing jitter on
+Linux with task isolation](https://www.codeblueprint.co.uk/2020/05/03/reducing-jitter-on-linux-with-task-isolation.html).
+
 Matt Flemming described how task isolation has improved in the kernel. When I
 first saw the title of the talk I thought Matt was going to talk about process
 isolation - how every resource can be virtualized with cgroups and such, but that
