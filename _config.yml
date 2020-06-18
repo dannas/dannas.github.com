@@ -1,3 +1,13 @@
+# Build settings
+baseurl: /
+markdown: kramdown
+source: .
+destination: ./_site
+permalink: /:title
+paginate: 8
+paginate_path: /page:num/
+excerpt_separator: "<!-- excerpt end -->"
+
 # Site settings
 title: Daniel Näslund
 description: "A blog about security, embedded and performance optimization"
@@ -7,15 +17,6 @@ author:
   email: "dannas@dannas.name"
   url: "https://dannas.name"
 
-# Build settings
-baseurl: "" # Change this to your relative path (ex: /blog/), or leave just a /
-markdown: kramdown
-source: .
-destination: ./_site
-permalink: /:title
-paginate: 8
-paginate_path: /page:num/
-excerpt_separator: "<!-- excerpt end -->"
 
 # Markdown Settings
 kramdown:
