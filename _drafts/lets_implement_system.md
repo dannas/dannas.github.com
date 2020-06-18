@@ -249,7 +249,10 @@ int system4(const char *cmd) {
 
 Use prctl(PR_SET_PDEATHSIG, ...) and possibly prctl(PR_SET_CHILD_REAPER)
 
+## Drop Capabilities
 
+* [grsecurity discussion about how to gain root access through capabilities](https://forums.grsecurity.net/viewtopic.php?f=7&t=2522)
+* 
 
 ## The Security Implications
 
