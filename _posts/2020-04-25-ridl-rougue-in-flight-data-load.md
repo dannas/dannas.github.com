@@ -14,7 +14,7 @@ sampling attacks, more information can be found at the [MDS Attacks web page](ht
 
 I was surprised by how ineffective the exploits are: the paper describes how it took 24 hours to retrieve 26 bytes from a `/etc/shadow` file. On the other hand, as Stephen Röttger shows in [Escaping the Chrome Sandbox with RIDL](https://googleprojectzero.blogspot.com/2020/02/escaping-chrome-sandbox-with-ridl.html), it is possible to attack real systems!
 
-# The Attack
+## The Attack
 The victim makes a load or store which causes data to be put in the Line Fill
 Buffer (LFB). The attacker makes a speculative load and then a dependent load
 into a flush-reload buffer. By timing accesses to the flush-reload buffer, the
@@ -47,7 +47,7 @@ What differentiates this attack from the earlier Spectre, Meltdown and
 Foreshadow exploits is that the victim thread can leak data even if it is just
 running straight-line code, no need for branches or page faults.
 
-# The Line Fill Buffer
+## The Line Fill Buffer
 A modern Out-Of-Order CPU has lots of buffers and units. I had never heard of a Line Fill Buffer but here is my current understanding of how it works: When data is to be stored it follows this schema[^travdowns]:
 1. A store instruction gets scheduled and has a store buffer entry allocated.
 2. The instruction executes.
@@ -56,7 +56,7 @@ A modern Out-Of-Order CPU has lots of buffers and units. I had never heard of a 
 6. In the miss scenario, the LFB eventually comes back with the full content of
 the line, which is committed to the L1, and the pending store can commit.
 
-# How to determine that the Line Fill Buffer leaks?
+## How to determine that the Line Fill Buffer leaks?
 The authors wrote a kernel module to mark memory in the victim thread as
 write-back (WB), write-through (WT)[^petercordes], write-combine (WC) and uncacheable (UC).
 For the first experiment, they compared the number of successful retrievals (hits)
@@ -107,7 +107,7 @@ memory types when flushing was enabled. Since both flushing and the WT, WC and
 UC memory types enforce direct invalidation of writes, they must go through the
 LFB.
 
-# What Exploits are possible in the wild?
+## What Exploits are possible in the wild?
 The paper has an example of an exploit where they leak the content of
 `/etc/shadow`. They repeatedly invoke the passwd program. They filter the leaked
 data on printable ASCII-characters and align on the string "root". After 24
@@ -134,7 +134,7 @@ used an old version of Firefox with the high-resolution timers still enabled.
 That sounds like cheating to me. Nevertheless, they were able to leak data from
 a victim process running on the same system.
 
-# How To Mitigate RIDL?
+## How To Mitigate RIDL?
 The authors recommend that SMT be disabled. The Intel mitigation involves updated microcode which allows the software to flush several types of in-flight buffers (LFBs, load ports, and store buffers) using the `verw` instruction. The updated microcode also flushes these buffers when flushing the L1 cache and when leaving/exiting SGX.
 
 ---

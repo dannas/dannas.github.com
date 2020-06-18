@@ -9,7 +9,7 @@ recommended reading - before attending was great. I only wished that I had more
 time to prepare. A big thank you to Paul, Samy, Jessica, and all four
 presenters! I hope there will be more events!
 
-# Making Safe Memory Reclamation a Feature Of Your Memory Allocator
+## Making Safe Memory Reclamation a Feature Of Your Memory Allocator
 Jeff Roberson talked about how he added a novel memory reclamation scheme to
 the Free BSD slab allocator. Lots of new things for me here. I've heard about
 slab allocators before but I've never taken the time to read up on how they
@@ -45,7 +45,7 @@ allocations by comparing its sequence number to the global sequence number. I so
 which that I knew more about memory reclamations, but it sounds like a great idea
 to me at least!
 
-# A 15-minute History of Task Isolation on Linux
+## A 15-minute History of Task Isolation on Linux
 
 **Update**: Matt has written a blog post summarising his talk: [Reducing jitter on
 Linux with task isolation](https://www.codeblueprint.co.uk/2020/05/03/reducing-jitter-on-linux-with-task-isolation.html).
@@ -78,7 +78,7 @@ I wonder what the future use cases for this will be? Is it possible that more
 services besides networking may move into user-space and use isolated CPUs for
 running their workloads?
 
-# Why Mmap is Faster Than System Calls
+## Why Mmap is Faster Than System Calls
 Alexandra Feodorova has written a storage engine for modern fast SSD devices.
 She described how due to decreasing SSD wait times, the filesystem code has
 become a bottleneck. There is newer Linux file system but they haven't been
@@ -125,6 +125,6 @@ else
 ```
 
 
-# jitmap, an execution engine for bitmap expressions
+## jitmap, an execution engine for bitmap expressions
 Francois Saint-Jacques was presenting on an interesting subject, but I didn't have the time to do the
 background reading or watch the presentation. I'll add a small summary here, once I've watched the recording.

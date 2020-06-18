@@ -1,64 +1,72 @@
----
-layout: nil
----
-
 <!DOCTYPE html>
-<html lang="en">
-    <head> 
-        <!-- Global Site Tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107074453-1"></script>
-{% if page.use_math %}
-        <!-- mathjax config similar to math.stackexchange -->
-        <script type="text/x-mathjax-config">
-        MathJax.Hub.Config({
-          jax: ["input/TeX", "output/HTML-CSS"],
-          showMathMenu: false,
-          tex2jax: {
-            inlineMath: [ ['$', '$'] ],
-            displayMath: [ ['$$', '$$']],
-            processEscapes: true,
-            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-          },
-          messageStyle: "none",
-          "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
-        });
-        </script>
-        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-{% endif %}
+<html>
 
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments)};
-          gtag('js', new Date());
+{% include head.html %}
 
-          gtag('config', 'UA-107074453-1');
-        </script>
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	{% include menu.html %}
+    
+    <!-- Icon menu -->
+	  <a {% if site.reverse == true %}id="nav-menu-left"{% else %}id="nav-menu"{% endif %}>
+	  	<div id="menu"></div>
+	  </a>
 
-        <meta charset="utf-8">
-        <title>Daniel Näslund</title> 
-        <link rel="stylesheet" href="/stylesheets/styles.css" type="text/css" /> 
-        <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed/index.html" /> 
-        <meta name="viewport" content="width=device-width, initial-scale=0.5">
+      <!-- Header -->
+      {% if site.custom_header == true %}
+        {% include header-custom.html %}
+      {% else %}
+        {% include header.html %}
+      {% endif %}
 
-    </head> 
-    <body>
-        <div id="wrapper">
-            <header>
-                <p>
-                    <a href="https://twitter.com/dannas_"><img src="/img/twitter-32.png"/></a>
-                    <strong>Daniel Näslund</strong>
-                    <a href="/" title="Home">Home</>
-                    <a href="/about.html">About</a>
-                    <a href="/archive.html">Articles</a>
-                    <a href="/TIL.html">Blog</a>
-                </p>
-            </header>
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
 
-            <article>
-                {{ content }}
-            </article>
-            <footer>
-            </footer>
-        </div> <!-- wrapper -->
-    </body>
+			{{ content }}
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      {% if paginator.total_pages > 1 %}
+        <div class="pagination">
+          {% if paginator.previous_page == 1 %}
+            <a href="{{ '/' | prepend: site.baseurl | replace: '//', '/' }}" class="page-item">&laquo;</a>
+          {% elsif paginator.previous_page%}
+            <a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}" class="page-item">&laquo;</a>
+          {% else %}
+            <span class="page-item">&laquo;</span>
+          {% endif %}
+        
+          {% for page in (1..paginator.total_pages) %}
+            {% if page == paginator.page %}
+              <span class="page-item">{{ page }}</span>
+            {% elsif page == 1 %}
+              <a href="{{ '/' | prepend: site.baseurl | replace: '//', '/' }}" class="page-item">{{ page }}</a>
+            {% else %}
+              <a href="{{ site.paginate_path | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page }}" class="page-item">{{ page }}</a>
+            {% endif %}
+          {% endfor %}
+        
+          {% if paginator.next_page %}
+            <a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}" class="page-item">&raquo;</a>
+          {% else %}
+            <span class="page-item">&raquo;</span>
+          {% endif %}
+        </div>
+        {% endif %}
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    {% include footer.html %}
+
+	    <!-- Script -->
+      {% include script.html %}
+
+	</div>
+</body>
 </html>

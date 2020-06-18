@@ -1,12 +1,43 @@
-paginate: 10
+# Site settings
+title: Daniel Näslund
+description: "A blog about security, embedded and performance optimization"
+url: "https://dannas.name"
+author:
+  name: "Daniel Näslund"
+  email: "dannas@dannas.name"
+  url: "https://dannas.name"
 
+# Build settings
+baseurl: / # Change this to your relative path (ex: /blog/), or leave just a /
 markdown: kramdown
-kramdown:
- syntax_highlighter_opts:
-   disable : true
- toc_levels: 1..3
+source: .
+destination: ./_site
+permalink: /:title
+paginate: 8
+paginate_path: /page:num/
+excerpt_separator: "<!-- excerpt end -->"
 
-gems: 
-    - jekyll-paginate
-plugins:
-    - jekyll-seo-tag
+# Markdown Settings
+kramdown:
+    toc_levels: 1..3
+# Default values
+defaults:
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+
+# Plugins
+gems:
+  - jekyll-paginate
+  - jekyll-seo-tag
+
+# Custom variables
+version: "1.1.0"
+
+# Options
+custom_header: false
+custom_nav_footer: false
+reverse: false

@@ -1,18 +1,17 @@
 ---
 layout: default
-title: dannas
 ---
+<!-- Posts -->
+<ul id="posts">
 
-<p>
-GitHub <a href="https://github.com/dannas">dannas</a><br/>
-Twitter <a href="https://twitter.com/dannas_">@dannas_</a><br/>
-Linkedin <a href="https://linkedin.com/in/dannas">dannas</a><br/>
-Email <a href="mailto:dannas@dannas.name">dannas [at] dannas.name</a><br/>
-</p>
+	{% for post in paginator.posts %}
 
-<p>
-You might be interested in…<br/>
-&bull; <a href="/TIL.html">TIL - My daily microblog</a><br/>
-&bull; <a href="/2016/08/27/review-of-seymor-paperts-mindstorms.html">Review of Seymor Paperts Mindstorms</a><br/>
-&bull; <a href="2016/03/06/what-are-the-next-steps-for-rr.html">What are the next steps for rr</a><br/>
-</p>
+	  <li class="post">
+	  	<h2><a href="{% if site.baseurl == "/" %}{{ post.url }}{% else %}{{ post.url | prepend: site.baseurl }}{% endif %}">{{ post.title }}</a></h2>
+	  	<time datetime="{{ post.date | date_to_xmlschema }}" class="by-line">{{ post.date | date_to_string }}</time>
+	  	<p>{{ post.content | strip_html | truncatewords:50 }}</p>
+	  </li>
+
+    {% endfor %}
+
+</ul>
