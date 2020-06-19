@@ -2,12 +2,14 @@
 title: Report from the Adhoc Event 23 April
 layout: post
 ---
+<!-- excerpt start -->
 I attended a remote virtual event organized by Paul Khuong, Samy Al Bahra and
 Jessica Natoli. Four short 15 minutes talks followed by Q&A. Great topics,
 professional, pedagogic speakers; and the format - short talks with
 recommended reading - before attending was great. I only wished that I had more
 time to prepare. A big thank you to Paul, Samy, Jessica, and all four
 presenters! I hope there will be more events!
+<!-- excerpt end -->
 
 ## Making Safe Memory Reclamation a Feature Of Your Memory Allocator
 Jeff Roberson talked about how he added a novel memory reclamation scheme to

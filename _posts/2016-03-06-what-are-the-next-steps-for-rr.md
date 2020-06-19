@@ -3,7 +3,9 @@ layout: post
 title: What are the next steps for rr?
 ---
 
+<!-- excerpt start -->
 Robert O'Callahan is [leaving Mozilla][leaving] to work on rr-related technology. I've been following the [rr project][rr] at a distance as a user and very casual contributor. I got curious, what will happen next? Here are my free-wheeling thoughts on possible directions.
+<!-- excerpt end -->
 
 The rr tool only runs on Linux; porting it to Mac [would be hard][mac] but might be doable; porting to Windows would require close cooperation with Microsoft, but maybe it's within reach as well. Being able to use it on programs that share memory with other non-recorded programs can't be done today but might be possible if some sort of kernel api for virtual memory write notifications were introduced into Linux. Adjusting the builtin scheduler to increase the chance of reproducing bugs is probably something that can give good returns. Running rr on ARM is not possible due to the semantics of their atomics instructions - perhaps other platforms might be doable - power8, mips?
 

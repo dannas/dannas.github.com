@@ -2,6 +2,11 @@
 title: Paper&#58;  RIDL Rogue In-Flight Data Load
 layout: post
 ---
+
+<!-- excerpt start -->
+In this post, I'll explain the mechanisms behind a recent micro-architectural exploit. It's in the same genre as the speculative execution exploits but has less strict requirements.
+<!-- excerpt end -->
+
 [Schaik, Stephan van, et al. “RIDL: Rogue In-Flight Data Load.” 2019 IEEE Symposium on Security and Privacy (SP), 2019, pp. 88–105](https://mdsattacks.com/files/ridl.pdf)
 
 I've intended to read up on the speculative execution attacks that have been

@@ -2,6 +2,9 @@
 layout: post
 title: Why should children program - a review of Seymor Paperts Mindstorms
 ---
+<!-- excerpt start -->
+This is an essay about what it means to teach a kid to program, using Seymor Paperts groundbreaking book Mindstorms as a reference.
+<!-- excerpt end -->
 
 I have done some programming exercises from code.org together with my six year old daughter. Why? I have mixed feelings about putting a child in front of a computer: On one hand I'm worried about the attention addiction that I see in her peers, they spend way too much time in front of their tablets and tv:s. Do I really want my daughter to start using the computer at this early age. I hear some parents argue that learning to use a computer is a valuable skill, but what does that mean? Understanding the machine? Understanding common UI idioms?  Understanding how to access games?
 

@@ -3,7 +3,9 @@ layout: post
 title: What I've been reading in May
 ---
 
+<!-- excerpt start -->
 Here are the articles, videos, and tools that I'm excited about this May.
+<!-- excerpt end -->
 
 The format of this entry is stolen from the [Interrupt MemFault blogs monthly roundup](https://interrupt.memfault.com/tags#roundup) posts. You should read those. They're way better than mine!
 

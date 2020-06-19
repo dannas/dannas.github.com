@@ -3,9 +3,11 @@ layout: post
 title: Embedded Online Conference
 ---
 
+<!-- excerpt start -->
 I've attended the [Embedded Online
 Conference](https://www.embeddedonlineconference.com/index.php#tracks). Here
 are my notes from five talks I watched from the Embedded Systems Security track.
+<!-- excerpt end -->
 
 <div id="inline_toc" markdown="1">
 
