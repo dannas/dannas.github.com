@@ -5,7 +5,7 @@ title: About dannas.name
 
 # About me
 I'm Daniel, a software engineer, living in the small mountain village
-Bruksvallarna, Sweden. I work in the automitive sector and tend to gravitate
-towards system programming.
+Bruksvallarna, Sweden.
 
+My email address is <a href="mailto:dannas@dannas.name">dannas@dannas.name</a>. On Twitter I'm [@dannas_](https://twitter.com/dannas_).
 
