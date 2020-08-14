@@ -152,7 +152,7 @@ int system3(const char *cmd) {
 
 ## Sanitize the Environment
 
-A newly created process inherits the environment from its parent. If the environment is under the control of the attacker, the he/she may modify the `PATH`, `IFS` or other variables. Here's a program that tries to call `ping`.
+A newly created process inherits the environment from its parent. If the environment is under the control of the attacker, then he/she may modify the `PATH`, `IFS` or other variables. Here's a program that tries to call `ping`.
 
 ```
 int main() {
