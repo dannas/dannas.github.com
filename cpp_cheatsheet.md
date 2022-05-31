@@ -91,6 +91,7 @@ set<int> s;                                 // construct empty set
 s.insert(key);
 n = s.count(key);
 for (int key : s) use(key);
+it = s.upper_bound(key);                   // *it > key
 
 # Map
 map<string, int> m;                         // See [^chrome containers]
