@@ -23,9 +23,7 @@ The format of this entry is stolen from the [Interrupt MemFault blogs monthly ro
 * [Synchrony is a myth](https://medium.com/hackernoon/synchrony-is-a-myth-708acaf479f) by Terry Crowley<br/>
   An article on the same theme as the one above: Nothing happens instantaneously. Everything involves some delay, consumes some time. Exposing the asynchrony places more overhead on the programmer, but also allows for customizing the costs and trade offs to the problem domain rather than having the system balance those costs. 
   
-* [Time is so everything doesn't happen at once](https://medium.com/hackernoon/time-is-so-everything-doesnt-happen-at-once-f19ad58314fb) by Terry Crowley<br/>
-
-  For asynchronous systems you need queuing and throttling. Terry shares some advice on how to reason about asynchronous designs related to HTTP servers.
+* [Time is so everything doesn't happen at once](https://medium.com/hackernoon/time-is-so-everything-doesnt-happen-at-once-f19ad58314fb) by Terry Crowley<br/>For asynchronous systems you need queuing and throttling. Terry shares some advice on how to reason about asynchronous designs related to HTTP servers.
 
 * [How TCP sockets work](https://eklitzke.org/how-tcp-sockets-work) by Evan Klitzke<br/>
   A high-level explanation of how Linux TCP/IP stack works, zooming in on listen queue overflows. How do the kernel avoid too much queuing of incoming connections? It's better to disallow connections, thereby throttling the service. Keep in mind that the application won't see rejected connections. You need a way to monitor listen queue overflows. Through /proc/net/netstat you get a system-wide `ListenOverflows` counter but it's an open question how to monitor for overflows per service.
