@@ -1,6 +1,6 @@
 ---
 layout: default
-title: About dannas.name
+title: About
 ---
 
 # About me
