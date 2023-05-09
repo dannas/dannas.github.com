@@ -1,6 +1,6 @@
 ---
 layout: default
-title: TIL - Today I've Learned
+title: TIL
 use_math: true
 ---
 # Today I've learned
