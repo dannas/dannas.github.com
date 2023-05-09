@@ -1,5 +1,6 @@
 # Build settings
 baseurl: /
+show_excerpts: true
 markdown: kramdown
 theme: minima
 destination: ./_site
