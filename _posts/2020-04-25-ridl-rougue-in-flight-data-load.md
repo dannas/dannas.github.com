@@ -1,5 +1,5 @@
 ---
-title: Paper&#58;  RIDL Rogue In-Flight Data Load
+title: "Paper: RIDL Rogue In-Flight Data Load"
 layout: post
 ---
 

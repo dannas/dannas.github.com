@@ -1,5 +1,5 @@
 ---
-title: Paper&#58; Memory Barriers, A hardware View for Software Hackers
+title: "Paper: Memory Barriers, A hardware View for Software Hackers"
 layout: post
 ---
 <!-- excerpt start -->
