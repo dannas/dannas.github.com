@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Week 1 of the Making Embedded Systems course
+title: Week 1 Making Embedded Systems
 ---
 
 <!-- excerpt start -->
